@@ -15,7 +15,7 @@ const routes = [
         name: 'Login',
         component: () => import('../views/usercenter/Login.vue'),
         meta: {
-            requireNotAuth: true,
+            // requireNotAuth: true,
             noNav: true
         }
     },
