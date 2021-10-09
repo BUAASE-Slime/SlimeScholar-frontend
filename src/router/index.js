@@ -4,7 +4,30 @@ import user from "@/store/user";
 
 Vue.use(VueRouter)
 
-const routes = []
+const routes = [
+    {
+        path: '/',
+        name: 'HomePage',
+        component: () => import('../views/retrieval/HomePage.vue'),
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('../views/usercenter/Login.vue'),
+        meta: {
+            requireNotAuth: true,
+            noNav: true
+        }
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: () => import('../views/usercenter/Register.vue'),
+        meta: {
+            noNav: true
+        }
+    },
+]
 
 const router = new VueRouter({
     mode: 'history',
@@ -21,7 +44,13 @@ router.beforeEach((to, from, next) => {
     // Login is required to access the following pages
     if (!userInfo && to.meta.requireAuth) {
         next({
-            name: 'Home',
+            name: 'HomePage',
+        })
+    }
+    // Not login is required to access the following pages
+    if (userInfo && to.meta.requireNotAuth) {
+        next({
+            name: 'HomePage',
         })
     }
     next()
