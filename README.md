@@ -1,4 +1,6 @@
-# vue
+# Slime Scholar Vue
+
+项目框架见 [Slime Scholar Wiki](https://gitee.com/online-publish/slime-scholar-vue/wikis/pages)
 
 ## Project setup
 ```
