@@ -13,6 +13,7 @@
         <el-form-item id="password" prop="password">
           <el-input
             placeholder="密码"
+            show-password
             type="password"
             v-model="form.password"
             autocomplete="off"
