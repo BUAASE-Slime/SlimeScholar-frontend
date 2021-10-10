@@ -21,7 +21,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item class="btn_login">
-          <el-button type="primary" @click="login">登 录</el-button>
+          <el-button type="primary" @click="login">登&nbsp;&nbsp;录</el-button>
         </el-form-item>
       </el-form>
       <div class="suffix">
@@ -80,8 +80,8 @@ export default {
 }
 .wrap {
   width: 300px;
-  height: 330px;
-  padding: 20px 25px 0 25px;
+  height: 315px;
+  padding: 0 25px 0 25px;
   line-height: 40px;
   position: relative;
   display: inline-block;

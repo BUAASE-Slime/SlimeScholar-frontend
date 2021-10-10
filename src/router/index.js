@@ -15,7 +15,7 @@ const routes = [
         name: 'Login',
         component: () => import('../views/usercenter/Login.vue'),
         meta: {
-            // requireNotAuth: true,
+            requireNotAuth: true,
             noNav: true
         }
     },
@@ -24,7 +24,8 @@ const routes = [
         name: 'Register',
         component: () => import('../views/usercenter/Register.vue'),
         meta: {
-            noNav: true
+            noNav: true,
+            requireNotAuth: true,
         }
     },
 ]
