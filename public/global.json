@@ -1,4 +1,4 @@
 {
   "baseUrl": "frontend address",
-  "backUrl": "backend address"
+  "backUrl": "http://localhost:8000/api/v1/"
 }

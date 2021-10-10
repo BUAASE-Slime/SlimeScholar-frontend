@@ -43,7 +43,38 @@ export default {
     }
   },
   methods: {
-    login() {},
+    login() {
+      const formData = new FormData();
+      formData.append("username", this.form.username);
+      formData.append("password", this.form.password);
+      this.$axios({
+        method: 'post',
+        url: '/user/login',
+        data: formData,
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$message.success("登录成功");
+          this.$store.dispatch('saveUserInfo', {
+            user: {
+              'username': res.data.username,
+              'Authorization': res.data.Authorization
+            }
+          });
+          const history_pth = localStorage.getItem('preRoute');
+          if (history_pth == null) {
+            this.$router.push('/');
+          } else {
+            this.$router.push({ path: history_pth });
+          }
+        } else {
+          this.$message.error("用户名或密码错误");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     register() {
       this.$router.push("/register");
     },
