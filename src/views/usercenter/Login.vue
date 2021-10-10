@@ -54,14 +54,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #login {
   font-family: 'Noto Serif SC', serif;
 }
 #login .el-input__inner {
   font-family: 'Noto Serif SC', serif;
 }
-.bgbox {
+#login .bgbox {
   display: block;
   opacity: 1;
   z-index: -3;
@@ -74,11 +74,11 @@ export default {
   transition: opacity 1s,transform .25s,filter .25s;
   backface-visibility: hidden;
 }
-.logo {
+#login .logo {
   cursor: pointer;
   overflow: hidden;
 }
-.wrap {
+#login .wrap {
   width: 300px;
   height: 315px;
   padding: 0 25px 0 25px;
@@ -88,17 +88,17 @@ export default {
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 20px;
 }
-.btn_login {
+#login .btn_login {
   margin-top: 25px;
   text-align: center;
 }
-.btn_login button{
+#login .btn_login button{
   line-height: 10px;
   font-family: 'Noto Serif SC', serif;
   width: 100%;
   height: 38px;
 }
-.suffix {
+#login .suffix {
   font-size:14px;
   line-height:10px;
   color:#999;

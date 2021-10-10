@@ -156,14 +156,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #register {
   font-family: 'Noto Serif SC', serif;
 }
 #register .el-input__inner {
   font-family: 'Noto Serif SC', serif;
 }
-.bgbox {
+#register .bgbox {
   display: block;
   opacity: 1;
   z-index: -3;
@@ -176,11 +176,11 @@ export default {
   transition: opacity 1s,transform .25s,filter .25s;
   backface-visibility: hidden;
 }
-.logo {
+#register .logo {
   cursor: pointer;
   overflow: hidden;
 }
-.wrap {
+#register .wrap {
   width: 320px;
   height: 500px;
   padding: 0 25px 0 25px;
@@ -190,20 +190,20 @@ export default {
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 20px;
 }
-.btn_register {
+#register .btn_register {
   margin-top: 25px;
   text-align: center;
 }
-.btn_register button{
+#register .btn_register button{
   line-height: 10px;
   font-family: 'Noto Serif SC', serif;
   width: 100%;
   height: 38px;
 }
-.confirmCode button {
+#register .confirmCode button {
   font-family: 'Noto Serif SC', serif;
 }
-.suffix {
+#register .suffix {
   font-size:14px;
   line-height:10px;
   color:#999;
