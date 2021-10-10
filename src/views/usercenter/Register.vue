@@ -176,10 +176,6 @@ export default {
   transition: opacity 1s,transform .25s,filter .25s;
   backface-visibility: hidden;
 }
-#register .logo {
-  cursor: pointer;
-  overflow: hidden;
-}
 #register .wrap {
   width: 320px;
   height: 500px;
