@@ -5,10 +5,10 @@
       <img class="logo" src="../../assets/images/SlimeScholar.png" alt="logo" @click="toHome"/>
     </div>
     <div class="wrap">
-      <h1>登录</h1>
+      <h1>登 录</h1>
       <el-form :model="form" ref="form" class="form">
         <el-form-item prop="username">
-          <el-input placeholder="用户名或邮箱" type="username" v-model="form.username" autocomplete="off"></el-input>
+          <el-input placeholder="用户名" type="username" v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item id="password" prop="password">
           <el-input
@@ -58,7 +58,7 @@ export default {
 #login {
   font-family: 'Noto Serif SC', serif;
 }
-.el-input__inner {
+#login .el-input__inner {
   font-family: 'Noto Serif SC', serif;
 }
 .bgbox {
@@ -93,6 +93,8 @@ export default {
   text-align: center;
 }
 .btn_login button{
+  line-height: 10px;
+  font-family: 'Noto Serif SC', serif;
   width: 100%;
   height: 38px;
 }
