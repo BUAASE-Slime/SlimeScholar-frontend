@@ -54,11 +54,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #login {
   font-family: 'Noto Serif SC', serif;
 }
-#login .el-input__inner {
+#login >>> .el-input__inner {
   font-family: 'Noto Serif SC', serif;
 }
 #login .bgbox {

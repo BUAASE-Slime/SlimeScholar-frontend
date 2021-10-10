@@ -156,11 +156,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #register {
   font-family: 'Noto Serif SC', serif;
 }
-#register .el-input__inner {
+#register >>> .el-input__inner {
   font-family: 'Noto Serif SC', serif;
 }
 #register .bgbox {
