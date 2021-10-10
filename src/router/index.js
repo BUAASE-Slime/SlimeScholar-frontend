@@ -44,7 +44,7 @@ router.beforeEach((to, from, next) => {
     // Login is required to access the following pages
     if (!userInfo && to.meta.requireAuth) {
         next({
-            name: 'HomePage',
+            name: 'Login',
         })
     }
     // Not login is required to access the following pages
