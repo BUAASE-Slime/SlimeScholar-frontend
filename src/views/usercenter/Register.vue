@@ -32,11 +32,11 @@
               autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item id="password2" prop="password">
+        <el-form-item id="password2" prop="password2">
           <el-input
               placeholder="确认密码"
               show-password
-              type="password"
+              type="password2"
               v-model="form.password2"
               autocomplete="off"
           ></el-input>
@@ -95,8 +95,8 @@ export default {
         if (!reg_pwd.test(value)) {
           callback(new Error('密码至少同时包含字母和数字，且长度为8-18'));
         } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
+          if (this.form.password2 !== '') {
+            this.$refs.form.validateField('password2');
           }
           callback();
         }
@@ -105,7 +105,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.form.password) {
         callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
@@ -146,8 +146,57 @@ export default {
     }
   },
   methods: {
-    register() {},
-    getCode() {},
+    register(formName) {
+      const self = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const formData = new FormData;
+          formData.append("username", this.form.username);
+          formData.append("confirm_number", this.form.confirmCode);
+          self.$axios({
+            method: 'post',
+            url: '/user/confirm',
+            data: formData
+          })
+          .then(res => {
+            if (res.data.success) {
+              this.$message.success("注册成功");
+              setTimeout(() => {
+                this.$router.push('/login');
+              }, 1500);
+            } else {
+              this.$message.error("验证失败");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+        }
+      })
+    },
+    getCode() {
+      if (this.form.password === this.form.password2) {
+        const formData = new FormData;
+        formData.append("username", this.form.username);
+        formData.append("password", this.form.password2);
+        formData.append("email", this.form.email);
+        this.$axios({
+          method: 'post',
+          url: '/user/register',
+          data: formData
+        })
+        .then(res => {
+          if (res.data.success) {
+            this.$message.success("验证码已发送至您的邮箱");
+          } else {
+            this.$message.error("用户名已存在");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
+    },
     toHome() {},
     toLogin() {
       this.$router.push('/login');

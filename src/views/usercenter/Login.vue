@@ -62,11 +62,13 @@ export default {
             }
           });
           const history_pth = localStorage.getItem('preRoute');
-          if (history_pth == null) {
-            this.$router.push('/');
-          } else {
-            this.$router.push({ path: history_pth });
-          }
+          setTimeout(() => {
+            if (history_pth == null || history_pth === '/register') {
+              this.$router.push('/');
+            } else {
+              this.$router.push({ path: history_pth });
+            }
+          }, 1000);
         } else {
           this.$message.error("用户名或密码错误");
         }
