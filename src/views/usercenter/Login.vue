@@ -57,8 +57,9 @@ export default {
           this.$message.success("登录成功");
           this.$store.dispatch('saveUserInfo', {
             user: {
-              'username': res.data.username,
-              'Authorization': res.data.Authorization
+              'username': res.data.detail.username,
+              'Authorization': res.data.Authorization,
+              'userId': res.data.detail.user_id
             }
           });
           const history_pth = localStorage.getItem('preRoute');

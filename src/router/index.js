@@ -38,6 +38,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const userInfo = user.getters.getUser(user.state());
+    console.log(userInfo.user.Authorization);
     // Record the router address of page accessed before login
     if (to.path === '/login') {
         localStorage.setItem("preRoute", router.currentRoute.fullPath);
