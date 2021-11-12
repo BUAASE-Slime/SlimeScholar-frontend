@@ -6,16 +6,17 @@
       </el-menu-item>
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
       <el-menu-item index="3" @click="gotoScholar">学者门户</el-menu-item>
-      <el-submenu index="4" style="float: right" v-if="isLogin">
+      <el-menu-item index="4" @click="gotoCommunity">交流社区</el-menu-item>
+      <el-submenu index="5" style="float: right" v-if="isLogin">
         <template slot="title">{{ userName }}</template>
-        <el-menu-item index="4-1" class="big-item" @click="gotoLib">个人中心</el-menu-item>
-        <el-menu-item index="4-2" class="big-item" @click="settings">账户设置</el-menu-item>
-        <el-menu-item index="4-3" class="big-item" @click="logout">退出</el-menu-item>
+        <el-menu-item index="5-1" class="big-item" @click="gotoLib">个人中心</el-menu-item>
+        <el-menu-item index="5-2" class="big-item" @click="settings">账户设置</el-menu-item>
+        <el-menu-item index="5-3" class="big-item" @click="logout">退出</el-menu-item>
       </el-submenu>
       <!--      <i class="el-icon-bell news-link" v-if="isLogin" style="padding-top: 28px; font-size: 24px; float: right;" @click="openNews"></i>-->
       <i v-if="isLogin" class="el-icon-user" @click="settings"></i>
       <div class="login-button">
-        <el-button index="4" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
+        <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
       </div>
     </el-menu>
   </div>
@@ -53,7 +54,10 @@ export default {
       this.$router.push('/advSearch');
     },
     gotoScholar: function () {
-      this.$router.push('/schPortal')
+      this.$router.push('/schPortal');
+    },
+    gotoCommunity: function () {
+      this.$router.push('/community');
     },
     login() {
       this.$router.push('/login');

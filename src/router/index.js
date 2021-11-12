@@ -51,6 +51,12 @@ const routes = [
         name: 'SchPortal',
         component: () => import('../views/scholar/SchPortal'),
     },
+    // 社区模块
+    {
+        path: '/community',
+        name: 'Community',
+        component: () => import('../views/community/index'),
+    }
 ]
 
 const router = new VueRouter({
