@@ -91,6 +91,7 @@ export default {
 <style scoped>
 #login {
   font-family: 'Noto Serif SC', serif;
+  margin-top: 60px;
 }
 #login >>> .el-input__inner {
   font-family: 'Noto Serif SC', serif;

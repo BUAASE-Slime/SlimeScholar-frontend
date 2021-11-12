@@ -5,15 +5,22 @@ import user from "../store/user";
 Vue.use(VueRouter)
 
 const routes = [
+    // 检索模块
     {
         path: '/',
         name: 'HomePage',
-        component: () => import('../views/retrieval/HomePage.vue'),
+        component: () => import('../views/retrieval/HomePage'),
     },
+    {
+        path: '/advSearch',
+        name: 'AdvSearch',
+        component: () => import('../views/retrieval/AdvSearch'),
+    },
+    // 用户信息管理模块
     {
         path: '/login',
         name: 'Login',
-        component: () => import('../views/usercenter/Login.vue'),
+        component: () => import('../views/user/Login'),
         meta: {
             requireNotAuth: true,
             noNav: true
@@ -22,11 +29,27 @@ const routes = [
     {
         path: '/register',
         name: 'Register',
-        component: () => import('../views/usercenter/Register.vue'),
+        component: () => import('../views/user/Register'),
         meta: {
             noNav: true,
             requireNotAuth: true,
         }
+    },
+    {
+        path: '/schLib',
+        name: 'SchLib',
+        component: () => import('../views/user/SchLib'),
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('../views/user/Settings'),
+    },
+    // 学者门户模块
+    {
+        path: '/schPortal',
+        name: 'SchPortal',
+        component: () => import('../views/scholar/SchPortal'),
     },
 ]
 
@@ -40,21 +63,21 @@ router.beforeEach((to, from, next) => {
     const userInfo = user.getters.getUser(user.state());
     console.log(userInfo.user.Authorization);
     // Record the router address of page accessed before login
-    if (to.path === '/login') {
-        localStorage.setItem("preRoute", router.currentRoute.fullPath);
-    }
+    // if (to.path === '/login') {
+    //     localStorage.setItem("preRoute", router.currentRoute.fullPath);
+    // }
     // Login is required to access the following pages
-    if (!userInfo && to.meta.requireAuth) {
-        next({
-            name: 'Login',
-        })
-    }
+    // if (!userInfo && to.meta.requireAuth) {
+    //     next({
+    //         name: 'Login',
+    //     })
+    // }
     // Not login is required to access the following pages
-    if (userInfo && to.meta.requireNotAuth) {
-        next({
-            name: 'HomePage',
-        })
-    }
+    // if (userInfo && to.meta.requireNotAuth) {
+    //     next({
+    //         name: 'HomePage',
+    //     })
+    // }
     next()
 })
 
