@@ -1,18 +1,17 @@
 <template>
-  <div class="main">
-    <h1>这里是主页</h1>
+  <div class="schPortal">
+    <h1>学者门户</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomePage"
+  name: "SchPortal"
 }
 </script>
 
 <style scoped>
-.main {
-  position: relative;
+.schPortal {
   width: 100%;
   height: 100%;
 }

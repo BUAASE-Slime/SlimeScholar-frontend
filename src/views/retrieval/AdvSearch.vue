@@ -1,18 +1,17 @@
 <template>
-  <div class="main">
-    <h1>这里是主页</h1>
+  <div class="advSearch">
+    <h1>高级检索</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomePage"
+  name: "AdvSearch"
 }
 </script>
 
 <style scoped>
-.main {
-  position: relative;
+.advSearch {
   width: 100%;
   height: 100%;
 }
