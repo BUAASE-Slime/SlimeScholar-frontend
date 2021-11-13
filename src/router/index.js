@@ -15,7 +15,7 @@ const routes = [
         name: 'Login',
         component: () => import('../views/usercenter/Login.vue'),
         meta: {
-            requireNotAuth: true,
+            // requireNotAuth: true,
             noNav: true
         }
     },
@@ -25,7 +25,16 @@ const routes = [
         component: () => import('../views/usercenter/Register.vue'),
         meta: {
             noNav: true,
-            requireNotAuth: true,
+            // requireNotAuth: true,
+        }
+    },
+    {
+        path: '/scholar-info',
+        name: 'Scholar-info',
+        component: () => import('../views/scholars/Info'),
+        meta: {
+            noNav: true,
+            // requireNotAuth: true,
         }
     },
 ]
