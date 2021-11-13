@@ -146,7 +146,7 @@ export default {
 }
 
 .login-button {
-  padding: 20px;
+  padding: 15px;
 }
 
 .login-button button {

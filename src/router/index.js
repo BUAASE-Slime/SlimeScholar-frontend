@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import user from "../store/user";
+// import user from "../store/user";
 
 Vue.use(VueRouter)
 
@@ -65,9 +65,9 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    const userInfo = user.getters.getUser(user.state());
-    console.log(userInfo.user.Authorization);
+// router.beforeEach((to, from, next) => {
+    // const userInfo = user.getters.getUser(user.state());
+    // console.log(userInfo.user.Authorization);
     // Record the router address of page accessed before login
     // if (to.path === '/login') {
     //     localStorage.setItem("preRoute", router.currentRoute.fullPath);
@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
     //         name: 'HomePage',
     //     })
     // }
-    next()
-})
+    // next()
+// })
 
 export default router
