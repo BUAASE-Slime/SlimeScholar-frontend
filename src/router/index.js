@@ -16,6 +16,12 @@ const routes = [
         name: 'AdvSearch',
         component: () => import('../views/retrieval/AdvSearch'),
     },
+    // 文献详情模块
+    {
+        path: '/article',
+        name: '/Article',
+        component: () => import('../views/literature/Article'),
+    },
     // 用户信息管理模块
     {
         path: '/login',
