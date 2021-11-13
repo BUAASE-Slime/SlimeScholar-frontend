@@ -44,16 +44,7 @@ const routes = [
     {
         path: '/register',
         name: 'Register',
-        component: () => import('../views/usercenter/Register.vue'),
-        meta: {
-            noNav: true,
-            // requireNotAuth: true,
-        }
-    },
-    {
-        path: '/article',
-        name: 'Article',
-        component: () => import('../views/article/Article.vue'),
+        component: () => import('../views/user/Register.vue'),
         meta: {
             noNav: true,
             // requireNotAuth: true,
