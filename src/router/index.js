@@ -42,15 +42,6 @@ const routes = [
         }
     },
     {
-        path: '/scholar-info',
-        name: 'Scholar-info',
-        component: () => import('../views/scholars/Info'),
-        meta: {
-            noNav: true,
-            // requireNotAuth: true,
-        }
-    },
-    {
         path: '/schLib',
         name: 'SchLib',
         component: () => import('../views/user/SchLib'),
