@@ -42,15 +42,6 @@ const routes = [
         }
     },
     {
-        path: '/register',
-        name: 'Register',
-        component: () => import('../views/user/Register.vue'),
-        meta: {
-            noNav: true,
-            // requireNotAuth: true,
-        }
-    },
-    {
         path: '/schLib',
         name: 'SchLib',
         component: () => import('../views/user/SchLib'),

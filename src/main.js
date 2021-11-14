@@ -7,9 +7,14 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 
+
 // import diy font
 import './styles/font.css'
 import user from "./store/user";
+
+import * as echarts from 'echarts';
+// import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 

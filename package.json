@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "echarts": "^5.2.2",
     "element-ui": "^2.15.6",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-schart": "^2.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
