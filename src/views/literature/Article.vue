@@ -3,10 +3,10 @@
 
     <el-main class="info">
       <el-row class="info-title">
-        <el-col :span="19" class="title-text">
+        <el-col :span="18" class="title-text">
           {{ article.title }}
         </el-col>
-        <el-col :span="5" class="title-button">
+        <el-col :span="6" class="title-button">
           <el-tooltip class="item" effect="light" content="引用" placement="bottom">
             <el-button icon="el-icon-paperclip" circle></el-button>
           </el-tooltip>
@@ -18,6 +18,9 @@
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="分享" placement="bottom">
             <el-button type="success" icon="el-icon-share" circle></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" content="下载" placement="bottom">
+            <el-button type="danger" icon="el-icon-download" circle></el-button>
           </el-tooltip>
         </el-col>
       </el-row>
@@ -57,33 +60,45 @@
         </el-col>
       </el-row>
 
-<!--      <el-row class="info-block3">-->
-<!--        <el-row>参考文献&nbsp;&nbsp;{{ article.outCitations.length }}</el-row>-->
-<!--        <el-row>被引次数&nbsp;&nbsp;{{ article.inCitations.length }}</el-row>-->
-<!--      </el-row>-->
-
       <el-row class="cite">
         <el-col :span="18" class="cite-table">
           <el-tabs type="border-card">
             <el-tab-pane label="参考文献">
-              <el-row class="cite-article" v-for="article in article.outCitations" v-bind:key="article.index">
-                {{ article }}
-              </el-row>
+              <el-scrollbar style="height:100%">
+                <div style="height: 116px">
+                  <el-row class="cite-article" v-for="(article, index) in article.outCitations" v-bind:key="index">
+                    <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
+                  </el-row>
+                </div>
+              </el-scrollbar>
             </el-tab-pane>
             <el-tab-pane label="引证文献">
-              <el-row class="cite-article" v-for="article in article.inCitations" v-bind:key="article.index">
-                {{ article }}
-              </el-row>
+              <el-scrollbar style="height:100%">
+                <div style="height: 116px">
+                  <el-row class="cite-article" v-for="(article, index) in article.inCitations" v-bind:key="index" @click="toArticle(article)">
+                    <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
+                  </el-row>
+                </div>
+              </el-scrollbar>
             </el-tab-pane>
           </el-tabs>
         </el-col>
-        <el-col :span="3" class="cite-graph out">
+
+        <el-col :span="3" class="cite-graph1 out1">
           {{ article.outCitations.length }}
           <div class="cite-text">引用量</div>
         </el-col>
-        <el-col :span="3" class="cite-graph in">
+        <el-col :span="3" class="cite-graph1 in1">
           {{ article.inCitations.length }}
           <div class="cite-text">被引量</div>
+        </el-col>
+        <el-col :span="3" class="cite-graph2 out2">
+          {{ article.outCitations.length }}
+          <div class="cite-text">评论数</div>
+        </el-col>
+        <el-col :span="3" class="cite-graph2 in2">
+          {{ article.inCitations.length }}
+          <div class="cite-text">评论人数</div>
         </el-col>
       </el-row>
     </el-main>
@@ -136,8 +151,15 @@ export default {
         ],
         inCitations: [
           "c789e333fdbb963883a0b5c96c648bf36b8cd242",
+          "c789e333fdbb963883a0b5c96c648bf36b8cd242",
+          "c789e333fdbb963883a0b5c96c648bf36b8cd242",
         ],
         outCitations: [
+          "abe213ed63c426a089bdf4329597137751dbb3a0",
+          "abe213ed63c426a089bdf4329597137751dbb3a0",
+          "abe213ed63c426a089bdf4329597137751dbb3a0",
+          "abe213ed63c426a089bdf4329597137751dbb3a0",
+          "abe213ed63c426a089bdf4329597137751dbb3a0",
           "abe213ed63c426a089bdf4329597137751dbb3a0",
         ],
         year: 2016,
@@ -156,8 +178,11 @@ export default {
     }
   },
   methods: {
-    toAuthor: function(id){
+    toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
+    },
+    toArticle: function(id) {
+      alert("前往" + "id:" + id + "的文献")
     },
     toDOI: function(url){
       window.location.href = url
@@ -173,7 +198,12 @@ export default {
 </script>
 
 <style>
+body {
+  background-color: #f8f8f8;
+}
+
 .article {
+  background-color: white;
   border-bottom: solid 1px lightgray;
   border-left: solid 1px lightgray;
   border-right: solid 1px lightgray;
@@ -194,16 +224,17 @@ export default {
 
 .article .title-text {
   font-weight: bold;
-  font-size: 26px;
+  font-size: 24px;
 }
 
 .article .title-button {
-  line-height: 50px;
+  line-height: 40px;
   padding-left: 14px;
   border-left: solid 1px lightgray;
 }
 
 .article .info-author {
+  margin-top: 10px;
   font-size: 18px;
   color: #516798;
 }
@@ -218,14 +249,6 @@ export default {
   margin-top: 20px;
   font-size: 18px;
   line-height: 24px;
-}
-
-.article .info-block3 {
-  margin-top: 10px;
-  float: right;
-  font-size: 15px;
-  line-height: 24px;
-  color: #9a9a9a;
 }
 
 .article .line-title {
@@ -256,34 +279,58 @@ export default {
 }
 
 .article .cite-table {
-  padding: 20px 20px 0 0;
+  padding: 24px 24px 0 0;
   border-right: solid 1px lightgray;
 }
 
 .article .cite-article {
-
+  padding: 5px 0;
+  font-size: 18px;
+  color: #516798;
 }
 
-.article .cite-graph {
+.article .cite-article:hover {
+  cursor: pointer;
+  color: #4b93ff;
+}
+
+.article .cite-graph1 {
   font-size: 30px;
-  margin: 30px 0;
+  margin-top: 28px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.article .cite-graph2 {
+  font-size: 30px;
+  margin-bottom: 28px;
   text-align: center;
 }
 
 .article .cite-text {
-  margin-top: 10px;
+  margin-top: 14px;
   font-size: 16px;
   color: #565656;
 }
 
-.article .out {
+.article .out1 {
   color: #409EFF;
   border-right: solid 1px lightgray;
 }
 
-.article .in {
+.article .in1 {
   color: #67C23A;
 }
+
+.article .out2 {
+  color: #E6A23C;
+  border-right: solid 1px lightgray;
+}
+
+.article .in2 {
+  color: #F56C6C;
+}
+
 
 .article .catalogue {
   float: right;
