@@ -159,6 +159,7 @@ export default {
 <style scoped>
 #register {
   font-family: 'Noto Serif SC', serif;
+  margin-top: 60px;
 }
 #register >>> .el-input__inner {
   font-family: 'Noto Serif SC', serif;
