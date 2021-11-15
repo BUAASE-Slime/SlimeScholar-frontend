@@ -26,8 +26,8 @@
       </el-row>
 
       <el-row class="info-author">
-        <span class="link" v-for="author in article.authors" v-bind:key="author.index" @click="toAuthor(author.ids[0])">
-          {{ author.name }}&nbsp;
+        <span  v-for="author in article.authors" v-bind:key="author.index" @click="toAuthor(author.ids[0])">
+          <span class="link">{{ author.name }}</span>&ensp;
         </span>
       </el-row>
       <el-row class="info-block1">
@@ -65,7 +65,7 @@
           <el-tabs type="border-card">
             <el-tab-pane label="参考文献">
               <el-scrollbar style="height:100%">
-                <div style="height: 116px">
+                <div style="height: 112px">
                   <el-row class="cite-article" v-for="(article, index) in article.outCitations" v-bind:key="index">
                     <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
                   </el-row>
@@ -199,7 +199,7 @@ export default {
 
 <style>
 body {
-  background-color: #f8f8f8;
+  background-color: #ecf5ff;
 }
 
 .article {
@@ -225,6 +225,7 @@ body {
 .article .title-text {
   font-weight: bold;
   font-size: 24px;
+  line-height: 30px;
 }
 
 .article .title-button {
@@ -241,13 +242,13 @@ body {
 
 .article .info-block1 {
   margin-top: 40px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 24px;
 }
 
 .article .info-block2 {
   margin-top: 20px;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 24px;
 }
 
@@ -275,6 +276,7 @@ body {
 
 .article .cite {
   margin-top: 20px;
+  margin-bottom: 5px;
   border-top: solid 1px lightgray;
 }
 
@@ -285,7 +287,7 @@ body {
 
 .article .cite-article {
   padding: 5px 0;
-  font-size: 18px;
+  font-size: 16px;
   color: #516798;
 }
 
@@ -295,15 +297,14 @@ body {
 }
 
 .article .cite-graph1 {
-  font-size: 30px;
-  margin-top: 28px;
-  margin-bottom: 32px;
+  font-size: 28px;
+  margin-top: 30px;
+  margin-bottom: 34px;
   text-align: center;
 }
 
 .article .cite-graph2 {
-  font-size: 30px;
-  margin-bottom: 28px;
+  font-size: 28px;
   text-align: center;
 }
 
