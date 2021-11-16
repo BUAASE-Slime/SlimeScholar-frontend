@@ -2,13 +2,16 @@
   <div class="main">
     <el-row>
       <el-col id="bg" :span="24" style="background-color:#f5f5f5;"><div id="logo">
-        <img src="../../assets/images/slime_logo.png" alt="logo" style="height: 120px; margin:50px; margin-top:150px; ">
+        <!-- <el-card :body-style="{ padding: '0px' }"> -->
+          <img src="../../assets/images/bg2.jpg" class="image" style="position:absolute; left:0px; background-size:cover; width:100%; height:395px; z-index:0;" alt="">
+        <!-- </el-card> -->
+        <img src="../../assets/images/slime_logo4.png" alt="logo" style="height: 120px; margin:50px; margin-top:150px; position:relative; z-index:2;">
       </div></el-col>
     </el-row>
-    <el-row>
+    <el-row >
       <el-col :span="24"><div id="inputbox">
         <div style="margin-top: 0px;" id="inputbox2">
-          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" >
             <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:150px; ">
               <el-option
                 v-for="item in options"
@@ -22,10 +25,59 @@
         </div>
       </div></el-col>
     </el-row>
-    <el-row gutter="35" style="padding-left:150px; padding-top:50px">
-      <el-col :span="7" ><div class="grid-content bg-purple">
+    <el-row gutter="0" style="margin-top:50px;" justify="center" type="flex">
+      <el-col :span="5"><div class="grid-content bg-purple test_a">
+        <el-row>
+          <el-col :span="6" style="padding:10px; margin-right:20px">
+              <img class="image" src="../../assets/images/home_i1.png" style="width:100px">
+          </el-col>
+          <el-col :span="5" style="padding:10px; margin-left:20px">
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Authors</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{authornum}}</h1>
+          </el-col>
+        </el-row>
+      </div></el-col>
+      <el-col :span="5"><div class="grid-content bg-purple test_a">
+        <el-row>
+          <el-col :span="6" style="padding:10px; margin-right:20px">
+              <img class="image" src="../../assets/images/home_i2.png" style="width:100px">
+          </el-col>
+          <el-col :span="5" style="padding:10px; margin-left:20px">
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Papers</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{papernum}}</h1>
+          </el-col>
+        </el-row>  
+      </div></el-col>
+      <el-col :span="5"><div class="grid-content bg-purple test_a">
+        <el-row>
+          <el-col :span="6" style="padding:10px; margin-right:20px">
+              <img class="image" src="../../assets/images/home_i3.png" style="width:100px">
+          </el-col>
+          <el-col :span="5" style="padding:10px; margin-left:20px">
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Journals</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{journalnum}}</h1>
+          </el-col>
+        </el-row>  
+      </div></el-col>
+      <el-col :span="5"><div class="grid-content bg-purple test_a">
+        <el-row>
+          <el-col :span="6" style="padding:10px; margin-right:20px">
+              <img class="image" src="../../assets/images/home_i4.png" style="width:100px">
+          </el-col>
+          <el-col :span="5" style="padding:10px; margin-left:20px">
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Orgnizations</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{orgnum}}</h1>
+          </el-col>
+        </el-row>  
+      </div></el-col>
+    </el-row>
+    <el-row>
+      <el-divider><i class="el-icon-s-data" style="color:grey"></i></el-divider>
+    </el-row>
+    <el-row id="list" gutter="75" style="padding-left:40px; padding-top:50px; padding-bottom:50px; margin:0;">
+      <el-col :span="8" ><div class="grid-content bg-purple">
         <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px; color:black;">Top Author</h2>
-          <el-scrollbar style="height: 350px">
+          <el-scrollbar style="height: 350px; overflow-x:hidden !important;">
           <el-row v-for="(i,index) in topAut" :key="index" style="margin:30px">
             <el-col :span="4">
               <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
@@ -42,7 +94,7 @@
           </el-row>
           </el-scrollbar>
       </div></el-col>
-      <el-col :span="7"><div class="grid-content bg-purple">
+      <el-col :span="8"><div class="grid-content bg-purple">
         <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Journal</h2>
         <el-scrollbar style="height: 350px">
           <el-row v-for="(i,index) in topJou" :key="index" style="margin:30px">
@@ -66,7 +118,7 @@
           </el-row>
           </el-scrollbar>
       </div></el-col>
-      <el-col :span="7"><div class="grid-content bg-purple">
+      <el-col :span="8"><div class="grid-content bg-purple">
         <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Conference</h2>
         <el-scrollbar style="height: 350px">
           <el-row v-for="(i,index) in topArt" :key="index" style="margin:30px">
@@ -98,6 +150,10 @@ export default {
     return {
       input3: '',
       select: '',
+      authornum: 12345,
+      papernum: 233344,
+      journalnum:747,
+      orgnum:1235,
       options: [{
           value: '1',
           label: '主题'
@@ -224,11 +280,12 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  
 }
 #inputbox{
   width: 600px;
   margin:0 auto;
-  margin-top: 50px;
+
 }
 .el-input-group__prepend {
   background-color: #fff !important;
@@ -239,7 +296,7 @@ export default {
   .bg-purple-dark {
     background: #cccccc !important;
   }
-  .bg-purple {
+  #list .bg-purple {
     background: #f5f5f5;
     /* #efeefd */
     padding:20px;
@@ -261,10 +318,40 @@ export default {
     padding: 10px 0;
     background-color: #f9fafc;
   }
-  .el-col .el-col-24 {
+  /* .el-col .el-col-24 {
     background-color: rgb(114, 114, 114);
-  }
+  } */
   #bg{
     background-image: "../../assets/images/bg2.png" !important;
+  }
+  .clearfix:before,
+  .clearfix:after {
+      display: table;
+      content: "";
+  }
+  .clearfix:after {
+      clear: both
+  }
+  .test_a {  
+      display: block;
+      margin: 0 auto;
+      width:100%;
+      overflow: hidden;
+  }
+    
+  .test_a img {  
+      width: 100%;  
+      transform: scale(1);  
+      transition: all 1s ease 0s;
+  }  
+  
+  .test_a:hover img {  
+      transform: scale(1.15);
+      transition: all 1s ease 0s;
+  } 
+</style>
+<style>
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
   }
 </style>
