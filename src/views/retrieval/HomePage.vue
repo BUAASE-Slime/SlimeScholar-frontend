@@ -65,7 +65,7 @@
               <img class="image" src="../../assets/images/home_i4.png" style="width:100px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Orgnizations</h2>
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Organizations</h2>
               <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{orgnum}}</h1>
           </el-col>
         </el-row>  
@@ -271,6 +271,12 @@ export default {
         },
         ]
     }
+  },
+  created() {
+    this.authornum = this.authornum.toLocaleString();
+    this.papernum = this.papernum.toLocaleString();
+    this.journalnum = this.journalnum.toLocaleString();
+    this.orgnum = this.orgnum.toLocaleString();
   }
 }
 </script>
