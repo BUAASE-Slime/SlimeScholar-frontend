@@ -1,17 +1,18 @@
 <template>
+  <div>
+  <div class="background">
+    <img src="../../assets/images/bg4.jpg" width="100%" height="100%" alt="" />
+  </div>
   <div class="main">
     <el-row>
-      <el-col id="bg" :span="24" style="background-color:#f5f5f5;"><div id="logo">
-        <!-- <el-card :body-style="{ padding: '0px' }"> -->
-          <img src="../../assets/images/bg2.jpg" class="image" style="position:absolute; left:0px; background-size:cover; width:100%; height:395px; z-index:0;" alt="">
-        <!-- </el-card> -->
-        <img src="../../assets/images/slime_logo4.png" alt="logo" style="height: 120px; margin:50px; margin-top:150px; position:relative; z-index:2;">
+      <el-col id="bg" :span="24" ><div id="logo">
+        <img src="../../assets/images/SlimeScholar2.png" alt="logo" style="height: 220px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
       </div></el-col>
     </el-row>
     <el-row >
       <el-col :span="24"><div id="inputbox">
-        <div style="margin-top: 0px;" id="inputbox2">
-          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" >
+        <div style="margin-top: 0px; width:800px; margin:0 auto; " id="inputbox2">
+          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="font-size:20px; ">
             <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:150px; ">
               <el-option
                 v-for="item in options"
@@ -29,52 +30,52 @@
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_i1.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_aut.png" style="width:100px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Authors</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{authornum}}</h1>
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Authors</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{authornum}}</h1>
           </el-col>
         </el-row>
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_i2.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_art.png" style="width:100px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Papers</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{papernum}}</h1>
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Papers</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{papernum}}</h1>
           </el-col>
         </el-row>  
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_i3.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_jou.png" style="width:100px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Journals</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{journalnum}}</h1>
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Journals</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{journalnum}}</h1>
           </el-col>
         </el-row>  
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_i4.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_org.png" style="width:100px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:grey;">Orgnizations</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:grey;">{{orgnum}}</h1>
+              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Orgnizations</h2>
+              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{orgnum}}</h1>
           </el-col>
         </el-row>  
       </div></el-col>
     </el-row>
-    <el-row>
+    <!-- <el-row>
       <el-divider><i class="el-icon-s-data" style="color:grey"></i></el-divider>
-    </el-row>
-    <el-row id="list" gutter="75" style="padding-left:40px; padding-top:50px; padding-bottom:50px; margin:0;">
+    </el-row> -->
+    <!-- <el-row id="list" gutter="75" style="padding-left:40px; padding-top:50px; padding-bottom:50px; margin:0;">
       <el-col :span="8" ><div class="grid-content bg-purple">
         <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px; color:black;">Top Author</h2>
           <el-scrollbar style="height: 350px; overflow-x:hidden !important;">
@@ -86,7 +87,7 @@
               <el-row style="color: black ;font-weight: bold;font-size:small">
                 <el-col :span="30" style="padding-bottom: 1px">
                   <el-link :underline="false" href="/schPortal" target="_blank">{{i.name}}</el-link>
-                  <!-- 跳转到个人主页 -->
+                  跳转到个人主页
                 </el-col>
               </el-row>
               <el-row style="font-size: x-small">{{i.organization}}</el-row>
@@ -106,7 +107,7 @@
                 </el-col>
                 <el-col :span="30" style="padding-bottom: 1px">
                   <el-link :underline="false" href="" target="_blank">{{i.title}}</el-link>
-                  <!-- 跳转到期刊详情 -->
+                  跳转到期刊详情
                 </el-col>
               </el-row>
               <el-row style="margin-left:40px">
@@ -129,7 +130,7 @@
               <el-row style="color: black ;font-weight: bold;font-size:small">
                 <el-col :span="30" style="padding-bottom: 1px">
                   <el-link :underline="false" href="/article" target="_blank">{{i.title}}</el-link>
-                  <!-- 跳转到文献详情 -->
+                  跳转到文献详情
                 </el-col>
               </el-row>
               <div v-for="(j,index) in i.author" :key="index" style="margin-right:10px; display: inline; float:left;">
@@ -139,7 +140,8 @@
           </el-row>
           </el-scrollbar>
       </div></el-col>
-    </el-row>
+    </el-row> -->
+  </div>
   </div>
 </template>
 
@@ -282,11 +284,11 @@ export default {
   height: 100%;
   
 }
-#inputbox{
+/* #inputbox{
   width: 600px;
   margin:0 auto;
 
-}
+} */
 .el-input-group__prepend {
   background-color: #fff !important;
 }
@@ -318,12 +320,6 @@ export default {
     padding: 10px 0;
     background-color: #f9fafc;
   }
-  /* .el-col .el-col-24 {
-    background-color: rgb(114, 114, 114);
-  } */
-  #bg{
-    background-image: "../../assets/images/bg2.png" !important;
-  }
   .clearfix:before,
   .clearfix:after {
       display: table;
@@ -346,12 +342,36 @@ export default {
   }  
   
   .test_a:hover img {  
-      transform: scale(1.15);
+      transform: scale(1.2);
       transition: all 1s ease 0s;
   } 
+  .background{
+    width:100%;  
+    height:100%;  /**宽高100%是为了图片铺满屏幕 */
+    z-index:-1;
+    position: absolute;
+  }
+  .input-with-select{
+    height: 50px;
+    width: 800px;
+  }
+  
 </style>
 <style>
   .el-scrollbar__wrap {
     overflow-x: hidden;
+  }
+  .el-input__inner{
+    height: 50px !important;
+  }
+  .el-input-group__append {
+    border-radius: inherit;
+  }
+  .el-input-group__prepend {
+    border-radius: inherit;
+  }
+  .el-row--flex {
+    display: flex;
+    margin-top: 100px !important;
   }
 </style>
