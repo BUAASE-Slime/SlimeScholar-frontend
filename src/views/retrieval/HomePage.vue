@@ -80,7 +80,7 @@
           <el-scrollbar style="height: 350px; overflow-x:hidden !important;">
           <el-row v-for="(i,index) in topAut" :key="index" style="margin:30px">
             <el-col :span="4">
-              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+              <div class="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
             </el-col>
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small">
@@ -102,7 +102,7 @@
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small; width:200px;">
                 <el-col :span="4">
-                  <div id="rank" style="padding-top: 3px"><span>{{index+1}}</span></div>
+                  <div class="rank" style="padding-top: 3px"><span>{{index+1}}</span></div>
                 </el-col>
                 <el-col :span="30" style="padding-bottom: 1px">
                   <el-link :underline="false" href="" target="_blank">{{i.title}}</el-link>
@@ -119,11 +119,11 @@
           </el-scrollbar>
       </div></el-col>
       <el-col :span="8"><div class="grid-content bg-purple">
-        <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Conference</h2>
+        <h2 style="font-family:Monospace,serif; border-bottom: gainsboro solid 1px;">Top Conference</h2>
         <el-scrollbar style="height: 350px">
           <el-row v-for="(i,index) in topArt" :key="index" style="margin:30px">
             <el-col :span="4">
-              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+              <div class="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
             </el-col>
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small">
@@ -328,7 +328,7 @@ export default {
     background-color: rgb(114, 114, 114);
   } */
   #bg{
-    background-image: "../../assets/images/bg2.png" !important;
+    background-image: url("../../assets/images/bg2.jpg") !important;
   }
   .clearfix:before,
   .clearfix:after {
