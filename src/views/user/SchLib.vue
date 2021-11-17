@@ -7,9 +7,9 @@
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-menu"></i>标签</template>
             <el-menu-item-group>
-              <el-menu-item :key="label" :index="index">全部标签</el-menu-item>
-              <template v-for="(label, index) in labelList">
-                <el-menu-item :key="label" :index="index">{{ label }}</el-menu-item>
+              <el-menu-item key="all" >全部标签</el-menu-item>
+              <template v-for="label in labelList">
+                <el-menu-item :key="label" >{{ label }}</el-menu-item>
               </template>
             </el-menu-item-group>
           </el-submenu>
@@ -17,11 +17,11 @@
           <el-submenu index="3">
             <template slot="title"><i class="el-icon-menu"></i>发布时间</template>
             <el-menu-item-group>
-              <el-menu-item :index="0" @click="changeTimeRange(0)">全部时间</el-menu-item>
-              <el-menu-item :index="1" @click="changeTimeRange(1)">近一年</el-menu-item>
-              <el-menu-item :index="3" @click="changeTimeRange(3)">近三年</el-menu-item>
-              <el-menu-item :index="5" @click="changeTimeRange(5)">近五年</el-menu-item>
-              <el-menu-item :index="42" @click="changeTimeRange(42)">
+              <el-menu-item index="0" @click="changeTimeRange(0)">全部时间</el-menu-item>
+              <el-menu-item index="1" @click="changeTimeRange(1)">近一年</el-menu-item>
+              <el-menu-item index="3" @click="changeTimeRange(3)">近三年</el-menu-item>
+              <el-menu-item index="5" @click="changeTimeRange(5)">近五年</el-menu-item>
+              <el-menu-item index="42" @click="changeTimeRange(42)">
                 自定义时间范围
                 <div v-if="time.type === 42">
                   <el-input
@@ -48,14 +48,14 @@
       </el-aside>
 
       <el-main>
-        <div v-for="(item,index) in articles" v-bind:key="index" class="article">
-          <el-col class="art-info" span="19">
+        <div v-for="(item,index) in articles" :key="index" class="article">
+          <el-col class="art-info" :span="19">
             <el-row style="color: #157dec;font-size: larger;margin: 2px" type="flex">
               {{ item.title }}
             </el-row>
             <el-row style="color: #486e44;font-size: small;padding-left: 2px" type="flex">
-              <span v-for="(p,index) in item.authors" v-bind:key="p" style="padding-right: 3px">
-                {{ p }}{{ index === item.authors.length - 1 ? "" : ',' }}
+              <span v-for="(p,idx) in item.authors" v-bind:key="p" style="padding-right: 3px">
+                {{ p }}{{ idx === item.authors.length - 1 ? "" : ',' }}
               </span> -
               <span style="padding-left: 2px; ">
                 {{ item.journalName }}  {{ item.journalVolume }}  {{ item.journalPages }}
@@ -84,28 +84,7 @@
       </el-main>
     </el-container>
 
-    <CitationDialog :citedPaper="citedPaper" :citeDialogOn="citeDialogOn" />
-<!--    <el-dialog-->
-<!--        :before-close="handleClose"-->
-<!--        :visible.sync="citeDialogOn"-->
-<!--        title="生成引用"-->
-<!--        width="30%">-->
-
-<!--      <el-row>-->
-<!--        <el-col :span="4">-->
-<!--          MLA:-->
-<!--        </el-col>-->
-<!--        <el-col :span="20" style="text-align: left">-->
-<!--          <div v-html="getMLA()"></div>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
-<!--&lt;!&ndash;      TODO: 其他引用格式 &ndash;&gt;-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--    <el-button type="primary" @click="citeDialogOn = false">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
-
-
+    <CitationDialog :citedPaper="citedPaper" :citeDialogOn="citeDialogOn" :handleClose="closeCiteDialog" />
 
   </div>
 
@@ -238,7 +217,7 @@ export default {
         start: 2019,
         end: 2021,
       },
-      citeDialogOn: true,
+      citeDialogOn: false,
       citedPaper: {
         title: "An empirical process approach to the uniform consistency of kernel-type function estimators ",
         authors: ["U Einmahl", "David M. Mason",],
@@ -249,33 +228,16 @@ export default {
         year: "2000",
         citations: "96",
       },
-
     }
   },
   methods: {
     changeTimeRange(type) {
-      this.time.type = type;
+      this.time.type = parseInt(type)
     },
-    getMLA(){
-      let citedPaper = this.citedPaper;
-      let author1 = citedPaper.authors[0].split(" ");
-      let authorStr = author1.length === 1? author1[0] : author1[author1.length - 1] + ", " + author1[0];
-      if (citedPaper.authors.length === 2){
-        authorStr += ", and " + citedPaper.authors[1];
-      }else if(citedPaper.authors.length > 2){
-        authorStr += ", et al"
-      }
-      authorStr += ". ";
-      authorStr += '"' + citedPaper.title + '". ';
-      authorStr += '<i>' + citedPaper.journalName + '</i> ';
-      authorStr += citedPaper.journalVolume;
-      authorStr += " (" + citedPaper.year +"): ";
-      authorStr += citedPaper.journalPages + ".";
-      return authorStr;
+    closeCiteDialog(){
+      this.citeDialogOn = false;
     }
   },
-
-
 }
 </script>
 

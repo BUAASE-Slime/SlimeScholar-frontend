@@ -1,10 +1,9 @@
 <template>
   <div class="citationDialog">
-    <h1>aacdca afeeeeeeeeeeeeeeaxcd</h1>
     <el-dialog
         :visible.sync="citeDialogOn"
         title="生成引用"
-        width="30%">
+        width="35%">
 
       <el-row>
         <el-col :span="4">
@@ -16,7 +15,7 @@
       </el-row>
       <!-- TODO: 其他引用格式 -->
       <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="citeDialogOn = false">确 定</el-button>
+    <el-button type="primary" @click="handleClose">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -26,7 +25,7 @@
 
 export default {
   name: "citationDialog",
-  props: ['citeDialogOn', "citedPaper"],
+  props: ['citeDialogOn', "citedPaper", "handleClose"],
   data() {
     return {
 
@@ -34,7 +33,7 @@ export default {
   },
   methods: {
     getMLA() {
-      let citedPaper = this.props.citedPaper;
+      let citedPaper = this.$props.citedPaper;
       let author1 = citedPaper.authors[0].split(" ");
       let authorStr = author1.length === 1 ? author1[0] : author1[author1.length - 1] + ", " + author1[0];
       if (citedPaper.authors.length === 2) {
