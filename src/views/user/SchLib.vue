@@ -84,26 +84,27 @@
       </el-main>
     </el-container>
 
+    <CitationDialog :citedPaper="citedPaper" :citeDialogOn="citeDialogOn" />
+<!--    <el-dialog-->
+<!--        :before-close="handleClose"-->
+<!--        :visible.sync="citeDialogOn"-->
+<!--        title="生成引用"-->
+<!--        width="30%">-->
 
-    <el-dialog
-        :before-close="handleClose"
-        :visible.sync="citeDialogOn"
-        title="生成引用"
-        width="30%">
+<!--      <el-row>-->
+<!--        <el-col :span="4">-->
+<!--          MLA:-->
+<!--        </el-col>-->
+<!--        <el-col :span="20" style="text-align: left">-->
+<!--          <div v-html="getMLA()"></div>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--&lt;!&ndash;      TODO: 其他引用格式 &ndash;&gt;-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--    <el-button type="primary" @click="citeDialogOn = false">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
 
-      <el-row>
-        <el-col :span="4">
-          MLA:
-        </el-col>
-        <el-col :span="20" style="text-align: left">
-          <div v-html="getMLA()"></div>
-        </el-col>
-      </el-row>
-<!--      TODO: 其他引用格式 -->
-      <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="citeDialogOn = false">确 定</el-button>
-      </span>
-    </el-dialog>
 
 
   </div>
@@ -112,8 +113,11 @@
 </template>
 
 <script>
+import CitationDialog from "@/components/CitationDialog";
+
 export default {
   name: "SchLib",
+  components:{CitationDialog },
   data() {
     return {
       curSelect: "collection",
@@ -234,7 +238,7 @@ export default {
         start: 2019,
         end: 2021,
       },
-      citeDialogOn: false,
+      citeDialogOn: true,
       citedPaper: {
         title: "An empirical process approach to the uniform consistency of kernel-type function estimators ",
         authors: ["U Einmahl", "David M. Mason",],
