@@ -1,12 +1,221 @@
 <template>
   <div class="main">
-    <h1>这里是主页</h1>
+    <el-row>
+      <el-col id="bg" :span="24" style="background-color:#f5f5f5;"><div id="logo">
+        <img src="../../assets/images/slime_logo.png" alt="logo" style="height: 120px; margin:50px; margin-top:150px; ">
+      </div></el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24"><div id="inputbox">
+        <div style="margin-top: 0px;" id="inputbox2">
+          <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:150px; ">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+        </div>
+      </div></el-col>
+    </el-row>
+    <el-row gutter="35" style="padding-left:150px; padding-top:50px">
+      <el-col :span="7" ><div class="grid-content bg-purple">
+        <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px; color:black;">Top Author</h2>
+          <el-scrollbar style="height: 350px">
+          <el-row v-for="(i,index) in topAut" :key="index" style="margin:30px">
+            <el-col :span="4">
+              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+            </el-col>
+            <el-col :span="30" style="padding-top: 10px">
+              <el-row style="color: black ;font-weight: bold;font-size:small">
+                <el-col :span="30" style="padding-bottom: 1px">
+                  <el-link :underline="false" href="/schPortal" target="_blank">{{i.name}}</el-link>
+                  <!-- 跳转到个人主页 -->
+                </el-col>
+              </el-row>
+              <el-row style="font-size: x-small">{{i.organization}}</el-row>
+            </el-col>
+          </el-row>
+          </el-scrollbar>
+      </div></el-col>
+      <el-col :span="7"><div class="grid-content bg-purple">
+        <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Journal</h2>
+        <el-scrollbar style="height: 350px">
+          <el-row v-for="(i,index) in topJou" :key="index" style="margin:30px">
+            
+            <el-col :span="30" style="padding-top: 10px">
+              <el-row style="color: black ;font-weight: bold;font-size:small; width:200px;">
+                <el-col :span="4">
+                  <div id="rank" style="padding-top: 3px"><span>{{index+1}}</span></div>
+                </el-col>
+                <el-col :span="30" style="padding-bottom: 1px">
+                  <el-link :underline="false" href="" target="_blank">{{i.title}}</el-link>
+                  <!-- 跳转到期刊详情 -->
+                </el-col>
+              </el-row>
+              <el-row style="margin-left:40px">
+                <div v-for="(j,index) in i.sponsor" :key="index" style="margin-right:10px; float:left;">
+                  <span style="font-size: x-small;" >{{j}}</span>
+                </div>
+              </el-row>
+            </el-col>
+          </el-row>
+          </el-scrollbar>
+      </div></el-col>
+      <el-col :span="7"><div class="grid-content bg-purple">
+        <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Conference</h2>
+        <el-scrollbar style="height: 350px">
+          <el-row v-for="(i,index) in topArt" :key="index" style="margin:30px">
+            <el-col :span="4">
+              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+            </el-col>
+            <el-col :span="30" style="padding-top: 10px">
+              <el-row style="color: black ;font-weight: bold;font-size:small">
+                <el-col :span="30" style="padding-bottom: 1px">
+                  <el-link :underline="false" href="/article" target="_blank">{{i.title}}</el-link>
+                  <!-- 跳转到文献详情 -->
+                </el-col>
+              </el-row>
+              <div v-for="(j,index) in i.author" :key="index" style="margin-right:10px; display: inline; float:left;">
+                <span style="font-size: x-small;" >{{j}}</span>
+              </div>
+            </el-col>
+          </el-row>
+          </el-scrollbar>
+      </div></el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomePage"
+  name: "HomePage",
+  data() {
+    return {
+      input3: '',
+      select: '',
+      options: [{
+          value: '1',
+          label: '主题'
+        }, {
+          value: '2',
+          label: '篇关摘'
+        }, {
+          value: '3',
+          label: '关键字'
+        }, {
+          value: '4',
+          label: '篇名'
+        }, {
+          value: '5',
+          label: '摘要'
+        },{
+          value: '6',
+          label: '作者'
+        }, {
+          value: '7',
+          label: '作者单位'
+        }, {
+          value: '8',
+          label: '文献来源'
+        }, {
+          value: '9',
+          label: 'DOI'
+        }],
+        value: '',
+        topAut:[
+        {
+          id:"19373180",
+          name:"Zuozhou Zhang",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Zewan Huang",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Yu Li",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Luxia Lin",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Qin Zhou",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Yuning Tong",
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          name:"Yiting Shi",
+          organization:"Software Engineering, BeiHang University",
+        }
+        ],
+        topArt:[
+        {
+          id:"19373180",
+          title:"计算机网络概要1",
+          author:["Zuozhou Zhang","Rui Guo"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          title:"计算机网络概要2",
+          author:["Yu Li"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          title:"计算机网络概要3",
+          author:["Zewan"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          title:"计算机网络概要4",
+          author:["Yuning Tong","Yiting Shi"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          title:"计算机网络概要5",
+          author:["Qin Zhou"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        {
+          id:"19373180",
+          title:"计算机网络概要6",
+          author:["Zewan Huang","Yu Li","Qin Zhou"],
+          organization:"Software Engineering, BeiHang University",
+        },
+        ],
+        topJou:[
+        {
+          id:"19373180",
+          title:"诗探索",
+          sponsor:["北京大学中国诗歌研究院","首都师范大学中国诗歌研究中心"],
+        },
+        {
+          id:"19373180",
+          title:"中国会计评论",
+          sponsor:["《中国会计评论》理事会"],
+        },
+        ]
+    }
+  }
 }
 </script>
 
@@ -16,4 +225,46 @@ export default {
   width: 100%;
   height: 100%;
 }
+#inputbox{
+  width: 600px;
+  margin:0 auto;
+  margin-top: 50px;
+}
+.el-input-group__prepend {
+  background-color: #fff !important;
+}
+  .el-col {
+    border-radius: 4px ;
+  }
+  .bg-purple-dark {
+    background: #cccccc !important;
+  }
+  .bg-purple {
+    background: #f5f5f5;
+    /* #efeefd */
+    padding:20px;
+    border-radius: 14px ;
+    border: gainsboro solid 1px;
+  }
+  .grid-content[data-v-1274387a] {
+    border-radius: 14px;
+    min-height: 36px;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+  .el-col .el-col-24 {
+    background-color: rgb(114, 114, 114);
+  }
+  #bg{
+    background-image: "../../assets/images/bg2.png" !important;
+  }
 </style>

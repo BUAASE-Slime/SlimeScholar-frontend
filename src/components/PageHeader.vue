@@ -31,7 +31,7 @@ export default {
     return {
       userName: '',
       activeIndex: '1',
-      isLogin: false,
+      isLogin: true,
     };
   },
   created() {
