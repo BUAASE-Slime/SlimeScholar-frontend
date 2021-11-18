@@ -4,7 +4,8 @@
     <el-row>
       <el-col id="bg" :span="24" ><div id="logo">
         <img src="../../assets/images/bg5.jpg" class="image" style="position:absolute; left:0px; background-size:cover; width:100%; height:455px; z-index:0;" alt="">
-        <img src="../../assets/images/SlimeScholar-en.png" alt="logo" style="height: 200px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
+        <img src="../../assets/images/make-visible-v1.png" alt="logo" style="height: 200px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
+<!--        <img src="../../assets/images/SlimeScholar-en.png" alt="logo" style="height: 200px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">-->
       </div></el-col>
     </el-row>
     <el-row >
