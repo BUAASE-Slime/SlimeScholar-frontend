@@ -31,8 +31,8 @@
               <img class="image" src="../../assets/images/home_i1.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Authors</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{authornum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Authors</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{authornum}}</h2>
           </el-col>
         </el-row>
       </div></el-col>
@@ -42,8 +42,8 @@
               <img class="image" src="../../assets/images/home_i2.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Papers</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{papernum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Papers</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{papernum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -53,8 +53,8 @@
               <img class="image" src="../../assets/images/home_i3.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Journals</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{journalnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Journals</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{journalnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -64,8 +64,8 @@
               <img class="image" src="../../assets/images/home_i4.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Orgnizations</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{orgnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Orgnizations</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{orgnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -75,8 +75,8 @@
               <img class="image" src="../../assets/images/home_i5.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Field</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{fieldnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Field</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{fieldnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
