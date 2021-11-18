@@ -1,19 +1,17 @@
 <template>
   <div>
-  <div class="background">
-    <img src="../../assets/images/bg4.jpg" width="100%" height="100%" alt="" />
-  </div>
   <div class="main">
     <el-row>
       <el-col id="bg" :span="24" ><div id="logo">
-        <img src="../../assets/images/SlimeScholar2.png" alt="logo" style="height: 220px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
+        <img src="../../assets/images/bg5.jpg" class="image" style="position:absolute; left:0px; background-size:cover; width:100%; height:455px; z-index:0;" alt="">
+        <img src="../../assets/images/SlimeScholar.png" alt="logo" style="height: 220px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
       </div></el-col>
     </el-row>
     <el-row >
       <el-col :span="24"><div id="inputbox">
-        <div style="margin-top: 0px; width:800px; margin:0 auto; " id="inputbox2">
+        <div style="margin-top: 0px; width:800px; margin:0 auto; box-shadow:grey 2px 1px 2px 1px" id="inputbox2">
           <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="font-size:20px; ">
-            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:150px; ">
+            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:2px solid grey" class="pre">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -26,48 +24,59 @@
         </div>
       </div></el-col>
     </el-row>
-    <el-row gutter="0" style="margin-top:50px;" justify="center" type="flex">
+    <el-row gutter="0" style="margin-top:50px; margin-left:50px" justify="center" type="flex">
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_aut.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_i1.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Authors</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{authornum}}</h1>
+              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Authors</h3>
+              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{authornum}}</h2>
           </el-col>
         </el-row>
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_art.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_i2.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Papers</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{papernum}}</h1>
+              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Papers</h3>
+              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{papernum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_jou.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_i3.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Journals</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{journalnum}}</h1>
+              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Journals</h3>
+              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{journalnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
       <el-col :span="5"><div class="grid-content bg-purple test_a">
         <el-row>
           <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_org.png" style="width:100px">
+              <img class="image" src="../../assets/images/home_i4.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h2 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:white;">Orgnizations</h2>
-              <h1 style="display:block; font-family:'Courier New'; margin-top:10px; color:white;">{{orgnum}}</h1>
+              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Orgnizations</h3>
+              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{orgnum}}</h2>
+          </el-col>
+        </el-row>  
+      </div></el-col>
+      <el-col :span="5"><div class="grid-content bg-purple test_a">
+        <el-row>
+          <el-col :span="6" style="padding:10px; margin-right:20px">
+              <img class="image" src="../../assets/images/home_i5.png" style="width:70px">
+          </el-col>
+          <el-col :span="5" style="padding:10px; margin-left:20px">
+              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Field</h3>
+              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{fieldnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -156,6 +165,7 @@ export default {
       papernum: 233344,
       journalnum:747,
       orgnum:1235,
+      fieldnum:75,
       options: [{
           value: '1',
           label: '主题'
@@ -289,9 +299,7 @@ export default {
   margin:0 auto;
 
 } */
-.el-input-group__prepend {
-  background-color: #fff !important;
-}
+
   .el-col {
     border-radius: 4px ;
   }
@@ -345,14 +353,14 @@ export default {
       transform: scale(1.2);
       transition: all 1s ease 0s;
   } 
-  .background{
+  /* .background{
     width:100%;  
-    height:100%;  /**宽高100%是为了图片铺满屏幕 */
+    height:100%; 
     z-index:-1;
     position: absolute;
-  }
+  } */
   .input-with-select{
-    height: 50px;
+    height: 60px;
     width: 800px;
   }
   
@@ -362,16 +370,42 @@ export default {
     overflow-x: hidden;
   }
   .el-input__inner{
-    height: 50px !important;
+    height: 60px !important;
+    border:none;
   }
   .el-input-group__append {
-    border-radius: inherit;
+    /* border-radius: inherit; */
+    background-color: white;
   }
   .el-input-group__prepend {
-    border-radius: inherit;
+    /* border-radius: inherit; */
+    background-color: white;
   }
   .el-row--flex {
     display: flex;
     margin-top: 100px !important;
+  }
+  .pre .el-input__inner::placeholder {
+      color: black;
+      font-size: 18px;
+      text-align: center;
+  }
+    /* 谷歌 */
+  .pre .el-input__inner::-webkit-input-placeholder {
+      color: black;
+      font-size: 18px;
+      text-align: center;
+  }
+    /* 火狐 */
+  .pre .el-input__inner:-moz-placeholder {
+      color: black;
+      font-size: 18px;
+      text-align: center;
+  }
+    /*ie*/
+  .pre .el-input__inner:-ms-input-placeholder {
+      color: black;
+      font-size: 18px;
+      text-align: center;
   }
 </style>
