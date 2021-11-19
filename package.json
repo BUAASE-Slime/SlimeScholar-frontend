@@ -16,11 +16,11 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
+    
     "@vue/cli-service": "~4.5.0",
     "axios": "^0.22.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^8.2.0",
     "eslint-plugin-vue": "^6.2.2",
     "vue-router": "^3.5.2",
     "vue-template-compiler": "^2.6.11",
