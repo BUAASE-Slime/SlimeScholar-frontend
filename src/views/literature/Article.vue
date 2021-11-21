@@ -213,6 +213,7 @@ export default {
       switch (res.data.status) {
         case 200:
           this.articleData = res.data.details;
+          console.log(this.articleData);
           break;
         case 404:
           this.$message.error("查无此文献！");

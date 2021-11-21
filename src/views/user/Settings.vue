@@ -275,7 +275,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: rgb(241,241,241);
+  background-color: #f7f8fa;
   background-size: 100% 100%;
 }
 .settings-body {

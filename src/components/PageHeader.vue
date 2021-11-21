@@ -14,7 +14,7 @@
         <el-menu-item index="5-3" class="big-item" @click="logout">退出</el-menu-item>
       </el-submenu>
       <!--      <i class="el-icon-bell news-link" v-if="isLogin" style="padding-top: 28px; font-size: 24px; float: right;" @click="openNews"></i>-->
-      <i v-if="isLogin" class="el-icon-user" @click="settings"></i>
+      <i v-if="isLogin" class="el-icon-user" @click="gotoLib"></i>
       <div class="login-button">
         <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
       </div>
