@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <pageHeader v-if="!$route.meta.noNav"/>
-    <router-view/>
+    <pageHeader v-if="!$route.meta.noNav" />
+    <router-view />
   </div>
 </template>
 
@@ -9,11 +9,11 @@
 import PageHeader from "./components/PageHeader";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    PageHeader
-  }
-}
+    PageHeader,
+  },
+};
 </script>
 
 <style>

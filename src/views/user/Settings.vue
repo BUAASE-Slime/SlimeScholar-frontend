@@ -6,7 +6,7 @@
           <div class="grid-content">
             <el-card class="box-card1">
               <div style="padding: 25px 0">
-                <img src="../../assets/images/SlimeScholar.png" alt="Image">
+                <img src="../../assets/images/doctor-bg.png" style="height:300px" alt="Image">
                 <h2>{{ username }}</h2>
               </div>
             </el-card>
@@ -264,9 +264,19 @@ export default {
 }
 </script>
 
+<style>
+body {
+  height: 100%;
+}
+</style>
+
 <style scoped>
 .settings {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   background-color: rgb(241,241,241);
+  background-size: 100% 100%;
 }
 .settings-body {
   width: 95%;

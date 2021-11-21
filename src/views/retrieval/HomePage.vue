@@ -4,7 +4,8 @@
     <el-row>
       <el-col id="bg" :span="24" ><div id="logo">
         <img src="../../assets/images/bg5.jpg" class="image" style="position:absolute; left:0px; background-size:cover; width:100%; height:455px; z-index:0;" alt="">
-        <img src="../../assets/images/SlimeScholar.png" alt="logo" style="height: 220px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
+        <img src="../../assets/images/make-visible-v1.png" alt="logo" style="height: 200px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">
+<!--        <img src="../../assets/images/SlimeScholar-en.png" alt="logo" style="height: 200px; margin:50px; margin-top:100px; margin-bottom:0px; position:relative; z-index:2;">-->
       </div></el-col>
     </el-row>
     <el-row >
@@ -31,8 +32,8 @@
               <img class="image" src="../../assets/images/home_i1.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Authors</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{authornum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Authors</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{authornum}}</h2>
           </el-col>
         </el-row>
       </div></el-col>
@@ -42,8 +43,8 @@
               <img class="image" src="../../assets/images/home_i2.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Papers</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{papernum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Papers</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{papernum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -53,8 +54,8 @@
               <img class="image" src="../../assets/images/home_i3.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Journals</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{journalnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Journals</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{journalnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -64,8 +65,8 @@
               <img class="image" src="../../assets/images/home_i4.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Orgnizations</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{orgnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Orgnizations</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{orgnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -75,8 +76,8 @@
               <img class="image" src="../../assets/images/home_i5.png" style="width:70px">
           </el-col>
           <el-col :span="5" style="padding:10px; margin-left:20px">
-              <h3 style="display:block; font-family:'Courier New'; font-weight:bold; margin-bottom:0px !important; color:black;">Field</h3>
-              <h2 style="display:block; font-family:'Courier New'; margin-top:10px; color:black;">{{fieldnum}}</h2>
+              <h3 style="display:block; font-family:'Courier New',serif; font-weight:bold; margin-bottom:0px !important; color:black;">Field</h3>
+              <h2 style="display:block; font-family:'Courier New',serif; margin-top:10px; color:black;">{{fieldnum}}</h2>
           </el-col>
         </el-row>  
       </div></el-col>
@@ -90,7 +91,7 @@
           <el-scrollbar style="height: 350px; overflow-x:hidden !important;">
           <el-row v-for="(i,index) in topAut" :key="index" style="margin:30px">
             <el-col :span="4">
-              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+              <div class="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
             </el-col>
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small">
@@ -112,7 +113,7 @@
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small; width:200px;">
                 <el-col :span="4">
-                  <div id="rank" style="padding-top: 3px"><span>{{index+1}}</span></div>
+                  <div class="rank" style="padding-top: 3px"><span>{{index+1}}</span></div>
                 </el-col>
                 <el-col :span="30" style="padding-bottom: 1px">
                   <el-link :underline="false" href="" target="_blank">{{i.title}}</el-link>
@@ -129,11 +130,11 @@
           </el-scrollbar>
       </div></el-col>
       <el-col :span="8"><div class="grid-content bg-purple">
-        <h2 style="font-family:Monospace; border-bottom: gainsboro solid 1px;">Top Conference</h2>
+        <h2 style="font-family:Monospace,serif; border-bottom: gainsboro solid 1px;">Top Conference</h2>
         <el-scrollbar style="height: 350px">
           <el-row v-for="(i,index) in topArt" :key="index" style="margin:30px">
             <el-col :span="4">
-              <div id="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
+              <div class="rank" style="padding-top: 15px"><span>{{index+1}}</span></div>
             </el-col>
             <el-col :span="30" style="padding-top: 10px">
               <el-row style="color: black ;font-weight: bold;font-size:small">
@@ -283,6 +284,12 @@ export default {
         },
         ]
     }
+  },
+  created() {
+    this.authornum = this.authornum.toLocaleString();
+    this.papernum = this.papernum.toLocaleString();
+    this.journalnum = this.journalnum.toLocaleString();
+    this.orgnum = this.orgnum.toLocaleString();
   }
 }
 </script>
