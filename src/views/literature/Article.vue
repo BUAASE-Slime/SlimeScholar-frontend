@@ -66,8 +66,8 @@
             <el-tab-pane label="参考文献">
               <el-scrollbar style="height:100%">
                 <div style="height: 112px">
-                  <el-row class="cite-article" v-for="(article, index) in articleData.outCitations" v-bind:key="index">
-                    <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
+                  <el-row class="cite-article" v-for="(article, index) in articleData.reference_msg" v-bind:key="index">
+                    <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article.title }}</span>
                   </el-row>
                 </div>
               </el-scrollbar>
@@ -165,6 +165,25 @@ export default {
           "abe213ed63c426a089bdf4329597137751dbb3a0",
           "abe213ed63c426a089bdf4329597137751dbb3a0",
         ],
+        reference_msg: [
+          {
+            authors: [
+              {
+                ids: [
+                  "145757025"
+                ],
+                name: "Lydia  White",
+                structuredName: null
+              }
+            ],
+            citation_num: 570,
+            id: "feeae2819731d33a87de0cabdd10dad7bda39854",
+            journalName: "",
+            paperAbstract: "This book explores the relationship between linguistic universals and second language acquisition. Although no knowledge of generative grammar is presupposed, the theoretical framework underlying the work is the principles and parameters approach to Universal Grammar (UG), as realized in Chomsky's Government and Binding theory. In recent research, the question has arisen as to whether the principles and parameters of UG remain available in language acquisition that is non-primary. Within second language acquisition theorizing, hypotheses have ranged from UG playing no role at all to UG operating exactly as in primary language acquisition. In this work the theoretical arguments and data from the whole spectrum are reviewed.",
+            reference_num: 26,
+            title: "Universal Grammar and second language acquisition",
+            year: 1989
+          }],
         year: 2016,
         venue: "DSH",
         journalName: "Digital Scholarship in the Humanities",
@@ -217,8 +236,8 @@ export default {
     toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
     },
-    toArticle: function(id) {
-      alert("前往" + "id:" + id + "的文献")
+    toArticle: function(index) {
+      window.location.href = this.GLOBAL.baseUrl + "/article?v=" + index.id;
     },
     toDOI: function(doi){
       window.open("https://sci-hub.se/" + doi)
