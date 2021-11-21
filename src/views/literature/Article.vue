@@ -1,10 +1,10 @@
 <template>
-  <el-container class="article">
+  <el-container class="article-body">
 
     <el-main class="info">
       <el-row class="info-title">
         <el-col :span="18" class="title-text">
-          {{ article.title }}
+          {{ articleData.title }}
         </el-col>
         <el-col :span="6" class="title-button">
           <el-tooltip class="item" effect="light" content="引用" placement="bottom">
@@ -17,7 +17,7 @@
             <el-button type="warning" icon="el-icon-star-off" circle></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="分享" placement="bottom">
-            <el-button type="success" icon="el-icon-share" circle></el-button>
+            <el-button type="success" icon="el-icon-share" circle @click="share"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="下载" placement="bottom">
             <el-button type="danger" icon="el-icon-download" circle @click="download"></el-button>
@@ -26,13 +26,13 @@
       </el-row>
 
       <el-row class="info-author">
-        <span  v-for="author in article.authors" v-bind:key="author.index" @click="toAuthor(author.ids[0])">
+        <span v-for="author in articleData.authors" v-bind:key="author.index" @click="toAuthor(author.ids[0])">
           <span class="link">{{ author.name }}</span>&ensp;
         </span>
       </el-row>
       <el-row class="info-block1">
         <el-col :span="2" class="line-title">摘要：</el-col>
-        <el-col :span="22" class="line-text">{{ getAbstract(article.paperAbstract) }}</el-col>
+        <el-col :span="22" class="line-text">{{ getAbstract(articleData.paperAbstract) }}</el-col>
       </el-row>
 <!--      <el-row class="info-block2">-->
 <!--        <el-col :span="2" class="line-title">关键词：</el-col>-->
@@ -40,23 +40,23 @@
 <!--      </el-row>-->
       <el-row class="info-block2">
         <el-col :span="2" class="line-title">专题：</el-col>
-        <span class="line-text" v-for="field in article.fieldsOfStudy" v-bind:key="field.index">{{ field }}&nbsp;&nbsp;</span>
+        <span class="line-text" v-for="field in articleData.fieldsOfStudy" v-bind:key="field.index">{{ field }}&nbsp;&nbsp;</span>
       </el-row>
       <el-row class="info-block2">
         <el-col :span="2" class="line-title">期刊：</el-col>
         <el-col :span="22" class="line-text">
           <span style="font-style: italic">
-            {{ article.journalName }}
+            {{ articleData.journalName }}
           </span>
           <span>
-            [Volume {{ article.journalVolume }}, Pages {{ article.journalPages }}, {{ article.year }}]
+            [Volume {{ articleData.journalVolume }}, Pages {{ articleData.journalPages }}, {{ articleData.year }}]
           </span>
         </el-col>
       </el-row>
       <el-row class="info-block2">
         <el-col :span="2" class="line-title">DOI：</el-col>
         <el-col :span="22" class="line-text link">
-          <span @click="toDOI(article.doi)">{{ article.doi }}</span>
+          <span @click="toDOI(articleData.doi)" style="font-size: 16px">{{ articleData.doi }}</span>
         </el-col>
       </el-row>
 
@@ -66,7 +66,7 @@
             <el-tab-pane label="参考文献">
               <el-scrollbar style="height:100%">
                 <div style="height: 112px">
-                  <el-row class="cite-article" v-for="(article, index) in article.outCitations" v-bind:key="index">
+                  <el-row class="cite-article" v-for="(article, index) in articleData.outCitations" v-bind:key="index">
                     <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
                   </el-row>
                 </div>
@@ -75,7 +75,7 @@
             <el-tab-pane label="引证文献">
               <el-scrollbar style="height:100%">
                 <div style="height: 116px">
-                  <el-row class="cite-article" v-for="(article, index) in article.inCitations" v-bind:key="index" @click="toArticle(article)">
+                  <el-row class="cite-article" v-for="(article, index) in articleData.inCitations" v-bind:key="index" @click="toArticle(article)">
                     <span @click="toArticle(article)">[{{ index+1 }}]&nbsp;&nbsp;{{ article }}</span>
                   </el-row>
                 </div>
@@ -85,19 +85,19 @@
         </el-col>
 
         <el-col :span="3" class="cite-graph1 out1">
-          {{ article.reference_num }}
+          {{ articleData.reference_num }}
           <div class="cite-text">引用量</div>
         </el-col>
         <el-col :span="3" class="cite-graph1 in1">
-          {{ article.citation_num }}
+          {{ articleData.citation_num }}
           <div class="cite-text">被引量</div>
         </el-col>
         <el-col :span="3" class="cite-graph2 out2">
-          {{ article.comment_num }}
+          {{ articleData.comment_num }}
           <div class="cite-text">评论数</div>
         </el-col>
         <el-col :span="3" class="cite-graph2 in2">
-          {{ article.comment_num }}
+          {{ articleData.comment_num }}
           <div class="cite-text">评论人数</div>
         </el-col>
       </el-row>
@@ -117,7 +117,7 @@ export default {
   name: "article",
   data() {
     return {
-      article: {
+      articleData: {
         id: "4cd223df721b722b1c40689caa52932a41fcc223",
         title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
         paperAbstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -193,7 +193,7 @@ export default {
       _loadingIns.close();
       switch (res.data.status) {
         case 200:
-          this.article = res.data.details;
+          this.articleData = res.data.details;
           break;
         case 404:
           this.$message.error("查无此文献！");
@@ -224,13 +224,27 @@ export default {
       window.open("https://sci-hub.se/" + doi)
     },
     getAbstract: function(abstract) {
-      if (abstract.length > 400) {
-        return abstract.slice(0,395) + "..."
+      if (abstract.length > 600) {
+        return abstract.slice(0,595) + "..."
       }
       return abstract
     },
+    share(message) {
+      var aux = document.createElement("input");
+      aux.setAttribute("value", window.location.href);
+      document.body.appendChild(aux);
+      aux.select();
+      document.execCommand("copy");
+      document.body.removeChild(aux);
+      if (message !== null) {
+        this.$message.success("链接已复制至剪贴板");
+      } else{
+        this.$message.error("链接复制失败");
+      }
+    },
     download() {
-
+      // TODO: 下载PDF文件
+      window.open(this.articleData.pdfUrls.at(0));
     }
   },
 }
@@ -241,7 +255,7 @@ body {
   background-color: #ecf5ff;
 }
 
-.article {
+.article-body {
   background-color: white;
   border-bottom: solid 1px lightgray;
   border-left: solid 1px lightgray;
@@ -251,128 +265,128 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 
-.article .info {
+.article-body .info {
   padding: 20px 40px;
   text-align: left;
 }
 
-.article .info-title {
+.article-body .info-title {
   color: #353535;
   margin-top: 20px;
 }
 
-.article .title-text {
+.article-body .title-text {
   font-weight: bold;
   font-size: 24px;
   line-height: 30px;
 }
 
-.article .title-button {
+.article-body .title-button {
   line-height: 40px;
   padding-left: 14px;
   border-left: solid 1px lightgray;
 }
 
-.article .info-author {
+.article-body .info-author {
   margin-top: 10px;
   font-size: 18px;
   color: #516798;
 }
 
-.article .info-block1 {
+.article-body .info-block1 {
   margin-top: 40px;
   font-size: 16px;
   line-height: 24px;
 }
 
-.article .info-block2 {
+.article-body .info-block2 {
   margin-top: 20px;
   font-size: 16px;
   line-height: 24px;
 }
 
-.article .line-title {
+.article-body .line-title {
   font-weight: bold;
   color: #353535;
 }
 
-.article .line-text {
+.article-body .line-text {
   margin-left: -20px;
   margin-right: 20px;
   color: #565656;
 }
 
-.article .link {
+.article-body .link {
   font-size: 18px;
   color: #516798;
 }
 
-.article .link:hover {
+.article-body .link:hover {
   cursor: pointer;
   text-decoration: underline;
   color: #4b93ff;
 }
 
-.article .cite {
+.article-body .cite {
   margin-top: 20px;
   margin-bottom: 5px;
   border-top: solid 1px lightgray;
 }
 
-.article .cite-table {
+.article-body .cite-table {
   padding: 24px 24px 0 0;
   border-right: solid 1px lightgray;
 }
 
-.article .cite-article {
+.article-body .cite-article {
   padding: 5px 0;
   font-size: 16px;
   color: #516798;
 }
 
-.article .cite-article:hover {
+.article-body .cite-article:hover {
   cursor: pointer;
   color: #4b93ff;
 }
 
-.article .cite-graph1 {
+.article-body .cite-graph1 {
   font-size: 28px;
   margin-top: 30px;
   margin-bottom: 34px;
   text-align: center;
 }
 
-.article .cite-graph2 {
+.article-body .cite-graph2 {
   font-size: 28px;
   text-align: center;
 }
 
-.article .cite-text {
+.article-body .cite-text {
   margin-top: 14px;
   font-size: 16px;
   color: #565656;
 }
 
-.article .out1 {
+.article-body .out1 {
   color: #409EFF;
   border-right: solid 1px lightgray;
 }
 
-.article .in1 {
+.article-body .in1 {
   color: #67C23A;
 }
 
-.article .out2 {
+.article-body .out2 {
   color: #E6A23C;
   border-right: solid 1px lightgray;
 }
 
-.article .in2 {
+.article-body .in2 {
   color: #F56C6C;
 }
 
 
-.article .catalogue {
+.article-body .catalogue {
   float: right;
   padding: 0 20px;
   margin: 20px 0;
@@ -381,7 +395,7 @@ body {
   text-align: left;
 }
 
-.article .catalogue-title {
+.article-body .catalogue-title {
   margin: 20px 0;
   padding-bottom: 6px;
   font-size: 20px;

@@ -33,7 +33,7 @@
             年份
           </el-col>
         </el-row>
-        <div class="article"  v-for="(item,index) in articles" v-bind:key="index">
+        <div class="article-body" v-for="(item,index) in articles" v-bind:key="index">
           <el-row  v-if="index < artNum">
             <el-row class="art-div" >
               <el-col class="art-info" span="19">
@@ -377,12 +377,12 @@ export default {
   border-bottom: gainsboro solid 1px;
 }
 
-.schPortal .article{
+.schPortal .article-body{
   margin-top: 15px;
   margin-bottom: 15px;
 }
 
-.schPortal .article .art-info{
+.schPortal .article-body .art-info{
   padding-left: 2px;
 }
 

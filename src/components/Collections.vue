@@ -47,7 +47,7 @@
       </el-aside>
 
       <el-main style="padding-left: 30px">
-        <div v-for="(item,index) in articles" :key="index" class="article">
+        <div v-for="(item,index) in articles" :key="index" class="article-body">
           <el-col :span="19" class="art-info">
             <el-row style="color: #157dec;font-size: larger; height : 120% ;margin: 2px; text-align:left;"
                     type="flex">
@@ -242,7 +242,7 @@ export default {
 
 <style scoped>
 
-.article {
+.article-body {
   margin-top: 15px;
   margin-bottom: 15px;
   display: flex;
@@ -250,7 +250,7 @@ export default {
   align-items: flex-start;
 }
 
-.article .art-info {
+.article-body .art-info {
   padding-left: 2px;
 }
 
