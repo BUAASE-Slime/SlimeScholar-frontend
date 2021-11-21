@@ -20,7 +20,7 @@
             <el-button type="success" icon="el-icon-share" circle></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="下载" placement="bottom">
-            <el-button type="danger" icon="el-icon-download" circle></el-button>
+            <el-button type="danger" icon="el-icon-download" circle @click="download"></el-button>
           </el-tooltip>
         </el-col>
       </el-row>
@@ -34,10 +34,10 @@
         <el-col :span="2" class="line-title">摘要：</el-col>
         <el-col :span="22" class="line-text">{{ getAbstract(article.paperAbstract) }}</el-col>
       </el-row>
-      <el-row class="info-block2">
-        <el-col :span="2" class="line-title">关键词：</el-col>
-        <span class="line-text" v-for="keyword in article.keywords" v-bind:key="keyword.index">{{ keyword }};&nbsp;&nbsp;</span>
-      </el-row>
+<!--      <el-row class="info-block2">-->
+<!--        <el-col :span="2" class="line-title">关键词：</el-col>-->
+<!--        <span class="line-text" v-for="keyword in article.keywords" v-bind:key="keyword.index">{{ keyword }};&nbsp;&nbsp;</span>-->
+<!--      </el-row>-->
       <el-row class="info-block2">
         <el-col :span="2" class="line-title">专题：</el-col>
         <span class="line-text" v-for="field in article.fieldsOfStudy" v-bind:key="field.index">{{ field }}&nbsp;&nbsp;</span>
@@ -56,7 +56,7 @@
       <el-row class="info-block2">
         <el-col :span="2" class="line-title">DOI：</el-col>
         <el-col :span="22" class="line-text link">
-          <span @click="toDOI(article.doiUrl)">{{ article.doi }}</span>
+          <span @click="toDOI(article.doi)">{{ article.doi }}</span>
         </el-col>
       </el-row>
 
@@ -85,19 +85,19 @@
         </el-col>
 
         <el-col :span="3" class="cite-graph1 out1">
-          {{ article.outCitations.length }}
+          {{ article.reference_num }}
           <div class="cite-text">引用量</div>
         </el-col>
         <el-col :span="3" class="cite-graph1 in1">
-          {{ article.inCitations.length }}
+          {{ article.citation_num }}
           <div class="cite-text">被引量</div>
         </el-col>
         <el-col :span="3" class="cite-graph2 out2">
-          {{ article.outCitations.length }}
+          {{ article.comment_num }}
           <div class="cite-text">评论数</div>
         </el-col>
         <el-col :span="3" class="cite-graph2 in2">
-          {{ article.inCitations.length }}
+          {{ article.comment_num }}
           <div class="cite-text">评论人数</div>
         </el-col>
       </el-row>
@@ -121,6 +121,9 @@ export default {
         id: "4cd223df721b722b1c40689caa52932a41fcc223",
         title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
         paperAbstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+        citation_num: 3288,
+        reference_num: 14,
+        comment_num: 5,
         entities: [
         ],
         fieldsOfStudy: [
@@ -128,7 +131,7 @@ export default {
         ],
         s2Url: "https://semanticscholar.org/paper/4cd223df721b722b1c40689caa52932a41fcc223",
         pdfUrls: [
-          "https://doi.org/10.1093/llc/fqu052 ",
+          "https://doi.org/10.1093/llc/fqu052",
         ],
         s2PdfUrl: "",
         authors: [
@@ -145,15 +148,15 @@ export default {
             ]
           },
         ],
-        keywords:[
-            "Automatic language generation",
-            "Computer-assisted",
-        ],
-        inCitations: [
-          "c789e333fdbb963883a0b5c96c648bf36b8cd242",
-          "c789e333fdbb963883a0b5c96c648bf36b8cd242",
-          "c789e333fdbb963883a0b5c96c648bf36b8cd242",
-        ],
+        // keywords:[
+        //     "Automatic language generation",
+        //     "Computer-assisted",
+        // ],
+        // inCitations: [
+        //   "c789e333fdbb963883a0b5c96c648bf36b8cd242",
+        //   "c789e333fdbb963883a0b5c96c648bf36b8cd242",
+        //   "c789e333fdbb963883a0b5c96c648bf36b8cd242",
+        // ],
         outCitations: [
           "abe213ed63c426a089bdf4329597137751dbb3a0",
           "abe213ed63c426a089bdf4329597137751dbb3a0",
@@ -177,6 +180,39 @@ export default {
       }
     }
   },
+  created() {
+    let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+    const _formData = new FormData();
+    _formData.append("id", this.$route.query.v);
+    this.$axios({
+      method: 'post',
+      url: '/es/get/paper',
+      data: _formData
+    })
+    .then(res => {
+      _loadingIns.close();
+      switch (res.data.status) {
+        case 200:
+          this.article = res.data.details;
+          break;
+        case 404:
+          this.$message.error("查无此文献！");
+          setTimeout(() => {
+            this.$router.push("/");
+          }, 1500);
+          break;
+        case 500:
+          this.$message.error("系统发生错误，请联系管理员！");
+          setTimeout(() => {
+            this.$router.push("/");
+          }, 1500);
+          break;
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  },
   methods: {
     toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
@@ -184,14 +220,17 @@ export default {
     toArticle: function(id) {
       alert("前往" + "id:" + id + "的文献")
     },
-    toDOI: function(url){
-      window.location.href = url
+    toDOI: function(doi){
+      window.open("https://sci-hub.se/" + doi)
     },
     getAbstract: function(abstract) {
       if (abstract.length > 400) {
         return abstract.slice(0,395) + "..."
       }
       return abstract
+    },
+    download() {
+
     }
   },
 }
