@@ -20,7 +20,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button slot="append" icon="el-icon-search" @click="goSearch"></el-button>
           </el-input>
         </div>
       </div></el-col>
@@ -290,6 +290,11 @@ export default {
     this.papernum = this.papernum.toLocaleString();
     this.journalnum = this.journalnum.toLocaleString();
     this.orgnum = this.orgnum.toLocaleString();
+  },
+  methods:{
+    goSearch:function(){
+      this.$router.replace('/searchRes')
+    }
   }
 }
 </script>
