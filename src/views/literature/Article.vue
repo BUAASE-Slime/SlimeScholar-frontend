@@ -101,6 +101,68 @@
           <div class="cite-text">评论人数</div>
         </el-col>
       </el-row>
+
+      <el-row class="comment">
+        <el-row>
+          <el-col :span="19" class="comment-title">
+            全部评论 ({{ comment.length }})
+          </el-col>
+          <el-col :span="5" style="float: right">
+            <el-radio-group v-model="activeRadio" size="medium" fill="#909399">
+              <el-radio-button label="最热评论" ></el-radio-button>
+              <el-radio-button label="最新评论"></el-radio-button>
+            </el-radio-group>
+          </el-col>
+        </el-row>
+
+        <el-row class="comment-block">
+          <el-col :span="1" class="comment-avatar">
+            <el-avatar :size="50">user</el-avatar>
+          </el-col>
+          <el-col :span="22">
+            <el-row :span="12" class="comment-user link">zuo_zuo</el-row>
+            <el-row :span="12" class="comment-date">2021/11/18 20:59</el-row>
+
+            <el-row class="comment-content">
+              点赞动画yyds，评论写满两行的效果不知道怎么样，可我不知道评论什么让他来到达第二行，现在够了吗? (点击心心点赞，点击评论按钮即可评论）
+            </el-row>
+
+            <el-row class="comment-button">
+              <el-col :span="1">
+                <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="handleClick"></div>
+              </el-col>
+              <el-col :span="2" style="margin-left: -14px">
+                1432人赞
+              </el-col>
+              <el-col :span="1">
+                <i class="el-icon-chat-dot-square comment-icon" @click="reply()"></i>
+              </el-col>
+              <el-col :span="2" style="margin-left: -14px">
+                回复 (12)
+              </el-col>
+            </el-row>
+
+            <el-row class="comment-reply">
+              <div class="reply-body">
+                <el-row class="reply-user">
+                  <span class="link-comment">rui_rui</span>: <span class="comment-user link-comment">@zuo_zuo</span>
+                </el-row>
+                <el-row class="reply-date">
+                  2021/11/22 15:17
+                </el-row>
+                <el-row class="reply-content">
+                  你说的都对
+                </el-row>
+                <el-row class="reply-reply">
+                  <el-button style="padding: 6px 6px 5px 6px"><i class="el-icon-chat-dot-square"></i> 回复</el-button>
+                </el-row>
+              </div>
+            </el-row>
+          </el-col>
+
+        </el-row>
+
+      </el-row>
     </el-main>
 
     <el-aside class="catalogue">
@@ -117,6 +179,11 @@ export default {
   name: "article",
   data() {
     return {
+      // 点赞动画
+      like: false,
+      isAnimating: false,
+      // 评论标题绑定
+      activeRadio: "最热评论",
       articleData: {
         id: "4cd223df721b722b1c40689caa52932a41fcc223",
         title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
@@ -196,7 +263,12 @@ export default {
         doiUrl: "https://doi.org/10.1093/llc/fqu052",
         pmid: "",
         magId: "2050850752"
-      }
+      },
+      comment: [
+        {},
+        {},
+        {},
+      ]
     }
   },
   created() {
@@ -216,10 +288,10 @@ export default {
           console.log(this.articleData);
           break;
         case 404:
-          this.$message.error("查无此文献！");
-          setTimeout(() => {
-            this.$router.push("/");
-          }, 1500);
+          // this.$message.error("查无此文献！");
+          // setTimeout(() => {
+          //   this.$router.push("/");
+          // }, 1500);
           break;
         case 500:
           this.$message.error("系统发生错误，请联系管理员！");
@@ -265,7 +337,23 @@ export default {
     download() {
       // TODO: 下载PDF文件
       window.open(this.articleData.pdfUrls.at(0));
-    }
+    },
+    handleClick: function() {
+      if (!this.like) {
+        this.isAnimating = true
+        setTimeout(this.likeHandler, 800);
+      }
+      else {
+        this.likeHandler()
+        this.isAnimating = false
+      }
+    },
+    likeHandler: function() {
+      this.like = !this.like
+    },
+    reply: function() {
+      alert("reply!!")
+    },
   },
 }
 </script>
@@ -273,6 +361,41 @@ export default {
 <style scoped>
 body {
   background-color: #ecf5ff;
+}
+
+.dislike {
+  margin: -23px;
+  cursor: pointer;
+  height: 70px;
+  width: 70px;
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-position: left;
+  background-repeat:no-repeat;
+  background-size:2900%;
+}
+
+.like {
+  margin: -23px;
+  cursor: pointer;
+  height: 70px;
+  width: 70px;
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-position: right;
+  background-repeat:no-repeat;
+  background-size:2900%;
+}
+
+.dislike:hover {
+  background-position:right;
+}
+
+.is_animating {
+  animation: heart-burst .8s steps(28) 1;
+}
+
+@keyframes heart-burst {
+  from {background-position:left;}
+  to { background-position:right;}
 }
 
 .article-body {
@@ -349,12 +472,12 @@ body {
 
 .article-body .cite {
   margin-top: 20px;
-  margin-bottom: 5px;
   border-top: solid 1px lightgray;
+  border-bottom: solid 1px lightgray;
 }
 
 .article-body .cite-table {
-  padding: 24px 24px 0 0;
+  padding: 24px 24px 24px 0;
   border-right: solid 1px lightgray;
 }
 
@@ -405,6 +528,100 @@ body {
   color: #F56C6C;
 }
 
+.article .comment {
+  margin-top: 25px;
+}
+
+.article .comment-title {
+  line-height: 34px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.article .el-radio-button__inner:hover {
+  color: #303133;
+}
+
+.article .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  color: #FFF;
+}
+
+.article .comment-block {
+  margin: 20px 0;
+}
+
+.article .comment-avatar {
+  margin-right: 25px;
+}
+
+.article .comment-user {
+  line-height: 26px;
+}
+
+.article .comment-date {
+  line-height: 26px;
+  color: #909399;
+}
+
+.article .comment-content {
+  margin-top: 10px;
+  line-height: 26px;
+  font-size: 16px;
+}
+
+.article .comment-button {
+  margin-top: 15px;
+  color: #909399;
+}
+
+.article .comment-icon {
+  font-size: 22px;
+  margin-top: 1px;
+}
+
+.article .comment-icon:hover {
+  cursor: pointer;
+  color: #5baaea;
+  font-weight: bold;
+}
+
+.article .comment-reply {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border-left: 4px solid #DCDFE6;
+    margin: 20px 0;
+}
+
+.article .reply-body {
+  padding-bottom: 12px;
+  border-bottom: solid 1px #e5e5e5;
+  margin-bottom: 12px;
+}
+
+.article .link-comment {
+  font-size: 16px;
+  color: #5baaea;
+}
+
+.article .reply-date {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #909399;
+}
+
+.article .reply-content {
+  margin-top: 15px;
+}
+
+.article .reply-reply {
+  margin-top: 10px;
+}
+
+.article .link-comment:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #4b93ff;
+}
 
 .article-body .catalogue {
   float: right;
