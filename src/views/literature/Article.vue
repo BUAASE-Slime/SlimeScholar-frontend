@@ -241,7 +241,7 @@ export default {
       window.location.href = this.GLOBAL.baseUrl + "/article?v=" + index.id;
     },
     toDOI: function(doi){
-      window.open("https://sci-hub.se/" + doi)
+      window.open("https://doi.org/" + doi)
     },
     getAbstract: function(abstract) {
       if (abstract.length > 600) {
