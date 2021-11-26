@@ -1,5 +1,5 @@
 <template>
-  <div>
+<div class="homepage">
   <div class="main">
     <el-row>
       <el-col id="bg" :span="24" ><div id="logo">
@@ -300,7 +300,7 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.homepage .main {
   position: relative;
   width: 100%;
   height: 100%;
@@ -312,112 +312,111 @@ export default {
 
 } */
 
-  .el-col {
-    border-radius: 4px ;
-  }
-  .bg-purple-dark {
-    background: #cccccc !important;
-  }
-  #list .bg-purple {
-    background: #f5f5f5;
-    /* #efeefd */
-    padding:20px;
-    border-radius: 14px ;
-    border: gainsboro solid 1px;
-  }
-  .grid-content[data-v-1274387a] {
-    border-radius: 14px;
-    min-height: 36px;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  .clearfix:after {
-      clear: both
-  }
-  .test_a {  
-      display: block;
-      margin: 0 auto;
-      width:100%;
-      overflow: hidden;
-  }
-    
-  .test_a img {  
-      width: 100%;  
-      transform: scale(1);  
-      transition: all 1s ease 0s;
-  }  
-  
-  .test_a:hover img {  
-      transform: scale(1.2);
-      transition: all 1s ease 0s;
-  } 
+.homepage .main .el-col {
+  border-radius: 4px ;
+}
+.homepage .main .bg-purple-dark {
+  background: #cccccc !important;
+}
+#list .bg-purple {
+  background: #f5f5f5;
+  /* #efeefd */
+  padding:20px;
+  border-radius: 14px ;
+  border: gainsboro solid 1px;
+}
+.homepage .grid-content[data-v-1274387a] {
+  border-radius: 14px;
+  min-height: 36px;
+}
+.homepage .bg-purple-light {
+  background: #e5e9f2;
+}
+.homepage .grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+.homepage .row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+.homepage .clearfix:before,
+.homepage .clearfix:after {
+  display: table;
+  content: "";
+}
+.homepage .clearfix:after {
+  clear: both
+}
+.homepage .test_a {
+  display: block;
+  margin: 0 auto;
+  width:100%;
+  overflow: hidden;
+}
+
+.homepage .test_a img {
+  width: 100%;
+  transform: scale(1);
+  transition: all 1s ease 0s;
+}
+
+.homepage .test_a:hover img {
+  transform: scale(1.2);
+  transition: all 1s ease 0s;
+}
   /* .background{
     width:100%;  
     height:100%; 
     z-index:-1;
     position: absolute;
   } */
-  .input-with-select{
-    height: 60px;
-    width: 800px;
-  }
+.homepage .input-with-select{
+  height: 60px;
+  width: 800px;
+}
+
+.homepage >>> .el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.homepage >>> .el-input__inner{
+  height: 60px !important;
+  border:none;
+}
+.homepage >>> .el-input-group__append {
+  /* border-radius: inherit; */
+  background-color: white;
+}
+.homepage >>> .el-input-group__prepend {
+  /* border-radius: inherit; */
+  background-color: white;
+}
+.homepage >>> .el-row--flex {
+  display: flex;
+  margin-top: 100px !important;
+}
+.pre >>> .el-input__inner::placeholder {
+  color: black;
+  font-size: 18px;
+  text-align: center;
+}
+/* 谷歌 */
+.pre >>> .el-input__inner::-webkit-input-placeholder {
+  color: black;
+  font-size: 18px;
+  text-align: center;
+}
+/* 火狐 */
+.pre >>> .el-input__inner:-moz-placeholder {
+  color: black;
+  font-size: 18px;
+  text-align: center;
+}
+/*ie*/
+.pre >>> .el-input__inner:-ms-input-placeholder {
+  color: black;
+  font-size: 18px;
+  text-align: center;
+}
   
-</style>
-<style>
-  .el-scrollbar__wrap {
-    overflow-x: hidden;
-  }
-  .el-input__inner{
-    height: 60px !important;
-    border:none;
-  }
-  .el-input-group__append {
-    /* border-radius: inherit; */
-    background-color: white;
-  }
-  .el-input-group__prepend {
-    /* border-radius: inherit; */
-    background-color: white;
-  }
-  .el-row--flex {
-    display: flex;
-    margin-top: 100px !important;
-  }
-  .pre .el-input__inner::placeholder {
-      color: black;
-      font-size: 18px;
-      text-align: center;
-  }
-    /* 谷歌 */
-  .pre .el-input__inner::-webkit-input-placeholder {
-      color: black;
-      font-size: 18px;
-      text-align: center;
-  }
-    /* 火狐 */
-  .pre .el-input__inner:-moz-placeholder {
-      color: black;
-      font-size: 18px;
-      text-align: center;
-  }
-    /*ie*/
-  .pre .el-input__inner:-ms-input-placeholder {
-      color: black;
-      font-size: 18px;
-      text-align: center;
-  }
 </style>

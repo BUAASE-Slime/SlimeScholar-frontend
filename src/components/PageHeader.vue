@@ -93,7 +93,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .header .el-menu{
   height: 70px;
   padding-left: 50px;

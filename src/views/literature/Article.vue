@@ -409,10 +409,7 @@ export default {
 }
 </script>
 
-<style>
-body {
-  background-color: #f1f3f6;
-}
+<style scoped>
 
 .article .title-block {
   margin-left: 180px;
