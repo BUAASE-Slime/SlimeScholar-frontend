@@ -37,11 +37,11 @@
       <el-col :span="15">
         <div class="abstract-div">
           <div class="abstract-title">摘要</div>
-          <div class="abstract-content" v-if="articleDetails.paperAbstract.length<spanLength || isSpan">
+          <div class="abstract-content _content" v-if="articleDetails.paperAbstract.length<spanLength || isSpan">
             {{ articleDetails.paperAbstract }}
             <span v-if="isSpan && articleDetails.paperAbstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
           </div>
-          <div class="abstract-content" v-else>
+          <div class="abstract-content _content" v-else>
             {{ articleDetails.paperAbstract.substring(0, 570) }}...
             <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
           </div>
@@ -50,17 +50,98 @@
         <div class="detail-div">
           <el-tabs v-model="activeDetail" type="card">
             <el-tab-pane label="参考文献" name="first">
-
+              <div class="reference-info">
+                <span>共 {{ articleDetails.reference_num }} 条</span>
+              </div>
+              <div class="reference-article">
+                <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
+                  <div @click="toArticle(article.id)">
+                    <el-row>
+                      <el-col :span="2" style="text-align: right">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
+                      <el-col :span="22">
+                        <div class="reference-title">
+                          <span>{{ article.title }}</span>
+                        </div>
+                        <div class="relation-author">
+                      <span v-for="(author, index2) in article.authors" :key="index2">
+                        <span>{{ author.name }}&nbsp;&nbsp;</span>
+                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                      </span>
+                        </div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </div>
+              </div>
             </el-tab-pane>
             <el-tab-pane label="引证文献" name="second">
-
+              <div class="reference-info">
+                <span>共 {{ articleDetails.reference_num }} 条</span>
+              </div>
+              <div class="reference-article">
+                <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
+                  <div @click="toArticle(article.id)">
+                    <el-row>
+                      <el-col :span="2" style="text-align: right">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
+                      <el-col :span="22">
+                        <div class="reference-title">
+                          <span>{{ article.title }}</span>
+                        </div>
+                        <div class="relation-author">
+                      <span v-for="(author, index2) in article.authors" :key="index2">
+                        <span>{{ author.name }}&nbsp;&nbsp;</span>
+                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                      </span>
+                        </div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </div>
+              </div>
             </el-tab-pane>
             <el-tab-pane label="文章评论" name="third">
+              <div class="comment-card">
+                <el-card shadow="hover" class="comment-card-body">
+                  <el-row class="comment-info">
+                    <el-col :span="18" class="comment-author">
+                      <span class="_link" @click="toAuthor(-1)">Zuo_zuo</span>
+                      <span class="comment-date _info">&nbsp;&nbsp;&nbsp;&nbsp;1024 点赞&nbsp;&nbsp;·&nbsp;&nbsp;375 回复&nbsp;&nbsp;·&nbsp;&nbsp;2021/11/20</span>
+                    </el-col>
+                    <el-col :span="5">
+                      <span style="font-size: 14px; float: right" class="_info">&ensp;&ensp;赞&ensp;</span>
+                      <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(-1)">查看详情&ensp;&ensp;</span>
+                    </el-col>
+                    <el-col :span="1">
+                      <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>
+                    </el-col>
+                  </el-row>
+                  <el-row class="comment-content _content">
+                    {{ comment }}
+                  </el-row>
+                </el-card>
+                <el-card shadow="hover">
+                  <el-row class="comment-info">
+                    <el-col :span="18" class="comment-author">
+                      <span class="_link" @click="toAuthor(-1)">Zuo_zuo</span>
+                      <span class="comment-date _info">&nbsp;&nbsp;&nbsp;&nbsp;1024 点赞&nbsp;&nbsp;·&nbsp;&nbsp;375 回复&nbsp;&nbsp;·&nbsp;&nbsp;2021/11/20</span>
+                    </el-col>
+                    <el-col :span="5">
+                      <span style="font-size: 14px; float: right" class="_info">&ensp;&ensp;赞&ensp;</span>
+                      <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(-1)">查看详情&ensp;&ensp;</span>
+                    </el-col>
+                    <el-col :span="1">
+                      <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>
+                    </el-col>
+                  </el-row>
+                  <el-row class="comment-content _content">
+                    {{ comment }}
+                  </el-row>
+                </el-card>
+              </div>
 
             </el-tab-pane>
           </el-tabs>
         </div>
-
       </el-col>
 
       <el-col :span="9">
@@ -106,10 +187,6 @@
         </div>
       </el-col>
     </el-row>
-
-    <!--    <el-col :span="1">-->
-    <!--      <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>-->
-    <!--    </el-col>-->
   </div>
 </template>
 
@@ -128,6 +205,9 @@ export default {
 
       // 标签页
       activeDetail: "first",
+
+      // 暂态评论
+      comment: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。掌柜态度很专业热情，有问必答，回复也很快，我问了不少问题，他都不觉得烦，都会认真回答我，这点我向掌柜表示由衷的敬意，这样的好掌柜可不多。再说宝贝，正是我需要的，收到的时候包装完整，打开后让我惊喜的是，宝贝比我想象中的还要好!不得不得竖起大拇指。下次需要的时候我还会再来的，到时候麻烦掌柜给个优惠哦!",
 
       articleDetails: {
         authors: [
@@ -230,11 +310,14 @@ export default {
     }
   },
   methods: {
+    toArticle: function(index) {
+      window.location.href = this.GLOBAL.baseUrl + "/article?v=" + index.id;
+    },
     toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
     },
-    toArticle: function(index) {
-      window.location.href = this.GLOBAL.baseUrl + "/article?v=" + index.id;
+    toComment: function(index) {
+      alert("前往" + "id:" + id + "的文献评论")
     },
     toField: function(field) {
       alert("前往" + field + "领域")
@@ -252,19 +335,19 @@ export default {
       }
       return num
     },
-    // likeClick: function() {
-    //   if (!this.like) {
-    //     this.isAnimating = true
-    //     setTimeout(this.likeHandler, 800);
-    //   }
-    //   else {
-    //     this.likeHandler()
-    //     this.isAnimating = false
-    //   }
-    // },
-    // likeHandler: function() {
-    //   this.like = !this.like
-    // },
+    likeClick: function() {
+      if (!this.like) {
+        this.isAnimating = true
+        setTimeout(this.likeHandler, 800);
+      }
+      else {
+        this.likeHandler()
+        this.isAnimating = false
+      }
+    },
+    likeHandler: function() {
+      this.like = !this.like
+    },
     share(message) {
       let aux = document.createElement("input");
       aux.setAttribute("value", window.location.href);
@@ -334,7 +417,7 @@ body {
   margin-left: 180px;
   min-height: 200px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04);
 }
 .article .detail-div {
   background-color: white;
@@ -342,15 +425,15 @@ body {
   margin-left: 180px;
   margin-bottom: 30px;
   padding: 30px;
-  min-height: 290px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
+  min-height: 400px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04);
 }
 .article .info-div {
   background-color: white;
   margin:0 180px 30px 36px;
   padding: 30px;
-  min-height: 556px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
+  min-height: 666px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04);
 }
 
 .article .title-text {
@@ -389,7 +472,6 @@ body {
   padding: 16px 16px 6px 16px;
   font-size: 16px;
   line-height: 24px;
-  color: #565656;
 }
 
 .article .digit {
@@ -429,7 +511,70 @@ body {
 .article .relation-author {
   color: #909eb4;
   margin-top: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+}
+
+.article .reference-info {
+  margin-bottom: 12px;
+  color: #909eb4;
+  font-size: 13px;
+}
+.article .reference-article-block {
+  padding-top: 10px;
+}
+.article .reference-article-block:hover {
+  background: #f4f9ff;
+  cursor: pointer;
+}
+.article .reference-article-block:hover .reference-title {
+  color: #1f71df;
+}
+
+.article .comment-card {
+  padding: 5px;
+}
+.article .comment-card-body {
+  margin-bottom: 20px;
+}
+.article .comment-info {
+  padding-bottom: 15px;
+}
+.article .comment-date {
+  font-size: 14px;
+}
+.article .comment-content {
+  font-size: 14px;
+  line-height: 24px;
+}
+.article .dislike {
+  margin: -20px;
+  cursor: pointer;
+  height: 60px;
+  width: 60px;
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-position: left;
+  background-repeat:no-repeat;
+  background-size:2900%;
+}
+.article .like {
+  margin: -20px;
+  cursor: pointer;
+  height: 60px;
+  width: 60px;
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-position: right;
+  background-repeat:no-repeat;
+  background-size:2900%;
+}
+.article .dislike:hover {
+  background-position:right;
+}
+.article .is_animating {
+  animation: heart-burst .8s steps(28) 1;
+}
+@keyframes heart-burst {
+  from {background-position:left;}
+  to { background-position:right;}
 }
 
 .article ._bd_bottom {
@@ -456,6 +601,12 @@ body {
 .article ._success {
   color: #67C23A;
 }
+.article ._info {
+  color: #909eb4;
+}
+.article ._content {
+  color: #565656;
+}
 .article ._link {
   color: #00b1fd;
 }
@@ -464,15 +615,18 @@ body {
   cursor: pointer;
 }
 
-.article .el-tabs__item.is-active {
-  color: #00b1fd;
+.article .detail-div .el-tab-pane {
+  text-align: left;
+}
+.article .detail-div .el-tabs__item.is-active {
+  color: #353535;
   font-weight: bold;
 }
-.article .el-tabs__item {
+.article .detail-div .el-tabs__item {
   font-size: 15px;
 }
-.article .el-tabs__item:hover {
-  color: #00b1fd;
+.article .detail-div .el-tabs__item:hover {
+  color: #353535;
 }
 
 </style>
@@ -480,33 +634,4 @@ body {
 
 
 
-/*.dislike {*/
-/*  margin: -23px;*/
-/*  cursor: pointer;*/
-/*  height: 70px;*/
-/*  width: 70px;*/
-/*  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');*/
-/*  background-position: left;*/
-/*  background-repeat:no-repeat;*/
-/*  background-size:2900%;*/
-/*}*/
-/*.like {*/
-/*  margin: -23px;*/
-/*  cursor: pointer;*/
-/*  height: 70px;*/
-/*  width: 70px;*/
-/*  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');*/
-/*  background-position: right;*/
-/*  background-repeat:no-repeat;*/
-/*  background-size:2900%;*/
-/*}*/
-/*.dislike:hover {*/
-/*  background-position:right;*/
-/*}*/
-/*.is_animating {*/
-/*  animation: heart-burst .8s steps(28) 1;*/
-/*}*/
-/*@keyframes heart-burst {*/
-/*  from {background-position:left;}*/
-/*  to { background-position:right;}*/
-/*}*/
+
