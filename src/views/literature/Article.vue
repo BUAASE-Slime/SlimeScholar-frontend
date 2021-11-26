@@ -1,7 +1,7 @@
 <template>
   <div class="article">
     <el-row>
-      <el-col class="title-block" :span="15">
+      <el-col class="title-block" :span="12">
         <div class="title-text">
           {{ articleDetails.title }}
         </div>
@@ -12,6 +12,9 @@
           </span>
           <span class="journal" v-if="articleDetails.journalName">·&nbsp;&nbsp;{{ articleDetails.journalName }}&nbsp;&nbsp;</span>
           <span class="date" v-if="articleDetails.year">·&nbsp;&nbsp;{{ articleDetails.year }}</span>
+        </div>
+        <div class="sub-title" v-if="articleDetails.doi">
+          <span class="_info">DOI: <span class="_link" @click="toDOI(articleDetails.doi)">{{ articleDetails.doi }}</span></span>
         </div>
         <div class="title-button">
           <el-tooltip class="item" effect="light" content="评论" placement="bottom">
@@ -31,6 +34,7 @@
           </el-tooltip>
         </div>
       </el-col>
+<!--      <el-col :span="7" class="logo-div">LOGO</el-col>-->
     </el-row>
 
     <el-row>
@@ -305,7 +309,6 @@ export default {
         title: "Large Elasticsearch cluster management",
         venue: "",
         year: 2020,
-
       },
     }
   },
@@ -315,6 +318,9 @@ export default {
     },
     toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
+    },
+    toDOI: function(doi) {
+      alert("前往" + ":" + doi )
     },
     toComment: function(index) {
       alert("前往" + "id:" + id + "的文献评论")
@@ -366,40 +372,40 @@ export default {
       window.open(this.articleDetails.pdfUrls.at(0));
     },
   },
-  created() {
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-      const _formData = new FormData();
-      // _formData.append("id", this.$route.query.v);
-      this.$axios({
-        method: 'post',
-        url: '/es/get/paper',
-        data: _formData
-      })
-          .then(res => {
-            _loadingIns.close();
-            switch (res.data.status) {
-              case 200:
-                this.articleData = res.data.details;
-                console.log(this.articleData);
-                break;
-              case 404:
-                // this.$message.error("查无此文献！");
-                // setTimeout(() => {
-                //   this.$router.push("/");
-                // }, 1500);
-                break;
-              case 500:
-                this.$message.error("系统发生错误，请联系管理员！");
-                setTimeout(() => {
-                  this.$router.push("/");
-                }, 1500);
-                break;
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
-    },
+  // created() {
+  //     let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+  //     const _formData = new FormData();
+  //     // _formData.append("id", this.$route.query.v);
+  //     this.$axios({
+  //       method: 'post',
+  //       url: '/es/get/paper',
+  //       data: _formData
+  //     })
+  //         .then(res => {
+  //           _loadingIns.close();
+  //           switch (res.data.status) {
+  //             case 200:
+  //               this.articleData = res.data.details;
+  //               console.log(this.articleData);
+  //               break;
+  //             case 404:
+  //               // this.$message.error("查无此文献！");
+  //               // setTimeout(() => {
+  //               //   this.$router.push("/");
+  //               // }, 1500);
+  //               break;
+  //             case 500:
+  //               this.$message.error("系统发生错误，请联系管理员！");
+  //               setTimeout(() => {
+  //                 this.$router.push("/");
+  //               }, 1500);
+  //               break;
+  //           }
+  //         })
+  //         .catch(err => {
+  //           console.log(err);
+  //         })
+  //   },
 }
 </script>
 
@@ -630,8 +636,3 @@ body {
 }
 
 </style>
-
-
-
-
-
