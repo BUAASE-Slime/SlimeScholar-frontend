@@ -473,7 +473,7 @@ export default {
 .article .abstract-content {
   text-align: justify;
   padding: 16px 16px 6px 16px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 24px;
 }
 

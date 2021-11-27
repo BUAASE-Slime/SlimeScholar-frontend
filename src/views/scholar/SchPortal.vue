@@ -69,7 +69,7 @@
               <el-button
                   icon="el-icon-arrow-down"
                   type="text"
-                  style="margin-left: 50px;font-size: small"
+                  style="margin-left: 50px;font-size: 13px"
                   class="unfold"
                   :disabled="flag"
                   @click="AddArtNum"
@@ -90,7 +90,7 @@
                     总被引用 {{ totalCitations }} 次，被关注 {{totalAttention}} 人
                   </el-row>
                   <el-row>
-                    <div id="citation-chart" style="width:600px;height: 300px;margin-left: 150px"></div>
+                    <div id="citation-chart" style="width:500px;height: 400px;margin-left: 150px"></div>
                   </el-row>
                 </el-row>
               </el-tab-pane>
@@ -465,9 +465,7 @@ body {
 }
 
 .schPortal .data-div{
-  padding-top: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 10px 30px 20px;
   margin-bottom: 30px;
   min-height: 500px;
   background-color: white;
@@ -491,7 +489,7 @@ body {
 
 .schPortal .el-tabs__item.is-active{
   color: #00b1fd;
-  font-weight: 500;
+  font-weight: 650;
 }
 
 .schPortal .el-tabs__active-bar{
@@ -526,12 +524,9 @@ body {
 
 .schPortal .friends-div{
   text-align: left;
-  padding-top: 15px;
-  padding-left: 15px;
-  padding-right: 10px;
-  padding-bottom: 5px;
+  padding: 10px 10px 5px 15px;
   min-height: 500px;
-  width: 283px;
+  width: 280px;
   margin-left: 20px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
