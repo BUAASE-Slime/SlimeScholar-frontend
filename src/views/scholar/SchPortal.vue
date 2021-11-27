@@ -430,10 +430,7 @@ export default {
 }
 </script>
 
-<style>
-body {
-  background-color: #f1f3f6;
-}
+<style scoped>
 
 .schPortal .info-div {
   background-color: white;
@@ -481,39 +478,39 @@ body {
   padding-left: 2px;
 }
 
-.schPortal .el-tabs__item{
+.schPortal >>> .el-tabs__item{
   padding-left: 20px;
   height: 45px;
   font-size: medium;
 }
 
-.schPortal .el-tabs__item.is-active{
+.schPortal >>> .el-tabs__item.is-active{
   color: #00b1fd;
   font-weight: 650;
 }
 
-.schPortal .el-tabs__active-bar{
+.schPortal >>> .el-tabs__active-bar{
   transition: all 0.3s;
   background-color: #00b1fd;
 }
 
-.schPortal .dataChart .el-tabs__item{
+.schPortal >>> .dataChart .el-tabs__item{
   padding-left: 20px;
   height: 45px;
   font-size: small;
 }
 
-.schPortal .dataChart .el-tabs__item.is-active{
+.schPortal .dataChart >>> .el-tabs__item.is-active{
   color: #00b1fd;
   font-weight: 500;
 }
 
-.schPortal .dataChart .el-tabs__active-bar{
+.schPortal .dataChart >>> .el-tabs__active-bar{
   transition: all 0.3s;
   background-color: rgba(0, 177, 253, 0);
 }
 
-.schPortal .dataChart .el-tabs__nav-wrap::after{
+.schPortal .dataChart >>> .el-tabs__nav-wrap::after{
   height: 0;
 }
 
@@ -538,13 +535,13 @@ body {
   border-bottom: #e2e2e2 solid 1px;
 }
 
-.schPortal .friends-item .el-image{
+.schPortal .friends-item >>> .el-image{
   height: 45px;
   width: 45px;
   border-radius: 50%;
 }
 
-.schPortal .el-scrollbar__wrap {
+.schPortal >>> .el-scrollbar__wrap {
   overflow-x: hidden;
 }
 
