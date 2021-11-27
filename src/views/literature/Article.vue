@@ -61,13 +61,13 @@
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
                   <div @click="toArticle(article.id)">
                     <el-row>
-                      <el-col :span="2" style="text-align: right">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
+                      <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
                         <div class="reference-title">
                           <span>{{ article.title }}</span>
                         </div>
-                        <div class="relation-author">
-                      <span v-for="(author, index2) in article.authors" :key="index2">
+                        <div class="reference-author _info">
+                          <span v-for="(author, index2) in article.authors" :key="index2">
                         <span>{{ author.name }}&nbsp;&nbsp;</span>
                         <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
                       </span>
@@ -86,12 +86,12 @@
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
                   <div @click="toArticle(article.id)">
                     <el-row>
-                      <el-col :span="2" style="text-align: right">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
+                      <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
                         <div class="reference-title">
                           <span>{{ article.title }}</span>
                         </div>
-                        <div class="relation-author">
+                        <div class="reference-author _info">
                       <span v-for="(author, index2) in article.authors" :key="index2">
                         <span>{{ author.name }}&nbsp;&nbsp;</span>
                         <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
@@ -180,7 +180,7 @@
               <div class="relation-title">
                 <span class="_link" @click="toArticle(article.id)">{{ article.title }}</span>
               </div>
-              <div class="relation-author">
+              <div class="relation-author _info">
                 <span v-for="(author, index2) in article.authors" :key="index2">
                   <span>{{ author.name }}&nbsp;&nbsp;</span>
                   <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
@@ -471,7 +471,7 @@ export default {
   color: #353535;
 }
 .article .abstract-content {
-  text-align: left;
+  text-align: justify;
   padding: 16px 16px 6px 16px;
   font-size: 16px;
   line-height: 24px;
@@ -509,10 +509,10 @@ export default {
 .article .relation {
   padding: 36px 10px;
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
 }
 .article .relation-author {
-  color: #909eb4;
+  font-size: 14px;
   margin-top: 5px;
   margin-bottom: 12px;
 }
@@ -528,6 +528,14 @@ export default {
 .article .reference-article-block:hover {
   background: #f4f9ff;
   cursor: pointer;
+}
+.article .reference-title {
+  font-size: 15px;
+}
+.article .reference-author {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 .article .reference-article-block:hover .reference-title {
   color: #1f71df;
