@@ -1,120 +1,150 @@
 <template>
   <div class="schPortal">
-    <el-container>
-      <el-main>
-        <el-row class="people">
-          <el-col :span="6">
+    <el-row class="info-div">
+          <el-col :span="4">
             <el-image class="headImg" :src="headImgUrl">
             </el-image>
           </el-col>
-          <el-col class="people-text" :span="18">
+          <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
-              <el-col :span="20">{{ name }}</el-col>
-              <el-col :span="4">
-                <el-button type="primary" style="height: 35px;width: 80px;text-align: center;vertical-align:middle;border-radius: 10px;padding: 10px" icon="el-icon-message">
-                关注
-                </el-button>
-              </el-col>
+              <el-col>{{ name }}</el-col>
             </el-row>
-            <el-row style="font-size: medium;margin-top: 5px">{{organization}}</el-row>
+            <el-row style="font-size: medium;margin-top: 15px">
+              <i class="el-icon-office-building" style="margin-right: 5px"></i>
+              {{organization}}
+            </el-row>
             <el-row style="margin-top: 10px">
-              <el-link style="margin-right: 15px;font-size: medium;color: cornflowerblue" v-for="i in fields" v-bind:key="i">{{i}}</el-link>
+              <i class="el-icon-tickets" style="margin-right: 10px"></i>
+              <el-link style="font-size: medium;color:#00b1fd;" v-for="i in fields" v-bind:key="i">
+                {{i}}<span style="margin-left: 4px;margin-right: 4px">/</span>
+              </el-link>
             </el-row>
           </el-col>
-        </el-row>
-        <el-row style="padding-top: 15px;font-size: 16px ;font-weight: bold;color: #999999">
-          <el-col span="19" style="font-size: 16px">
-            文章
-          </el-col>
-          <el-col span="3">
-            引用次数
-          </el-col>
-          <el-col span="2">
-            年份
+          <el-col class="like-button" :span="2">
+            <el-button style="margin-left:5px;margin-top:50px;height: 35px;width: 80px;text-align: center;vertical-align:middle;border-radius: 10px;padding: 10px" icon="el-icon-message">
+              关注
+            </el-button>
           </el-col>
         </el-row>
-        <div class="article-body" v-for="(item,index) in articles" v-bind:key="index">
-          <el-row  v-if="index < artNum">
-            <el-row class="art-div" >
-              <el-col class="art-info" span="19">
-                <el-row style="color: #217ad9;font-size: 16px;margin: 2px">
-                  {{item.title}}
-                </el-row>
-                <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                  <span v-bind:key="p" v-for="p in item.authors" style="padding-right: 3px">{{p}}</span>
-                </el-row>
-                <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                  <span>{{item.journalName}}  {{item.journalVolume}}  {{item.journalPages}}</span>
-                </el-row>
+    <el-row class="main-div">
+      <el-col class="data-div" span="18">
+        <el-tabs v-model="activeNameOut" >
+          <el-tab-pane label="发表文献" name="article" style="text-align: left">
+            <el-row style="font-size: 16px ;font-weight: bold;color: #747474">
+              <el-col span="19" style="font-size: 16px">
+                文章
               </el-col>
-              <el-col class="art-citation" span="2" style="padding-top: 5px;text-align: center; font-size: 14px">
-                <span>{{item.citations}}</span>
+              <el-col span="3">
+                引用次数
               </el-col>
-              <el-col class="art-year" span="3" style="padding-top: 5px;text-align: center;padding-left: 4px;font-size: 14px">
-                <span>{{item.year}}</span>
+              <el-col span="2">
+                年份
               </el-col>
             </el-row>
-          </el-row>
-        </div>
-
-        <el-row style="text-align: center;color: #999999; font-size: 15px">
-          文章 1 - {{artNum}}
-          <el-button
-              icon="el-icon-arrow-down"
-              type="text"
-              style="margin-left: 50px"
-              class="unfold"
-              :disabled="flag"
-              @click="AddArtNum"
-          >展开</el-button>
-        </el-row>
-      </el-main>
-      <el-aside width="30%">
-        <el-row class="chart">
-          <el-row style="font-size: 17px;font-weight: bold; margin-top: 20px">
-            引用次数（近十年）
-          </el-row>
-          <el-row>
-            <div id="citation-chart" style="width: 300px;height: 300px"></div>
-          </el-row>
-        </el-row>
-        <el-row class="friends">
-          <el-row style="font-size: 17px;font-weight: bold;margin-bottom: 10px; margin-top: 20px">
+            <div class="article-body" v-for="(item,index) in articles" v-bind:key="index">
+              <el-row  v-if="index < artNumInit">
+                <el-row class="art-div" >
+                  <el-col class="art-info" span="19">
+                    <el-row style="color: #217ad9;font-size: 16px;margin: 2px">
+                      {{item.title}}
+                    </el-row>
+                    <el-row style="color: #999999;font-size: small;padding-left: 2px">
+                      <span v-bind:key="p" v-for="p in item.authors" style="padding-right: 3px">{{p}}</span>
+                    </el-row>
+                    <el-row style="color: #999999;font-size: small;padding-left: 2px">
+                      <span>{{item.journalName}}  {{item.journalVolume}}  {{item.journalPages}}</span>
+                    </el-row>
+                  </el-col>
+                  <el-col class="art-citation" span="2" style="padding-top: 5px;text-align: center; font-size: 14px">
+                    <span>{{item.citations}}</span>
+                  </el-col>
+                  <el-col class="art-year" span="3" style="padding-top: 5px;text-align: center;padding-left: 4px;font-size: 14px">
+                    <span>{{item.year}}</span>
+                  </el-col>
+                </el-row>
+              </el-row>
+            </div>
+            <el-row style="text-align: center;color: #999999; font-size: small">
+              文章  <span style="padding-left: 3px"> 1 - {{ artNumInit }}</span>
+              <el-button
+                  icon="el-icon-arrow-down"
+                  type="text"
+                  style="margin-left: 50px;font-size: small"
+                  class="unfold"
+                  :disabled="flag"
+                  @click="AddArtNum"
+              >展开</el-button>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="数据分析" name="analyse" class="dataChart">
+            <el-tabs v-model="activeNameChart">
+              <el-tab-pane label="被引用量" name="citations">
+                <span slot="label">
+                  <span class="span-box">
+                    <i class="el-icon-s-data"></i>
+                    <span style="margin-left: 5px">被引用量</span>
+                  </span>
+                </span>
+                <el-row class="citationChart">
+                  <el-row style="font-size: 17px;font-weight: bold;">
+                    总被引用 {{ totalCitations }} 次，被关注 {{totalAttention}} 人
+                  </el-row>
+                  <el-row>
+                    <div id="citation-chart" style="width:600px;height: 300px;margin-left: 150px"></div>
+                  </el-row>
+                </el-row>
+              </el-tab-pane>
+              <el-tab-pane label="专家关系网络" name="relation">
+                <span slot="label">
+                  <span class="span-box">
+                    <i class="el-icon-share"></i>
+                    <span style="margin-left: 5px">专家关系网络</span>
+                  </span>
+                </span>
+                <el-row>
+                  <div id="relation-chart" style="width: 500px;height: 300px;margin-left: 190px"></div>
+                </el-row>
+              </el-tab-pane>
+            </el-tabs>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+      <el-col class="friends-div" >
+        <el-row style="font-size: 17px;font-weight: bold;margin-bottom: 20px;margin-top: 10px">
             合著作者
           </el-row>
-          <el-scrollbar style="height: 350px">
-            <el-row class="friends-div" v-for="(i,index) in friends" :key="index">
+        <el-scrollbar style="height: 395px">
+            <el-row class="friends-item" v-for="(i,index) in friends" :key="index">
               <el-col :span="4">
                 <el-image :src="i.headImgUrl"></el-image>
               </el-col>
-              <el-col :span="17" style="padding-top: 10px">
+              <el-col :span="17" style="padding-left: 10px">
                 <el-row style="color: black ;font-weight: bold;font-size:small">
                   <el-col :span="20" style="padding-bottom: 1px">{{i.name}}</el-col>
                 </el-row>
-                <el-row style="font-size: x-small">{{i.organization}}</el-row>
+                <el-row style="font-size: xx-small">{{i.organization}}</el-row>
               </el-col>
-              <el-col :span="2" style="padding-top: 17px;padding-left: 5px;color: #409EFF">
+              <el-col :span="2" style="padding-top: 17px;padding-left: 7px;color: #409EFF">
                 <i class="el-icon-right" @click="toHim()"></i>
               </el-col>
             </el-row>
           </el-scrollbar>
-        </el-row>
-      </el-aside>
-    </el-container>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 export default {
-  name: "info.vue",
+  name: "schPortal.vue",
   data(){
     return{
       id:"19373180",
       name:"Rui Guo",
       organization:"Software Engineering, BeiHang University",
       headImgUrl: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg",
-      fields: ["Software Engineering","Visualizing Program","Software Engineering","OpenCV","Visualizing Program","OpenCV"],
-      artNum:"6",
+      fields: ["Software Engineering","Visualizing Program","Software Engineering","OpenCV","Visualizing Program"],
+      artNumInit:"6",
       articles:[
         {
           title:"Knowledge-rich, computer-assisted composition of Chinese couplets",
@@ -225,9 +255,9 @@ export default {
           citations:"1515",
         },
       ],
-      chart:{
-        xdata:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
-        ydata:["198","268","98","200","1","6","198","268","398","200"]
+      ciaChart:{
+        years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
+        cia:["198","268","98","200","1","6","198","268","398","200"]
       },
       friends:[
         {
@@ -273,37 +303,40 @@ export default {
           headImgUrl: "https://i.loli.net/2021/11/14/QbNtj9B3RLMfyrv.jpg",
         }
       ],
-
+      totalCitations:"80",
+      totalAttention:"90",
       flag: false,
+      activeNameOut: "article",
+      activeNameChart:"citations",
     }
   },
   mounted(){
     //页面加载完成后,才执行
     setTimeout(() => {
-      this.showChart();
+      this.showCiaChart();
+      this.showRelChart();
     }, 1000);
   },
   methods: {
     AddArtNum(){
-      let x=parseInt(this.artNum);
+      let x=parseInt(this.artNumInit);
       this.flag=(this.articles.length-x);
       x+=20;
       if(x>this.articles.length) x=this.articles.length;
-      this.artNum=x;
+      this.artNumInit=x;
     },
     toHim(){
       this.$message("进入了TA的主页");
     },
-    showChart()
-    {
+    showCiaChart() {
       // 基于准备好的dom，初始化echarts实例
       let myChart1 = this.$echarts.init(document.getElementById('citation-chart'))
       // 绘制图表
       myChart1.setOption({
-        title: { text: this.chart.title },
+        title: { text: this.ciaChart.title },
         tooltip: {},
         xAxis: {
-          data:this.chart.xdata,
+          data:this.ciaChart.years,
           name: '年份'
         },
         yAxis: {
@@ -318,7 +351,7 @@ export default {
           show: true,
           xAxisIndex: [0],
           left: '9%',
-          bottom: -5,
+          bottom: -6,
           start: 50,
           end: 100 //初始化滚动条
         }],
@@ -331,50 +364,114 @@ export default {
         },
         series: [{
           type: 'bar',
-          data:this.chart.ydata,
+          data:this.ciaChart.cia,
         }]
       });
+    },
+    showRelChart(){
+    },
+    /**
+     * 数据集合
+     */
+    dataEChart(){
+      let data = [
+        {
+          name: '张1',
+          symbolSize:"50",
+          id: '1',
+        },
+        {
+          name: '张2',
+          id: '2',
+        },
+        {
+          name: '张3',
+          id: '3',
+        },
+        {
+          name: '张4',
+          id: '4',
+        },
+        {
+          name: '张5',
+          id: '5',
+        },
+        {
+          name: '张6',
+          id: '6',
+        },
+        {
+          name: '张7',
+          id: '7',
+        },
+        {
+          name: '张6',
+          id: '8',
+        },
+      ];
+      return data;
+    },
+    /**
+     * 关系数据集合
+     */
+    linkEChart(){
+      let dataLink=[
+        {value: "同事",source: "1",target: "2"},
+        {value: "同事",source: "1",target: "3"},
+        {value: "同事",source: "1",target: "4"},
+        {value: "同学",source: "1",target: "5"},
+        {value: "同学",source: "1",target: "6"},
+        {value: "同学",source: "1",target: "7"},
+        {value: "爸爸",source: "1",target: "8"},
+      ];
+      return dataLink;
     },
 }
 }
 </script>
 
 <style>
-.schPortal .el-container{
-  margin-left: 150px;
-  margin-right: 150px;
+body {
+  background-color: #f1f3f6;
 }
 
-.schPortal .el-main{
+.schPortal .info-div {
+  background-color: white;
+  padding-top: 25px;
+  padding-left: 45px;
+  padding-bottom: 25px;
+  margin-left: 170px;
+  margin-top: 40px;
+  width: 80%;
   text-align: left;
-  margin-right: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
 }
 
-.schPortal .el-aside{
-  border-left: gainsboro 1px solid;
-  padding-left: 30px;
-  padding-top: 30px;
-  text-align: left;
+.schPortal .main-div{
+  width: 80%;
+  margin-left: 170px;
+  margin-top: 22px;
 }
 
 .schPortal .headImg{
   border-radius: 50%;
   width: 150px;
   height: 150px;
+  margin-left: 10px;
 }
 
 .schPortal .people-text{
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 25px;
 }
 
-.schPortal .el-button--text {
-  color: black;
-}
-
-.schPortal .people{
-  padding-bottom: 10px;
-  border-bottom: gainsboro solid 1px;
+.schPortal .data-div{
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-bottom: 30px;
+  min-height: 500px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
 }
 
 .schPortal .article-body{
@@ -386,22 +483,67 @@ export default {
   padding-left: 2px;
 }
 
-.schPortal .friends{
-  margin-top: 20px;
+.schPortal .el-tabs__item{
+  padding-left: 20px;
+  height: 45px;
+  font-size: medium;
+}
+
+.schPortal .el-tabs__item.is-active{
+  color: #00b1fd;
+  font-weight: 500;
+}
+
+.schPortal .el-tabs__active-bar{
+  transition: all 0.3s;
+  background-color: #00b1fd;
+}
+
+.schPortal .dataChart .el-tabs__item{
+  padding-left: 20px;
+  height: 45px;
+  font-size: small;
+}
+
+.schPortal .dataChart .el-tabs__item.is-active{
+  color: #00b1fd;
+  font-weight: 500;
+}
+
+.schPortal .dataChart .el-tabs__active-bar{
+  transition: all 0.3s;
+  background-color: rgba(0, 177, 253, 0);
+}
+
+.schPortal .dataChart .el-tabs__nav-wrap::after{
+  height: 0;
+}
+
+.schPortal .dataChart{
+  padding-left: 30px;
+  padding-top: 7px;
 }
 
 .schPortal .friends-div{
-  margin-top: 3px;
-  margin-bottom: 3px;
+  text-align: left;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+  min-height: 500px;
+  width: 283px;
+  margin-left: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
 }
 
-.schPortal .friends-div {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-bottom: #c4c4c4 solid 1px;
+.schPortal .friends-item{
+  padding-bottom: 13px;
+  margin-top: 18px;
+  border-bottom: #e2e2e2 solid 1px;
 }
 
-.schPortal .friends-div .el-image{
+.schPortal .friends-item .el-image{
   height: 45px;
   width: 45px;
   border-radius: 50%;
