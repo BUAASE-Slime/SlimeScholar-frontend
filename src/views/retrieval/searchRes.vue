@@ -2,9 +2,6 @@
 <div>
     <div id="inputbox">
       <el-row>
-        <el-col :span="6"><div class="grid-content bg-purple">
-          <img src="../../assets/images/SlimeScholar.png" alt="" style="margin-left:20px; margin-top:40px; height:130px">
-        </div></el-col>
         <el-col :span="15"><div class="grid-content bg-purple">
           <el-row>
             <div style=" width:800px; margin-left:50px; padding-top: 70px; display:flex;" id="inputbox2">
@@ -28,38 +25,89 @@
             </div>
           </el-row>
           <el-row>
-            <h2 style="display:block;float:left; margin-left:50px;margin-top:40px">{{resnum}}条来自数据库的搜索结果:</h2>
+            <h2 style="display:block;float:left; margin-left:80px;margin-top:40px">{{resnum}}条来自数据库的搜索结果:</h2>
           </el-row>
         </div></el-col>
+        <el-col :span="6"><div class="grid-content bg-purple">
+          <img src="../../assets/images/SlimeScholar.png" alt="" style="margin-left:20px; margin-top:40px; height:170px">
+        </div></el-col>
       </el-row>
+      
     </div>
     
     <div>
+      <el-divider></el-divider>
       <el-row :gutter="0">
-        <el-col :span="6"><div class="grid-content bg-purple" style="padding:20px">
+        <el-col :span="6"><div class="grid-content bg-purple" style="margin-left:50px;margin-right:50px">
+          <span style="display:flex; flaot:left; margin-left:10px; margin-bottom:30px; margin-top:5px; font-size:20px;">筛选</span>
           <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>结果筛选</span>
-            </div>
             <div>
-              <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
+              <!-- <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
                 发表年份
               </span></div>
               <div v-for="o in year" :key="o" class="text item" style="display:block; margin:20px">
                 <el-checkbox v-model="checked">{{o}}</el-checkbox>
+              </div> -->
+              <el-row>
+              <div style=" width:100%; display:block; margin:20px">
+                <span style="float:left;">发表年份</span>
+                <br>
               </div>
+              <div style=" margin:20px;">
+                <span style="float:left; font-size:13px;">范围：</span>
+                <span style="font-size:13px; color:rgb(80, 191, 224); float:left; margin-top:2px">{{minYear}}~{{maxYear}}</span>
+              </div>
+              </el-row>
+              <el-row>
+              <div style="padding:20px">
+                <el-slider v-model="value1" :min=minYear :max=maxYear></el-slider>
+              </div>
+              </el-row>
             </div>
+            <el-divider></el-divider>
             <div>
               <div style="float:left; width:100%; display:flex; margin:20px"><span>
-                期刊
+                类型
               </span></div>
-              <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px; float:left;">
+              <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px;">
+                <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <div>
+              <div style="float:left; width:100%; display:flex; margin:20px"><span>
+                领域
+              </span></div>
+              <div v-for="o in fields" :key="o" class="text item" style="display:block; margin:20px;">
                 <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
               </div>
             </div>
           </el-card>
         </div></el-col>
         <el-col :span="16"><div class="grid-content bg-purple">
+          <div>
+          <el-row>
+            <el-col span="16">
+              <span style="display:flex; flaot:left; margin-left:30px; font-size:20px; margin-top:5px">论文 ({{totalPaper}})</span>
+            </el-col>
+            <el-col span="2">
+              <div  style="margin-top:5px">
+              <span>排序</span>
+              </div>
+            </el-col>
+            <el-col span="5">
+              
+              <el-select v-model="value2" placeholder="请选择" style="float:right;">
+                <el-option
+                  v-for="item in queue"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          </div>
           <el-card v-for="item in articles" :key="item" id="the_item" style="margin:20px;display:flex">
               <el-row>
               <h3 style="float:left; display:block;">{{item.title}}</h3>
@@ -77,7 +125,8 @@
                 <div v-if="item.is_collect" @click="collectChange(item)" style="float:left"><i class="el-icon-star-on" >收藏</i></div>
                 <div v-else @click="collectChange(item)" style="float:left"><i class="el-icon-star-off" >收藏</i></div>
                 <i class="el-icon-collection" style="margin-left:30px; float:left">引用</i>
-                <span style="float:right; text-align:right;">被引次数：{{item.reference_num}}</span>
+                <span style="float:right; text-align:right;color:#66b1ff;">{{item.reference_num}}</span>
+                <span style="float:right; text-align:right;">被引次数：</span>
               </div>
           </el-card>
         </div></el-col>
@@ -94,10 +143,10 @@
         resnum:45112,
         options: [{
           value: '1',
-          label: '主题'
+          label: '篇关摘'
         }, {
           value: '2',
-          label: '篇关摘'
+          label: '文献来源'
         }, {
           value: '3',
           label: '关键字'
@@ -115,14 +164,18 @@
           label: '作者单位'
         }, {
           value: '8',
-          label: '文献来源'
-        }, {
-          value: '9',
           label: 'DOI'
         }],
         select: '1',
         year:["2008","2009","2021"],
-        journals:["Natural","Science","SCI","北京航空航天大学学报","浙江大学学报"],
+        journals:["所有","会议","期刊","书籍"],
+        fields:["计算机视觉","计算机图形学","人工智能"],
+        queue:["发表时间","引用次数"],
+        value2:"发表时间",
+        totalPaper:288,
+        minYear:1928,
+        maxYear:2021,
+        value1:2021,
         articles:[
           {
             authors: [
@@ -211,6 +264,9 @@
     methods:{
       collectChange:function(item){
         item.is_collect=!(item.is_collect);
+      },
+      formatTooltip(val) {
+        return val / 100;
       }
     },
     filters: {
@@ -229,7 +285,7 @@
 <style scoped>
   #inputbox{
       height:250px;
-      background-color:rgb(115, 222, 255);
+      /* background-color:rgb(115, 222, 255); */
       width:100%; 
       margin:0 auto;
   }
