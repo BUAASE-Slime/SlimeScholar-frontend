@@ -2,7 +2,7 @@
   <div id="login" class="login">
     <img class="bgbox" id="bgbox" alt="" src="../../../src/assets/images/background1.jpg">
     <div>
-      <img class="logo" src="../../assets/images/SlimeScholar.png" alt="logo" @click="toHome"/>
+      <img class="logo" src="../../assets/images/SlimeScholar-en.png" alt="logo" @click="toHome"/>
     </div>
     <div class="wrap">
       <h1>登 录</h1>
@@ -112,6 +112,7 @@ export default {
 #login .logo {
   cursor: pointer;
   overflow: hidden;
+  height: 150px;
 }
 #login .wrap {
   width: 300px;

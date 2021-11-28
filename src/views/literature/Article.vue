@@ -313,8 +313,12 @@ export default {
     }
   },
   methods: {
-    toArticle: function(index) {
-      window.location.href = this.GLOBAL.baseUrl + "/article?v=" + index.id;
+    toArticle: function(paper_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/article',
+        query: { v: paper_id }
+      });
+      window.open(routeUrl .href, "_self");
     },
     toAuthor: function(id) {
       alert("前往" + "id:" + id + "的学者门户")
