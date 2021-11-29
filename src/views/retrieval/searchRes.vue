@@ -79,12 +79,12 @@
                 </el-col>
               </el-row>
             </div>
-            <el-card v-for="item in articles" :key="item" id="the_item" style="margin-top:20px;display:flex">
+            <el-card v-for="item in articles" :key="item" id="the_item" class="article-item">
               <el-row>
-                <h3 style="float:left; display:block;">{{item.title}}</h3>
+                <h3 style="float:left;">{{item.title}}</h3>
               </el-row>
               <el-row>
-                <span style="float:left; margin-left:10px; color:grey;">{{item.year}} · </span>
+                <span style="float:left; color:grey;">{{item.year}} · </span>
                 <span v-for="j in item.authors" :key="j" style="float:left; margin-left:10px; color:grey;">{{j.name}}</span>
               </el-row>
               <div style="text-align:left;margin-top:10px;">
@@ -139,7 +139,7 @@
               },
             ],
             id: "4cd223df721b722b1c40689caa52932a41fcc223",
-            title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
+            title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
             paperAbstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
             citation_num: 3288,
             comment_num: 5,
@@ -237,6 +237,15 @@
 
 .search-res #the_item {
   height: 300px;
+}
+
+.search-res .article-item {
+  margin-top:20px;
+  display:flex;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 </style>
