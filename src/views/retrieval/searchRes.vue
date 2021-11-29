@@ -38,9 +38,9 @@
               </div>
               <el-divider></el-divider>
               <div>
-                <div style="float:left; width:100%; display:flex; margin:20px"><span>
-                类型
-              </span></div>
+                <div style="float:left; width:100%; display:flex; margin:20px">
+                  <span>类型</span>
+                </div>
                 <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px;">
                   <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
                 </div>
@@ -80,15 +80,14 @@
               </el-row>
             </div>
             <el-card v-for="item in articles" :key="item" id="the_item" class="article-item">
-              <el-row>
-                <h3 style="float:left;">{{item.title}}</h3>
-              </el-row>
-              <el-row>
-                <span style="float:left; color:grey;">{{item.year}} · </span>
-                <span v-for="j in item.authors" :key="j" style="float:left; margin-left:10px; color:grey;">{{j.name}}</span>
-              </el-row>
+              <div style="text-align: left">
+                <h3>{{item.title}}</h3>
+                <span style="color:grey;">{{item.year}} · </span>
+                <span v-for="j in item.authors" :key="j" style="margin-left:10px; color:grey;">{{j.name}}</span>
+              </div>
+
               <div style="text-align:left;margin-top:10px;">
-                <span style="display:block; font-weight:bold; font-size:15px; margin-bottom:10px">摘要：<br></span>
+<!--                <span style="display:block; font-weight:bold; font-size:15px; margin-bottom:10px">摘要：<br></span>-->
                 <span>{{item.paperAbstract|ellipsis}}</span>
               </div>
               <el-divider></el-divider>
@@ -235,15 +234,9 @@
   margin-bottom: 40px;
 }
 
-.search-res #the_item {
-  height: 300px;
-}
-
 .search-res .article-item {
   margin-top:20px;
   display:flex;
-  padding-bottom: 15px;
-  padding-top: 15px;
   padding-left: 20px;
   padding-right: 20px;
 }
