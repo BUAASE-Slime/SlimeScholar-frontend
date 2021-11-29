@@ -4,8 +4,8 @@
       <el-row>
         <el-col :span="15"><div class="grid-content bg-purple">
           <el-row>
-            <div style=" width:800px; margin-left:50px; padding-top: 70px; display:flex;" id="inputbox2">
-              <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="font-size:20px; ">
+            <div style=" width:700px; margin-left:50px; padding-top: 70px; display:flex;" id="inputbox2">
+              <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="font-size:16px; ">
                 <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:1px solid grey" class="pre">
                   <el-option
                     v-for="item in options"
@@ -35,12 +35,12 @@
       
     </div>
     
-    <div>
-      <el-divider></el-divider>
+    <div style="margin-top:30px">
+      
       <el-row :gutter="0">
-        <el-col :span="6"><div class="grid-content bg-purple" style="margin-left:50px;margin-right:50px">
-          <span style="display:flex; flaot:left; margin-left:10px; margin-bottom:30px; margin-top:5px; font-size:20px;">筛选</span>
-          <el-card class="box-card">
+        <el-col :span="8"><div class="grid-content bg-purple" style="margin-left:50px;margin-right:50px">
+          <span style="display:flex; flaot:left; margin-left:20px; margin-bottom:30px; margin-top:5px; font-size:16px;">筛选</span>
+          <el-card class="box-card" style="margin-left:20px">
             <div>
               <!-- <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
                 发表年份
@@ -88,16 +88,16 @@
           <div>
           <el-row>
             <el-col span="16">
-              <span style="display:flex; flaot:left; margin-left:30px; font-size:20px; margin-top:5px">论文 ({{totalPaper}})</span>
+              <span style="display:flex; flaot:left; margin-left:30px; font-size:16px; margin-top:5px">论文 ({{totalPaper}})</span>
             </el-col>
             <el-col span="2">
               <div  style="margin-top:5px">
-              <span>排序</span>
+              <span style="font-size:16px">排序</span>
               </div>
             </el-col>
             <el-col span="5">
               
-              <el-select v-model="value2" placeholder="请选择" style="float:right;">
+              <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
                 <el-option
                   v-for="item in queue"
                   :key="item"
@@ -281,7 +281,7 @@
 <style scoped>
   #inputbox{
       height:250px;
-      /* background-color:rgb(115, 222, 255); */
+      background-color:rgb(115, 222, 255);
       width:100%; 
       margin:0 auto;
   }
@@ -289,7 +289,7 @@
     overflow-x: hidden;
   }
   #inputbox2 >>> .el-input__inner{
-    height: 60px !important;
+    height: 45px !important;
     border-right: none;
   }
   #inputbox2 >>> .el-input-group__append {
