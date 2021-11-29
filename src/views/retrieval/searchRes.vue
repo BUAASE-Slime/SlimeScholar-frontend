@@ -1,120 +1,91 @@
 <template>
-<div>
-    <div id="inputbox">
-      <el-row>
-        <el-col :span="15"><div class="grid-content bg-purple">
-          <el-row>
-            <div style=" width:700px; margin-left:50px; padding-top: 70px; display:flex;" id="inputbox2">
-              <el-input placeholder="请输入内容" v-model="input3" class="input-with-select" style="font-size:16px; ">
-                <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:1px solid grey" class="pre">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                <el-button slot="append" icon="el-icon-search"></el-button>
-              </el-input>
-              <!-- <el-switch
-              v-model="value1"
-              active-text="检索文章"
-              inactive-text="检索学者"
-              style="width:300px; margin-top:20px; margin-left:20px">
-            </el-switch> -->
-            </div>
-          </el-row>
-          <el-row>
-            <h2 style="display:block;float:left; margin-left:80px;margin-top:40px">{{resnum}}条来自数据库的搜索结果:</h2>
-          </el-row>
-        </div></el-col>
-        <el-col :span="6"><div class="grid-content bg-purple">
-          <img src="../../assets/images/SlimeScholar.png" alt="" style="margin-left:20px; margin-top:40px; height:170px">
-        </div></el-col>
+  <div class="search-res">
+    <div class="main-body">
+      <el-row class="header">
+        <span style="float:left; font-size: 22px">
+        为您查询到
+        <span>&nbsp;{{ resNum }}&nbsp;</span>
+        条结果
+        </span>
       </el-row>
-      
-    </div>
-    
-    <div style="margin-top:30px">
-      
-      <el-row :gutter="0">
-        <el-col :span="8"><div class="grid-content bg-purple" style="margin-left:50px;margin-right:50px">
-          <span style="display:flex; flaot:left; margin-left:20px; margin-bottom:30px; margin-top:5px; font-size:16px;">筛选</span>
-          <el-card class="box-card" style="margin-left:20px">
-            <div>
-              <!-- <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
-                发表年份
-              </span></div>
-              <div v-for="o in year" :key="o" class="text item" style="display:block; margin:20px">
-                <el-checkbox v-model="checked">{{o}}</el-checkbox>
-              </div> -->
-              <el-row>
-              <div style=" width:100%; display:block; margin:20px">
-                <span style="float:left;">发表年份</span>
-                <br>
+      <div class="content-select-result">
+        <el-row :gutter="0">
+          <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
+            <span style="display:flex; margin-bottom:30px; margin-top:5px; font-size:16px;">筛选</span>
+            <el-card class="box-card">
+              <div>
+                <!-- <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
+                  发表年份
+                </span></div>
+                <div v-for="o in year" :key="o" class="text item" style="display:block; margin:20px">
+                  <el-checkbox v-model="checked">{{o}}</el-checkbox>
+                </div> -->
+                <el-row>
+                  <div style=" width:100%; display:block; margin:20px">
+                    <span style="float:left;">发表年份</span>
+                    <br>
+                  </div>
+                  <div style=" margin:20px;">
+                    <span style="float:left; font-size:13px;">范围：</span>
+                    <span style="font-size:13px; color:rgb(80, 191, 224); float:left; margin-top:2px">{{minYear}}~{{maxYear}}</span>
+                  </div>
+                </el-row>
+                <el-row>
+                  <div style="padding:20px">
+                    <el-slider v-model="value1" :min=minYear :max=maxYear></el-slider>
+                  </div>
+                </el-row>
               </div>
-              <div style=" margin:20px;">
-                <span style="float:left; font-size:13px;">范围：</span>
-                <span style="font-size:13px; color:rgb(80, 191, 224); float:left; margin-top:2px">{{minYear}}~{{maxYear}}</span>
-              </div>
-              </el-row>
-              <el-row>
-              <div style="padding:20px">
-                <el-slider v-model="value1" :min=minYear :max=maxYear></el-slider>
-              </div>
-              </el-row>
-            </div>
-            <el-divider></el-divider>
-            <div>
-              <div style="float:left; width:100%; display:flex; margin:20px"><span>
+              <el-divider></el-divider>
+              <div>
+                <div style="float:left; width:100%; display:flex; margin:20px"><span>
                 类型
               </span></div>
-              <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px;">
-                <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+                <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px;">
+                  <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+                </div>
               </div>
-            </div>
-            <el-divider></el-divider>
-            <div>
-              <div style="float:left; width:100%; display:flex; margin:20px"><span>
+              <el-divider></el-divider>
+              <div>
+                <div style="float:left; width:100%; display:flex; margin:20px"><span>
                 领域
               </span></div>
-              <div v-for="o in fields" :key="o" class="text item" style="display:block; margin:20px;">
-                <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+                <div v-for="o in fields" :key="o" class="text item" style="display:block; margin:20px;">
+                  <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+                </div>
               </div>
-            </div>
-          </el-card>
-        </div></el-col>
-        <el-col :span="16"><div class="grid-content bg-purple">
-          <div>
-          <el-row>
-            <el-col span="16">
-              <span style="display:flex; flaot:left; margin-left:30px; font-size:16px; margin-top:5px">论文 ({{totalPaper}})</span>
-            </el-col>
-            <el-col span="2">
-              <div  style="margin-top:5px">
-              <span style="font-size:16px">排序</span>
-              </div>
-            </el-col>
-            <el-col span="5">
-              
-              <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
-                <el-option
-                  v-for="item in queue"
-                  :key="item"
-                  :label="item"
-                  :value="item">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-          </div>
-          <el-card v-for="item in articles" :key="item" id="the_item" style="margin:20px;display:flex">
+            </el-card>
+          </div></el-col>
+          <el-col :span="15"><div class="grid-content bg-purple">
+            <div>
               <el-row>
-              <h3 style="float:left; display:block;">{{item.title}}</h3>
+                <el-col span="17">
+                  <span style="display:flex; font-size:16px; margin-top:5px">论文 ({{totalPaper}})</span>
+                </el-col>
+                <el-col span="2">
+                  <div style="margin-top:5px">
+                    <span style="font-size:16px">排序</span>
+                  </div>
+                </el-col>
+                <el-col span="5">
+                  <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
+                    <el-option
+                        v-for="item in queue"
+                        :key="item"
+                        :label="item"
+                        :value="item">
+                    </el-option>
+                  </el-select>
+                </el-col>
+              </el-row>
+            </div>
+            <el-card v-for="item in articles" :key="item" id="the_item" style="margin-top:20px;display:flex">
+              <el-row>
+                <h3 style="float:left; display:block;">{{item.title}}</h3>
               </el-row>
               <el-row>
-              <span style="float:left; margin-left:10px; color:grey;">{{item.year}} · </span>
-              <span v-for="j in item.authors" :key="j" style="float:left; margin-left:10px; color:grey;">{{j.name}}</span>
+                <span style="float:left; margin-left:10px; color:grey;">{{item.year}} · </span>
+                <span v-for="j in item.authors" :key="j" style="float:left; margin-left:10px; color:grey;">{{j.name}}</span>
               </el-row>
               <div style="text-align:left;margin-top:10px;">
                 <span style="display:block; font-weight:bold; font-size:15px; margin-bottom:10px">摘要：<br></span>
@@ -128,43 +99,19 @@
                 <span style="float:right; text-align:right;color:#66b1ff;">{{item.reference_num}}</span>
                 <span style="float:right; text-align:right;">被引次数：</span>
               </div>
-          </el-card>
-        </div></el-col>
-      </el-row>
+            </el-card>
+          </div></el-col>
+        </el-row>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
   export default {
     data() {
       return {
-        resnum:45112,
-        options: [{
-          value: '1',
-          label: '篇关摘'
-        }, {
-          value: '2',
-          label: '文献来源'
-        }, {
-          value: '3',
-          label: '关键字'
-        }, {
-          value: '4',
-          label: '篇名'
-        }, {
-          value: '5',
-          label: '摘要'
-        },{
-          value: '6',
-          label: '作者'
-        }, {
-          value: '7',
-          label: '作者单位'
-        }, {
-          value: '8',
-          label: 'DOI'
-        }],
+        resNum:45112,
         select: '1',
         year:["2008","2009","2021"],
         journals:["所有","会议","期刊","书籍"],
@@ -255,7 +202,7 @@
       }
     },
     created() {
-    this.resnum = this.resnum.toLocaleString();
+    this.resNum = this.resNum.toLocaleString();
     },
     methods:{
       collectChange:function(item){
@@ -279,56 +226,17 @@
 </script>
 
 <style scoped>
-  #inputbox{
-      height:250px;
-      background-color:rgb(115, 222, 255);
-      width:100%; 
-      margin:0 auto;
-  }
-  #inputbox2 >>> .el-scrollbar__wrap {
-    overflow-x: hidden;
-  }
-  #inputbox2 >>> .el-input__inner{
-    height: 45px !important;
-    border-right: none;
-  }
-  #inputbox2 >>> .el-input-group__append {
-    /* border-radius: inherit; */
-    background-color: white;
-  }
-  #inputbox2 >>> .el-input-group__prepend {
-    /* border-radius: inherit; */
-    background-color: white;
-    /* color: azure; */
-  }
-  #inputbox2 >>> .el-row--flex {
-    display: flex;
-    margin-top: 100px !important;
-  }
-  #inputbox2 .pre >>> .el-input__inner::placeholder {
-    color: black;
-    font-size: 18px;
-    text-align: center;
-  }
-  /* 谷歌 */
-  #inputbox2 .pre >>> .el-input__inner::-webkit-input-placeholder {
-    color: black;
-    font-size: 18px;
-    text-align: center;
-  }
-  /* 火狐 */
-  #inputbox2 .pre >>> .el-input__inner:-moz-placeholder {
-    color: black;
-    font-size: 18px;
-    text-align: center;
-  }
-  /*ie*/
-  #inputbox2 .pre >>> .el-input__inner:-ms-input-placeholder {
-    color: black;
-    font-size: 18px;
-    text-align: center;
-  }
-  #the_item{
-    height: 300px;
-  }
+
+.search-res {
+  padding: 30px 100px;
+}
+
+.search-res .header {
+  margin-bottom: 40px;
+}
+
+.search-res #the_item {
+  height: 300px;
+}
+
 </style>

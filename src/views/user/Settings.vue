@@ -264,53 +264,46 @@ export default {
 }
 </script>
 
-<style>
-body {
-  height: 100%;
-}
-</style>
-
 <style scoped>
 .settings {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: #f7f8fa;
   background-size: 100% 100%;
 }
-.settings-body {
+.settings .settings-body {
   width: 95%;
   padding: 20px;
 }
-.el-button {
+.settings >>> .el-button {
   color: #2d94d4;
   background-color: white;
   font-size: 14px;
   margin-left: 20px;
 }
-.a-info2 {
+.settings .a-info2 {
   margin: 30px 30px 30px 80px;
   text-align: left;
 }
-.box-card1 {
+.settings .box-card1 {
   width: 425px;
   margin: 10px;
 }
-.box-card2 {
+.settings .box-card2 {
   width: 900px;
   margin: 10px 30px;
 }
-.el-row {
+.settings >>>.el-row {
   margin-bottom: 20px;
 }
-.el-col {
+.settings >>> .el-col {
   border-radius: 4px;
 }
-.grid-content {
+.settings .grid-content {
   border-radius: 4px;
   min-height: 36px;
 }
-.row-bg {
+.settings .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
 }
