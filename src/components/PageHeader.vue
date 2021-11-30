@@ -52,7 +52,7 @@ export default {
     return {
       showSearch: false,
 
-      userName: '',
+      userName: 'huangzehuan',
       activeIndex: '1',
       isLogin: true,
 
@@ -93,10 +93,12 @@ export default {
       this.isLogin = true;
       this.userName = userInfo.user.username;
     }
-
-    console.log(this.$route.path);
-    if (this.$route.path === '/searchRes')
-      this.showSearch = true;
+  },
+  mounted() {
+    setTimeout(() => {
+      if (this.$route.path === '/searchRes')
+        this.showSearch = true;
+    }, 100);
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -172,7 +174,7 @@ export default {
   cursor: pointer;
 }
 
-.header .el-menu--horizontal>.el-menu-item.is-active {
+.header .el-menu--horizontal >>>.el-menu-item.is-active {
   border-bottom: 2px solid transparent;
   /*color: #409EFF !important;*/
 }
@@ -181,7 +183,7 @@ export default {
   font-size: 17px;
 }
 
-.header .el-menu--horizontal>.el-submenu .el-submenu__title {
+.header .el-menu--horizontal .el-submenu >>> .el-submenu__title {
   height: 70px;
   line-height: 70px;
   color: black;
@@ -192,7 +194,7 @@ export default {
   color: black;
 }
 
-.el-menu--horizontal>.el-submenu.is-active .el-submenu__title {
+.el-menu--horizontal >>> .el-submenu.is-active .el-submenu__title {
   border-bottom: none !important;
   color: black;
 }
@@ -215,7 +217,6 @@ export default {
 }
 
 .header .input-box {
-  height: 250px;
   width: 100%;
   margin: 0 auto;
 }

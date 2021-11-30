@@ -9,7 +9,7 @@
         </span>
       </el-row>
       <div class="content-select-result">
-        <el-row :gutter="0">
+        <el-row :gutter="0" v-if="total_hits!==0">
           <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
@@ -84,10 +84,11 @@
                 <div style="margin-bottom: 10px">
                   <span style="font-size: 20px; font-weight: bold">{{item.paper_title}}</span>
                 </div>
-                <span style="color:grey;">{{item.year}} · </span>
-                <span v-for="j in item.authors" :key="j" style="margin-left: 6px; color: #2d94d4; cursor: pointer">
+                <span v-for="(j, index) in item.authors" :key="j" style="color: #2d94d4; cursor: pointer">
                   {{j.author_name}}
+                  <span v-if="index<item.authors.length-1" style="color: #A0A0A0"> / </span>
                 </span>
+                <span style="color:grey;"> · {{item.year}}</span>
               </div>
 
               <div style="text-align:left;margin-top:10px;">
@@ -104,6 +105,7 @@
             </el-card>
           </div></el-col>
         </el-row>
+        <el-empty :image-size="200" description="暂无相关文献数据" v-else></el-empty>
       </div>
     </div>
   </div>
@@ -118,8 +120,8 @@
         year:["2008","2009","2021"],
         journals:["所有","会议","期刊","书籍"],
         fields:["计算机视觉","计算机图形学","人工智能"],
-        queue:["发表时间","引用次数"],
-        value2:"发表时间",
+        queue:["匹配程度","发表时间","引用次数"],
+        value2:"匹配程度",
         minYear:1928,
         maxYear:2021,
         value1:2021,
@@ -203,7 +205,7 @@
       }
     },
     created() {
-
+      this.getSearchRes();
     },
     methods:{
       collectChange:function(item){
@@ -212,7 +214,7 @@
       formatTooltip(val) {
         return val / 100;
       },
-      search() {
+      getSearchRes() {
         let _query = this.$route.query;
         let _search_key = Object.keys(_query)[0];
         let _search_value = _query[_search_key];
