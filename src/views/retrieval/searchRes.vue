@@ -81,7 +81,7 @@
             </div>
             <el-card v-for="item in articles" :key="item" class="article-item">
               <div style="text-align: left">
-                <div style="margin-bottom: 5px">
+                <div style="margin-bottom: 10px">
                   <span style="font-size: 20px; font-weight: bold">{{item.paper_title}}</span>
                 </div>
                 <span style="color:grey;">{{item.year}} · </span>
@@ -203,39 +203,7 @@
       }
     },
     created() {
-      let _query = this.$route.query;
-      let _search_key = Object.keys(_query)[0];
-      let _search_value = _query[_search_key];
 
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-      const _formData = new FormData();
-      _formData.append(_search_key, _search_value);
-      this.$axios({
-        method: 'post',
-        url: '/es/query/paper/' + _search_key,
-        data: _formData
-      })
-      .then(res => {
-        _loadingIns.close();
-        switch (res.data.status) {
-          case 200:
-            this.articles = res.data.details;
-            this.total_hits = res.data.total_hits.toLocaleString();
-            break;
-          case 404:
-            this.total_hits = 0;
-            break;
-          case 500:
-            this.$message.error("系统发生错误，请联系管理员！");
-            setTimeout(() => {
-              this.$router.push("/");
-            }, 1500);
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
     },
     methods:{
       collectChange:function(item){
@@ -243,6 +211,41 @@
       },
       formatTooltip(val) {
         return val / 100;
+      },
+      search() {
+        let _query = this.$route.query;
+        let _search_key = Object.keys(_query)[0];
+        let _search_value = _query[_search_key];
+
+        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+        const _formData = new FormData();
+        _formData.append(_search_key, _search_value);
+        this.$axios({
+          method: 'post',
+          url: '/es/query/paper/' + _search_key,
+          data: _formData
+        })
+        .then(res => {
+          _loadingIns.close();
+          switch (res.data.status) {
+            case 200:
+              this.articles = res.data.details;
+              this.total_hits = res.data.total_hits.toLocaleString();
+              break;
+            case 404:
+              this.total_hits = 0;
+              break;
+            case 500:
+              this.$message.error("系统发生错误，请联系管理员！");
+              setTimeout(() => {
+                this.$router.push("/");
+              }, 1500);
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
     },
     filters: {

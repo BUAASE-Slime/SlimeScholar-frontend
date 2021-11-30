@@ -7,7 +7,7 @@
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
       <el-menu-item index="3" @click="gotoScholar">学者门户</el-menu-item>
 <!--      <el-menu-item index="4" @click="gotoCommunity">交流社区</el-menu-item>-->
-      <el-menu-item>
+      <el-menu-item v-if="showSearch">
         <div style="width:700px;" class="input-box">
           <el-input placeholder="请输入内容" v-model="input" class="input-with-select" style="font-size:16px; ">
             <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:1px solid grey" class="pre">
@@ -50,6 +50,8 @@ export default {
   name: 'pageHeader',
   data() {
     return {
+      showSearch: false,
+
       userName: '',
       activeIndex: '1',
       isLogin: true,
@@ -91,6 +93,10 @@ export default {
       this.isLogin = true;
       this.userName = userInfo.user.username;
     }
+
+    console.log(this.$route.path);
+    if (this.$route.path === '/searchRes')
+      this.showSearch = true;
   },
   methods: {
     handleSelect(key, keyPath) {
