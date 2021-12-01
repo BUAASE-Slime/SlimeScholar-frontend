@@ -3,11 +3,11 @@
     <el-row>
       <el-col class="title-block" :span="12">
         <div class="title-text">
-          {{ articleDetails.title }}
+          {{ articleDetails.paper_title }}
         </div>
         <div class="sub-title">
           <span v-for="(author, index) in articleDetails.authors" :key="index">
-            <span class="_link" @click="toAuthor(author.ids[0])">{{ author.name }}&nbsp;&nbsp;</span>
+            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}&nbsp;&nbsp;</span>
             <span v-if="articleDetails.authors.length > index + 1">/&nbsp;&nbsp;</span>
           </span>
           <span class="journal" v-if="articleDetails.journalName">·&nbsp;&nbsp;{{ articleDetails.journalName }}&nbsp;&nbsp;</span>
@@ -41,12 +41,12 @@
       <el-col :span="15">
         <div class="abstract-div">
           <div class="abstract-title">摘要</div>
-          <div class="abstract-content _content" v-if="articleDetails.paperAbstract.length<spanLength || isSpan">
-            {{ articleDetails.paperAbstract }}
-            <span v-if="isSpan && articleDetails.paperAbstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
+          <div class="abstract-content _content" v-if="articleDetails.abstract.length<spanLength || isSpan">
+            {{ articleDetails.abstract }}
+            <span v-if="isSpan && articleDetails.abstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
           </div>
           <div class="abstract-content _content" v-else>
-            {{ articleDetails.paperAbstract.substring(0, 570) }}...
+            {{ articleDetails.abstract.substring(0, 570) }}...
             <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
           </div>
         </div>
@@ -64,11 +64,11 @@
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
                         <div class="reference-title">
-                          <span>{{ article.title }}</span>
+                          <span>{{ article.paper_title }}</span>
                         </div>
                         <div class="reference-author _info">
                           <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.name }}&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
                         <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
                       </span>
                         </div>
@@ -89,11 +89,11 @@
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
                         <div class="reference-title">
-                          <span>{{ article.title }}</span>
+                          <span>{{ article.paper_title }}</span>
                         </div>
                         <div class="reference-author _info">
                       <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.name }}&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
                         <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
                       </span>
                         </div>
@@ -178,11 +178,11 @@
             <div class="field-title">相关文献</div>
             <div class="relation-article" v-for="(article, index) in articleDetails.reference_msg" :key="index">
               <div class="relation-title">
-                <span class="_link" @click="toArticle(article.id)">{{ article.title }}</span>
+                <span class="_link" @click="toArticle(article.id)">{{ article.paper_title }}</span>
               </div>
               <div class="relation-author _info">
                 <span v-for="(author, index2) in article.authors" :key="index2">
-                  <span>{{ author.name }}&nbsp;&nbsp;</span>
+                  <span>{{ author.author_name }}&nbsp;&nbsp;</span>
                   <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
                 </span>
               </div>
@@ -216,26 +216,33 @@ export default {
       articleDetails: {
         authors: [
           {
-            ids: [
-              143783283
-            ],
-            name: "Pablo Saiz",
-            structuredName: null
+            affiliation_id: "",
+            affiliation_name: "",
+            author_id: "2772667878",
+            author_name: "田中章夫",
+            order: "1",
           },
           {
-            ids: [
-              2684022
-            ],
-            name: "Ulrich Schwickerath",
-            structuredName: null
+            affiliation_id: "",
+            affiliation_name: "",
+            author_id: "2773365833",
+            author_name: "野口盛雄",
+            order: "2"
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "",
+            author_id: "2771782143",
+            author_name: "渡边良幸",
+            order: "3"
           }
         ],
-        citation_num: 0,
+        citation_count: 0,
         doi: "10.1051/epjconf/202024507021",
         fieldsOfStudy: [
           "Computer Science",
         ],
-        id: "9782951d43920382d2f1229601d018ca87df4dcb",
+        paper_id: "9782951d43920382d2f1229601d018ca87df4dcb",
         journalName: "EPJ Web of Conferences",
         journalPages: "07021",
         journalVolume: "245",
@@ -243,70 +250,51 @@ export default {
           "d884573116a4363256d52575a4dd642f3b5b6f24",
           "44d2abe2175df8153f465f6c39b68b76a0d40ab9"
         ],
-        paperAbstract: "The Centralised Elasticsearch Service at CERN runs the infrastructure to provide Elasticsearch clusters for more than 100 different use cases.This contribution presents how the infrastructure is managed, covering the resource distribution, instance creation, cluster monitoring and user support. The contribution will present the components that have been identified as critical in order to share resources and minimise the amount of clusters and machines needed to run the service. In particular, all the automation for the instance configuration, including index template management, backups and visualisation settings, will be explained in detail.",
+        abstract: "The Centralised Elasticsearch Service at CERN runs the infrastructure to provide Elasticsearch clusters for more than 100 different use cases.This contribution presents how the infrastructure is managed, covering the resource distribution, instance creation, cluster monitoring and user support. The contribution will present the components that have been identified as critical in order to share resources and minimise the amount of clusters and machines needed to run the service. In particular, all the automation for the instance configuration, including index template management, backups and visualisation settings, will be explained in detail.",
         pdfUrls: [],
         reference_msg: [
           {
             authors: [
               {
-                ids: [
-                  "2684022"
-                ],
-                name: "Ulrich Schwickerath",
-                structuredName: null
+                author_id: "2772667878",
+                author_name: "Sepp Hochreiter",
               },
               {
-                ids: [
-                  "143783283"
-                ],
-                name: "Pablo Saiz",
-                structuredName: null
-              },
-              {
-                ids: [
-                  "2857698"
-                ],
-                name: "Zhechka Toteva",
-                "structuredName": null
+                author_id: "2772667878",
+                author_name: "Jürgen Schmidhuber",
               }
             ],
             citation_num: 1,
             id: "d884573116a4363256d52575a4dd642f3b5b6f24",
             journalName: "EPJ Web of Conferences",
-            paperAbstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
+            abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
             reference_num: 2,
-            title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
+            paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
             year: 2019
           },
           {
             authors: [
               {
-                ids: [
-                  "3308557"
-                ],
-                "name": "Sepp Hochreiter",
-                "structuredName": null
+                author_id: "2772667878",
+                author_name: "Sepp Hochreiter",
               },
               {
-                ids: [
-                  "145341374"
-                ],
-                name: "Jürgen Schmidhuber",
-                structuredName: null
+                author_id: "2772667878",
+                author_name: "Jürgen Schmidhuber",
               }
             ],
             citation_num: 44135,
             id: "44d2abe2175df8153f465f6c39b68b76a0d40ab9",
             journalName: "Neural Computation",
-            paperAbstract: "Learning to store information over extended time intervals by recurrent backpropagation takes a very long time, mostly because of insufficient, decaying error backflow. We briefly review Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, gradient based method called long short-term memory (LSTM). Truncating the gradient where this does not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by enforcing constant error flow through constant error carousels within special units. Multiplicative gate units learn to open and close access to the constant error flow. LSTM is local in space and time; its computational complexity per time step and weight is O. 1. Our experiments with artificial data involve local, distributed, real-valued, and noisy pattern representations. In comparisons with real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous recurrent network algorithms.",
+            abstract: "Learning to store information over extended time intervals by recurrent backpropagation takes a very long time, mostly because of insufficient, decaying error backflow. We briefly review Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, gradient based method called long short-term memory (LSTM). Truncating the gradient where this does not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by enforcing constant error flow through constant error carousels within special units. Multiplicative gate units learn to open and close access to the constant error flow. LSTM is local in space and time; its computational complexity per time step and weight is O. 1. Our experiments with artificial data involve local, distributed, real-valued, and noisy pattern representations. In comparisons with real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous recurrent network algorithms.",
             reference_num: 42,
-            title: "Long Short-Term Memory",
+            paper_title: "Long Short-Term Memory",
             year: 1997
           }
         ],
         reference_num: 2,
         s2PdfUrl: "",
-        title: "Large Elasticsearch cluster management",
+        paper_title: "Large Elasticsearch cluster management",
         venue: "",
         year: 2020,
       },
@@ -375,6 +363,10 @@ export default {
       // TODO: 下载PDF文件
       window.open(this.articleDetails.pdfUrls.at(0));
     },
+
+    getArticle() {
+
+    }
   },
   // created() {
   //     let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});

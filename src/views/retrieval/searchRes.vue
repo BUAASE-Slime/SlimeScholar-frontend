@@ -56,7 +56,9 @@
                                    style="margin-bottom: 15px; text-align: left"
                                    v-model="checkJournalList">
                   <el-checkbox :label=o.name>
-                    <span >{{ o.name|ellipsis_30 }}&nbsp;({{ o.count }})</span>
+                    <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
+                      <span>{{ o.name|ellipsis_30 }}&nbsp;({{ o.count }})</span>
+                    </el-tooltip>
                   </el-checkbox>
                 </el-checkbox-group>
               </div>
@@ -125,8 +127,6 @@
       return {
         total_hits:45112,
         select: '1',
-        journals:["所有","会议","期刊","书籍"],
-        fields:["计算机视觉","计算机图形学","人工智能"],
         queue:["匹配程度","发表时间","引用次数"],
         value2:"匹配程度",
         minYear: 1900,
