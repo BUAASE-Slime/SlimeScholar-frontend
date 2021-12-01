@@ -15,8 +15,8 @@
             </el-row>
             <el-row style="margin-top: 10px">
               <i class="el-icon-tickets" style="margin-right: 10px"></i>
-              <el-link style="font-size: medium;color:#00b1fd;" v-for="i in fields" v-bind:key="i">
-                {{i}}<span style="margin-left: 4px;margin-right: 4px">/</span>
+              <el-link style="font-size: medium;color:#00b1fd;" v-for="(i,j) in fields" v-bind:key="j">
+                {{i}}<span style="margin-left: 4px;margin-right: 4px" v-if="j!==fields.length-1">/</span>
               </el-link>
             </el-row>
           </el-col>
@@ -49,7 +49,9 @@
                       {{item.title}}
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                      <span v-bind:key="p" v-for="p in item.authors" style="padding-right: 3px">{{p}}</span>
+                      <span v-bind:key="i" v-for="(p,i) in item.authors" >
+                        {{p}}<span v-if="i !== item.authors.length-1">, </span>
+                      </span>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
                       <span>{{item.journalName}}  {{item.journalVolume}}  {{item.journalPages}}</span>
@@ -80,13 +82,13 @@
             <el-tabs v-model="activeNameChart">
               <el-tab-pane label="被引用量" name="citations">
                 <span slot="label">
-                  <span class="span-box">
+                  <span class="span-box" style="font-size: 15px">
                     <i class="el-icon-s-data"></i>
                     <span style="margin-left: 5px">被引用量</span>
                   </span>
                 </span>
                 <el-row class="citationChart">
-                  <el-row style="font-size: 17px;font-weight: bold;">
+                  <el-row style="font-size: 15px;font-weight: bold;text-align: left;padding-left: 270px">
                     总被引用 {{ totalCitations }} 次，被关注 {{totalAttention}} 人
                   </el-row>
                   <el-row>
@@ -96,7 +98,7 @@
               </el-tab-pane>
               <el-tab-pane label="专家关系网络" name="relation">
                 <span slot="label">
-                  <span class="span-box">
+                  <span class="span-box" style="font-size: 15px">
                     <i class="el-icon-share"></i>
                     <span style="margin-left: 5px">专家关系网络</span>
                   </span>
@@ -468,6 +470,15 @@ export default {
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
 }
+.schPortal .friends-div{
+  text-align: left;
+  padding: 10px 10px 5px 15px;
+  min-height: 500px;
+  width: 23.3%;
+  margin-left: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
+}
 
 .schPortal .article-body{
   margin-top: 15px;
@@ -519,15 +530,7 @@ export default {
   padding-top: 7px;
 }
 
-.schPortal .friends-div{
-  text-align: left;
-  padding: 10px 10px 5px 15px;
-  min-height: 500px;
-  width: 280px;
-  margin-left: 20px;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
-}
+
 
 .schPortal .friends-item{
   padding-bottom: 13px;
