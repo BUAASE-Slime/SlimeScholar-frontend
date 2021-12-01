@@ -13,49 +13,57 @@
           <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
-              <div>
-                <!-- <div style="float:left; width:100%; display:flex; margin:20px； float:left;"><span>
-                  发表年份
-                </span></div>
-                <div v-for="o in year" :key="o" class="text item" style="display:block; margin:20px">
-                  <el-checkbox v-model="checked">{{o}}</el-checkbox>
-                </div> -->
-                <el-row>
-                  <div style=" width:100%; display:block; margin:20px">
-                    <span style="float:left;">发表年份</span>
-                    <br>
-                  </div>
-                  <div style=" margin:20px;">
-                    <span style="float:left; font-size:13px;">范围：</span>
-                    <span style="font-size:13px; color:rgb(80, 191, 224); float:left; margin-top:2px">{{minYear}}~{{maxYear}}</span>
-                  </div>
-                </el-row>
-                <el-row>
-                  <div style="padding:20px">
-                    <el-slider v-model="value1" :min=minYear :max=maxYear></el-slider>
-                  </div>
-                </el-row>
+
+              <div class="publish-year sub-block">
+                <div class="check-box-title">
+                  <span>发表年份</span>
+                </div>
+                <div style="text-align: left; font-size: 13px">
+                  <span>范围：</span>
+                  <span style="color: #0274B3; margin-top:2px">{{ year[0] }} ~ {{ year[1] }}</span>
+                </div>
+                <div style="margin-top: 20px; margin-bottom: 30px">
+                  <el-slider v-model="year" range :min=minYear :max=maxYear></el-slider>
+                </div>
               </div>
+
               <el-divider></el-divider>
-              <div>
-                <div style="float:left; width:100%; display:flex; margin:20px">
+
+              <div class="publish-type sub-block">
+                <div class="check-box-title">
                   <span>类型</span>
                 </div>
-                <div v-for="o in journals" :key="o" class="text item" style="display:block; margin:20px;">
-                  <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
-                </div>
+                <el-checkbox-group v-for="(o,index) in aggregation.doctype"
+                     :key="o"
+                     style="margin-bottom: 15px; text-align: left"
+                     v-model="checkDoctypeList">
+                  <div v-for="(val, key) in o" :key="key">
+                    <el-checkbox :label=key>
+                      <span>{{ key|ellipsis_30 }}&nbsp;({{ val }})</span>
+                    </el-checkbox>
+                  </div>
+                </el-checkbox-group>
               </div>
+
               <el-divider></el-divider>
-              <div>
-                <div style="float:left; width:100%; display:flex; margin:20px"><span>
-                领域
-              </span></div>
-                <div v-for="o in fields" :key="o" class="text item" style="display:block; margin:20px;">
-                  <el-checkbox v-model="checked" style="">{{o}}</el-checkbox>
+
+              <div class="publish-journal sub-block">
+                <div class="check-box-title">
+                  <span>期刊</span>
                 </div>
+                <el-checkbox-group v-for="(o,index) in aggregation.journal"
+                                   :key="o"
+                                   style="margin-bottom: 15px; text-align: left"
+                                   v-model="checkJournalList">
+                  <el-checkbox :label=o.name>
+                    <span >{{ o.name|ellipsis_30 }}&nbsp;({{ o.count }})</span>
+                  </el-checkbox>
+                </el-checkbox-group>
               </div>
             </el-card>
-          </div></el-col>
+          </div>
+          </el-col>
+
           <el-col :span="15"><div class="grid-content bg-purple">
             <div>
               <el-row>
@@ -117,14 +125,61 @@
       return {
         total_hits:45112,
         select: '1',
-        year:["2008","2009","2021"],
         journals:["所有","会议","期刊","书籍"],
         fields:["计算机视觉","计算机图形学","人工智能"],
         queue:["匹配程度","发表时间","引用次数"],
         value2:"匹配程度",
-        minYear:1928,
-        maxYear:2021,
-        value1:2021,
+        minYear: 1900,
+        maxYear: 2021,
+        year: [1900, 2021],
+
+        aggregation: {
+          doctype: [
+            {
+              "Conference": 286
+            },
+            {
+              "Journal": 170
+            },
+            {
+              "Repository": 144
+            },
+            {
+              "Thesis": 26
+            },
+            {
+              "Patent": 12
+            }
+          ],
+          journal: [
+            {
+              citation_count: "19256",
+              count: 78,
+              issn: "",
+              journalid: "2595428313",
+              name: "arXiv: Software Engineering",
+              paper_count: "7794",
+              publisher: "",
+              rank: "10353",
+              webpage: ""
+            },
+            {
+              citation_count: "34541",
+              count: 17,
+              issn: "",
+              journalid: "2595804992",
+              name: "arXiv: Social and Information Networks",
+              paper_count: "7232",
+              publisher: "",
+              rank: "10327",
+              webpage: ""
+            },
+          ]
+        },
+
+        checkDoctypeList: [],
+        checkJournalList: [],
+
         articles:[
           {
             authors: [
@@ -205,7 +260,7 @@
       }
     },
     created() {
-      this.getSearchRes();
+      this.getSearchRes(1);
     },
     methods:{
       collectChange:function(item){
@@ -214,7 +269,7 @@
       formatTooltip(val) {
         return val / 100;
       },
-      getSearchRes() {
+      getSearchRes(pageIdx) {
         let _query = this.$route.query;
         let _search_key = Object.keys(_query)[0];
         let _search_value = _query[_search_key];
@@ -222,6 +277,8 @@
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
         _formData.append(_search_key, _search_value);
+        _formData.append("page", pageIdx);
+        console.log(_formData);
         this.$axios({
           method: 'post',
           url: '/es/query/paper/' + _search_key,
@@ -232,6 +289,7 @@
           switch (res.data.status) {
             case 200:
               this.articles = res.data.details;
+              this.aggregation = res.data.aggregation;
               this.total_hits = res.data.total_hits.toLocaleString();
               break;
             case 404:
@@ -256,6 +314,13 @@
         if (!value) return "";
         if (value.length > 400) {
           return value.slice(0,400) + "...";
+        }
+        return value;
+      },
+      ellipsis_30: function(value) {
+        if (!value) return "";
+        if (value.length > 30) {
+          return value.slice(0,30) + "...";
         }
         return value;
       }
@@ -285,6 +350,20 @@
 
 .search-res .article-item >>> .el-divider--horizontal {
   margin: 10px 0;
+}
+
+.search-res .box-card {
+  padding: 20px;
+}
+
+.search-res .box-card .sub-block {
+  margin-bottom: 20px;
+}
+
+.search-res .box-card .check-box-title {
+  text-align: left;
+  font-size: 17px;
+  margin-bottom: 20px;
 }
 
 </style>

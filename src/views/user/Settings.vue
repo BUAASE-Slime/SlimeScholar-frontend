@@ -254,36 +254,41 @@ export default {
         return;
       }
 
+      const userInfo = user.getters.getUser(user.state());
+
       const formData = new FormData();
-      formData.append("old_password", this.form.old);
-      formData.append("new_password_1", this.form.new);
-      formData.append("new_password_2", this.form.newagain);
+      formData.append("password_old", this.form.old);
+      formData.append("password_new", this.form.newagain);
+      formData.append("Authorization", userInfo.user.Authorization);
+      formData.append("user_id", userInfo.user.userId);
 
       this.$axios({
         method: 'post',
-        url: '/user/change/password',
+        url: '/user/modify',
         data: formData,
       })
       .then(res => {
-        switch (res.data.status_code) {
-          case 1:
+        switch (res.data.status) {
+          case 200:
             this.$message.success("修改成功");
             this.dialogFormVisible = false;
             break;
-          case 2:
-            this.$message.error("两次输入的密码不同");
+          case 400:
+            this.$message.error("未检测到登录信息，请重新登录");
+            this.dialogFormVisible = false;
+            setTimeout(() => {
+              this.$store.dispatch('clear');
+              this.$router.push("/login");
+            }, 1000);
             break;
-          case 3:
-            this.$message.error("新旧密码相同");
+          case 401:
+            this.$message.error("原密码输入错误");
             break;
-          case 4:
-            this.$message.error("输入的原密码错误");
+          case 404:
+            this.$message.error("未查询到用户信息");
             break;
-          case 5:
-            this.$message.error("输入的密码不符合规范，密码须由8-18个字符组成，且同时包含字母和数字");
-            break;
-          default:
-            this.$message.error("操作失败");
+          case 500:
+            this.$message.error("系统发生错误，请联系管理员");
             break;
         }
       })
