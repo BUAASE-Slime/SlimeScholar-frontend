@@ -93,16 +93,15 @@ export default {
       this.isLogin = true;
       this.userName = userInfo.user.username;
     }
-
-    let _query = this.$route.query;
-    let _search_key = Object.keys(_query)[0];
-    this.input = _query[_search_key];
-    this.select = _search_key;
   },
   mounted() {
     setTimeout(() => {
       if (this.$route.path === '/searchRes')
         this.showSearch = true;
+        let _query = this.$route.query;
+        let _search_key = Object.keys(_query)[0];
+        this.input = _query[_search_key];
+        this.select = _search_key;
     }, 100);
   },
   methods: {

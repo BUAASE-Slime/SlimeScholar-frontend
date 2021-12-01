@@ -89,30 +89,9 @@
                 </el-col>
               </el-row>
             </div>
-            <el-card v-for="item in articles" :key="item" class="article-item">
-              <div style="text-align: left">
-                <div style="margin-bottom: 10px">
-                  <span style="font-size: 20px; font-weight: bold">{{item.paper_title}}</span>
-                </div>
-                <span v-for="(j, index) in item.authors" :key="j" style="color: #2d94d4; cursor: pointer">
-                  {{j.author_name}}
-                  <span v-if="index<item.authors.length-1" style="color: #A0A0A0"> / </span>
-                </span>
-                <span style="color:grey;"> · {{item.year}}</span>
-              </div>
 
-              <div style="text-align:left;margin-top:10px;">
-<!--                <span style="display:block; font-weight:bold; font-size:15px; margin-bottom:10px">摘要：<br></span>-->
-                <span style="color: #A0A0A0">{{item.abstract|ellipsis}}</span>
-              </div>
-              <el-divider></el-divider>
-              <div style="text-align:left; font-size: 15px">
-                <div v-if="item.is_collect" @click="collectChange(item)" style="float:left"><i class="el-icon-star-on" >收藏</i></div>
-                <div v-else @click="collectChange(item)" style="float:left"><i class="el-icon-star-off" >收藏</i></div>
-                <i class="el-icon-collection" style="margin-left:30px; float:left">引用</i>
-                <span style="float:right; text-align:right;">被引次数：{{item.reference_count}}</span>
-              </div>
-            </el-card>
+            <ArticleBlocks :articles="articles" flag="searchRes"></ArticleBlocks>
+
           </div></el-col>
         </el-row>
         <el-empty :image-size="200" description="暂无相关文献数据" v-else></el-empty>
@@ -122,7 +101,11 @@
 </template>
 
 <script>
+
+import ArticleBlocks from "../../components/ArticleBlocks";
+
   export default {
+    components: {ArticleBlocks},
     data() {
       return {
         total_hits:45112,
@@ -266,9 +249,6 @@
       collectChange:function(item){
         item.is_collect=!(item.is_collect);
       },
-      formatTooltip(val) {
-        return val / 100;
-      },
       getSearchRes(pageIdx) {
         let _query = this.$route.query;
         let _search_key = Object.keys(_query)[0];
@@ -330,26 +310,12 @@
 
 <style scoped>
 
-.search-res {
+.search-res .main-body {
   padding: 30px 100px;
 }
 
 .search-res .header {
   margin-bottom: 40px;
-}
-
-.search-res .article-item {
-  margin-top:20px;
-  display:flex;
-}
-
-.search-res .article-item >>> .el-card__body {
-  width: 100%;
-  padding: 25px 30px 15px;
-}
-
-.search-res .article-item >>> .el-divider--horizontal {
-  margin: 10px 0;
 }
 
 .search-res .box-card {
