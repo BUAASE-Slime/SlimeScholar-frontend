@@ -30,12 +30,12 @@
       </el-menu-item>
       <el-submenu index="5" style="float: right" v-if="isLogin">
         <template slot="title">{{ userName }}</template>
-        <el-menu-item index="5-1" class="big-item" @click="gotoLib">个人中心</el-menu-item>
+        <el-menu-item index="5-1" class="big-item" @click="gotoLib">个人图书馆</el-menu-item>
         <el-menu-item index="5-2" class="big-item" @click="settings">账户设置</el-menu-item>
         <el-menu-item index="5-3" class="big-item" @click="logout">退出</el-menu-item>
       </el-submenu>
       <!--      <i class="el-icon-bell news-link" v-if="isLogin" style="padding-top: 28px; font-size: 24px; float: right;" @click="openNews"></i>-->
-      <i v-if="isLogin" class="el-icon-user" @click="gotoLib"></i>
+      <i v-if="isLogin" class="el-icon-user"></i>
       <div class="login-button">
         <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
       </div>
@@ -54,7 +54,7 @@ export default {
 
       userName: 'huangzehuan',
       activeIndex: '1',
-      isLogin: true,
+      isLogin: false,
 
       // search
       input: '',
@@ -127,24 +127,29 @@ export default {
       this.$router.push('/settings');
     },
     logout() {
-      this.$axios({
-        method: 'get',
-        url: '/user/logout',
-      })
-      .then(res => {
-        switch (res.data.status_code) {
-          case 200:
-            this.$store.dispatch('clear');
-            location.reload();
-            break;
-          case 401:
-            this.$message.error('未检测到登录信息！');
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      // this.$axios({
+      //   method: 'get',
+      //   url: '/user/logout',
+      // })
+      // .then(res => {
+      //   switch (res.data.status_code) {
+      //     case 200:
+      //       this.$store.dispatch('clear');
+      //       location.reload();
+      //       break;
+      //     case 401:
+      //       this.$message.error('未检测到登录信息！');
+      //       break;
+      //   }
+      // })
+      // .catch(err => {
+      //   console.log(err);
+      // })
+      this.$store.dispatch('clear');
+      this.$message.success("退出成功！");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     }
   }
 }
@@ -171,7 +176,7 @@ export default {
   padding-top: 22px;
   font-size: 24px;
   float: right;
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 
 .header .el-menu--horizontal >>>.el-menu-item.is-active {

@@ -8,7 +8,7 @@
       <h1>登 录</h1>
       <el-form :model="form" ref="form" class="form">
         <el-form-item prop="username">
-          <el-input placeholder="用户名" type="username" v-model="form.username" autocomplete="off"></el-input>
+          <el-input placeholder="用户名或邮箱" type="username" v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item id="password" prop="password">
           <el-input
@@ -45,7 +45,10 @@ export default {
   methods: {
     login() {
       const formData = new FormData();
-      formData.append("username", this.form.username);
+      if (this.form.username.indexOf("@") !== -1)
+        formData.append("email", this.form.username);
+      else
+        formData.append("username", this.form.username);
       formData.append("password", this.form.password);
       this.$axios({
         method: 'post',

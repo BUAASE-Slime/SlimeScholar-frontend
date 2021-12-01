@@ -7,7 +7,7 @@
             <el-card class="box-card1">
               <div style="padding: 25px 0">
                 <img src="../../assets/images/doctor-bg.png" style="height:300px" alt="Image">
-                <h2>{{ username }}</h2>
+                <h2>{{ info.username }}</h2>
               </div>
             </el-card>
           </div>
@@ -20,7 +20,7 @@
                 <div class="account-info">
                   <h2 style="margin-left: 80px; text-align: left">账户信息</h2>
                   <div class="a-info2" style="margin-top: 50px">
-                    <span>用户名：{{ username }}</span>
+                    <span>用户名：{{ info.username }}</span>
                   </div>
                 </div>
               </div>
@@ -28,7 +28,7 @@
                 <div>
                   <h2 style="margin-left: 80px; text-align: left">账户设置</h2>
                   <div class="a-info2">
-                    <span style="display:inline-block; width: 400px">邮箱地址：{{ email }}</span>
+                    <span style="display:inline-block; width: 400px">邮箱地址：{{ info.email }}</span>
                     <el-button type="primary" size="small" @click="dialogFormVisible2=true">更改</el-button>
                   </div>
                   <div class="a-info2">
@@ -92,8 +92,10 @@ export default {
   name: "Settings",
   data() {
     return {
-      username: "黄泽桓",
-      email: "huangzehuan@buaa.edu.cn",
+      info: {
+        username: "",
+        email: "",
+      },
       dialogFormVisible: false,
       dialogFormVisible2: false,
       form: {
@@ -107,7 +109,39 @@ export default {
   },
   // 获取个人基本信息
   created() {
+    const userInfo = user.getters.getUser(user.state());
 
+    // 若未检测到登录信息，则跳转登录界面
+    if (!userInfo) {
+      this.$message.warning("请先登录");
+      setTimeout(() => {
+        this.$router.push("/login");
+      }, 1000);
+    }
+
+    const _formData = new FormData();
+    _formData.append("Authorization", userInfo.user.Authorization);
+    _formData.append("user_id", userInfo.user.userId);
+    console.log(_formData);
+    this.$axios({
+      method: 'post',
+      url: '/user/info',
+      data: _formData,
+    })
+    .then(res => {
+      if (res.data.success) {
+        this.info = res.data.data;
+      } else {
+        this.$message.warning("用户信息错误，请重新登录");
+        setTimeout(() => {
+          this.$store.dispatch('clear');
+          this.$router.push("/login");
+        }, 1000);
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
   },
   methods: {
     clearEmailForm() {
@@ -174,7 +208,7 @@ export default {
         switch (res.data.status_code) {
           case 1:
             this.$message.success("修改邮箱成功！");
-            this.email = this.form.email;
+            this.info.email = this.form.email;
             this.form.code = '';
             this.form.email = '';
             this.dialogFormVisible2 = false;
@@ -272,6 +306,7 @@ export default {
   background-size: 100% 100%;
 }
 .settings .settings-body {
+  margin-top: 40px;
   width: 95%;
   padding: 20px;
 }

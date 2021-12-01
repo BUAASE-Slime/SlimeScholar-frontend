@@ -146,8 +146,62 @@ export default {
     }
   },
   methods: {
-    register() {},
-    getCode() {},
+    register() {
+      const _formData = new FormData();
+      _formData.append("username", this.form.username);
+      _formData.append("confirm_number", this.form.confirmCode);
+      this.$axios({
+        method: 'post',
+        url: '/user/confirm',
+        data: _formData,
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.$message.success("注册成功！");
+            setTimeout(() => {
+              this.$router.push("/");
+            }, 1000);
+            break;
+          case 401:
+            this.$message.warning("请勿重复注册");
+            break;
+          case 402:
+            this.$message.error("验证码错误");
+            break;
+          case 404:
+            this.$message.error("查无注册用户信息，请重新注册");
+            break;
+          case 600:
+            this.$message.error("验证码失效，请重新获取");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    getCode() {
+      const _formData = new FormData();
+      _formData.append("username", this.form.username);
+      _formData.append("password", this.form.password2);
+      _formData.append("email", this.form.email);
+      this.$axios({
+        method: 'post',
+        url: '/user/register',
+        data: _formData,
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$message.success("验证码已发送至您的邮箱");
+        } else {
+          this.$message.warning("用户名或邮箱已注册");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     toHome() {},
     toLogin() {
       this.$router.push('/login');
