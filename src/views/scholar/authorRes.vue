@@ -1,5 +1,6 @@
 <template>
   <div class="author-result">
+    <PageHeader :showSearch="showSearch" :tag="tag" :options="authorOptions" :select="select"></PageHeader>
     <div class="main-body">
       <el-row class="header">
         <span style="float:left; font-size: 22px; color: #A0A0A0">
@@ -89,11 +90,26 @@
 
 <script>
 import AuthorBlocks from "../../components/AuthorBlocks";
+import PageHeader from "../../components/PageHeader";
 export default {
   name: "authorRes",
-  components: {AuthorBlocks},
+  components: {PageHeader, AuthorBlocks},
   data() {
     return {
+      showSearch: true,
+      tag: 'authorRes',
+      select: 'name',
+      authorOptions: [{
+        value: 'name',
+        label: '姓名'
+      }, {
+        value: 'affiliation',
+        label: '机构'
+      }, {
+        value: 'main_area',
+        label: '领域'
+      }],
+
       queue: ["匹配程度", "文献数量", "被引次数"],
       sortValue: "匹配程度",
 
@@ -104,7 +120,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          reference_count: 1234,
+          citation_num: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -114,7 +130,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          reference_count: 1234,
+          citation_num: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -124,7 +140,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          reference_count: 1234,
+          citation_num: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -181,7 +197,7 @@ export default {
 <style scoped>
 
 .author-result .main-body {
-  padding: 30px 100px;
+  padding: 0 100px 30px;
 }
 
 .author-result .header {

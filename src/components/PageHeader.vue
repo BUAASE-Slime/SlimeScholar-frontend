@@ -20,12 +20,6 @@
             </el-select>
             <el-button slot="append" icon="el-icon-search"></el-button>
           </el-input>
-          <!-- <el-switch
-          v-model="value1"
-          active-text="检索文章"
-          inactive-text="检索学者"
-          style="width:300px; margin-top:20px; margin-left:20px">
-        </el-switch> -->
         </div>
       </el-menu-item>
       <el-submenu index="5" style="float: right" v-if="isLogin">
@@ -34,7 +28,6 @@
         <el-menu-item index="5-2" class="big-item" @click="settings">账户设置</el-menu-item>
         <el-menu-item index="5-3" class="big-item" @click="logout">退出</el-menu-item>
       </el-submenu>
-      <!--      <i class="el-icon-bell news-link" v-if="isLogin" style="padding-top: 28px; font-size: 24px; float: right;" @click="openNews"></i>-->
       <i v-if="isLogin" class="el-icon-user"></i>
       <div class="login-button">
         <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
@@ -48,54 +41,12 @@ import user from "@/store/user";
 
 export default {
   name: 'pageHeader',
+  props: ['showSearch', 'tag', 'select', 'options', 'input'],
   data() {
     return {
-      showSearch: false,
-
       userName: 'huangzehuan',
       activeIndex: '1',
       isLogin: false,
-
-      // search
-      input: '',
-      options: [{
-        value: '1',
-        label: '篇关摘'
-      }, {
-        value: '2',
-        label: '文献来源'
-      }, {
-        value: '3',
-        label: '关键字'
-      }, {
-        value: 'title',
-        label: '篇名'
-      }, {
-        value: '5',
-        label: '摘要'
-      },{
-        value: '6',
-        label: '作者'
-      }, {
-        value: '7',
-        label: '作者单位'
-      }, {
-        value: '8',
-        label: 'DOI'
-      }],
-
-      authorOptions: [{
-        value: 'name',
-        label: '姓名'
-      }, {
-        value: 'affiliation',
-        label: '机构'
-      }, {
-        value: 'main_area',
-        label: '领域'
-      }],
-
-      select: '1',
     };
   },
   created() {
@@ -105,20 +56,6 @@ export default {
       this.isLogin = true;
       this.userName = userInfo.user.username;
     }
-  },
-  mounted() {
-    setTimeout(() => {
-      if (this.$route.path === '/searchRes')
-        this.showSearch = true;
-      else if (this.$route.path === '/authorRes') {
-        this.showSearch = true;
-        this.options = this.authorOptions;
-      }
-      let _query = this.$route.query;
-      let _search_key = Object.keys(_query)[0];
-      this.input = _query[_search_key];
-      this.select = _search_key;
-    }, 100);
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -147,24 +84,6 @@ export default {
       this.$router.push('/settings');
     },
     logout() {
-      // this.$axios({
-      //   method: 'get',
-      //   url: '/user/logout',
-      // })
-      // .then(res => {
-      //   switch (res.data.status_code) {
-      //     case 200:
-      //       this.$store.dispatch('clear');
-      //       location.reload();
-      //       break;
-      //     case 401:
-      //       this.$message.error('未检测到登录信息！');
-      //       break;
-      //   }
-      // })
-      // .catch(err => {
-      //   console.log(err);
-      // })
       this.$store.dispatch('clear');
       this.$message.success("退出成功！");
       setTimeout(() => {

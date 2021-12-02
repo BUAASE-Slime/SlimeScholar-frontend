@@ -23,6 +23,9 @@ const routes = [
         path: '/searchRes',
         name: 'searchRes',
         component: () => import('../views/retrieval/searchRes'),
+        meta: {
+            noNav: true,
+        }
     },
     // 文献详情模块
     {
@@ -69,23 +72,11 @@ const routes = [
         path: '/authorRes',
         name: 'AuthorRes',
         component: () => import('../views/scholar/authorRes'),
+        meta: {
+            noNav: true,
+        }
     },
     // 社区模块
-    {
-        path: '/community',
-        name: 'Community',
-        component: () => import('../views/community/Community.vue'),
-    },
-    {
-        path: '/question',
-        name: 'Question',
-        component: () => import('../views/community/Question'),
-    },
-    {
-        path: '/test',
-        name: 'test',
-        component: () => import('../views/community/test.vue'),
-    },
     {
         path: '/commentDetail',
         name: 'CommentDetail',

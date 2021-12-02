@@ -3,17 +3,17 @@
     <el-card v-for="item in articles" :key="item" class="article-item">
       <div style="text-align: left">
         <div style="margin-bottom: 10px">
-          <span style="font-size: 20px; font-weight: bold">{{item.paper_title}}</span>
+          <span class="paper-title">{{item.paper_title}}</span>
         </div>
-        <span v-for="(j, index) in item.authors" :key="j" style="color: #2d94d4; cursor: pointer">
+        <span v-for="(j, index) in item.authors" :key="j" class="author-name">
                   {{j.author_name}}
-                  <span v-if="index<item.authors.length-1" style="color: #A0A0A0"> / </span>
+                  <span v-if="index<item.authors.length-1"> / </span>
                 </span>
-        <span style="color:grey;"> · {{item.year}}</span>
+        <span class="publish-year"> · {{item.year}}</span>
       </div>
 
       <div style="text-align:left;margin-top:10px;">
-        <span style="color: #A0A0A0">{{item.abstract|ellipsis}}</span>
+        <span class="abstract">{{item.abstract|ellipsis}}</span>
       </div>
       <el-divider></el-divider>
       <div style="text-align:left; font-size: 15px">
@@ -45,8 +45,8 @@ export default {
   filters: {
     ellipsis: function(value) {
       if (!value) return "";
-      if (value.length > 400) {
-        return value.slice(0,400) + "...";
+      if (value.length > 300) {
+        return value.slice(0,300) + "...";
       }
       return value;
     },
@@ -55,6 +55,8 @@ export default {
 </script>
 
 <style scoped>
+
+@import "../styles/article.css";
 
 .article-blocks .article-item {
   margin-top:20px;

@@ -1,5 +1,6 @@
 <template>
   <div class="search-res">
+    <PageHeader :showSearch="showSearch" :tag="tag" :options="articleOptions" :select="header_select" :input="input"></PageHeader>
     <div class="main-body">
       <el-row class="header">
         <span style="float:left; font-size: 22px; color: #A0A0A0">
@@ -103,11 +104,42 @@
 <script>
 
 import ArticleBlocks from "../../components/ArticleBlocks";
+import PageHeader from "../../components/PageHeader";
 
   export default {
-    components: {ArticleBlocks},
+    components: {PageHeader, ArticleBlocks},
     data() {
       return {
+        showSearch: true,
+        tag: 'searchRes',
+        header_select: '1',
+        input: "",
+        articleOptions: [{
+          value: '1',
+          label: '篇关摘'
+        }, {
+          value: '2',
+          label: '文献来源'
+        }, {
+          value: '3',
+          label: '关键字'
+        }, {
+          value: 'title',
+          label: '篇名'
+        }, {
+          value: '5',
+          label: '摘要'
+        },{
+          value: '6',
+          label: '作者'
+        }, {
+          value: '7',
+          label: '作者单位'
+        }, {
+          value: '8',
+          label: 'DOI'
+        }],
+
         total_hits:45112,
         select: '1',
         queue:["匹配程度","发表时间","引用次数"],
@@ -254,6 +286,9 @@ import ArticleBlocks from "../../components/ArticleBlocks";
         let _search_key = Object.keys(_query)[0];
         let _search_value = _query[_search_key];
 
+        this.header_select = _search_key;
+        this.input = _search_value;
+
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
         _formData.append(_search_key, _search_value);
@@ -311,7 +346,7 @@ import ArticleBlocks from "../../components/ArticleBlocks";
 <style scoped>
 
 .search-res .main-body {
-  padding: 30px 100px;
+  padding: 0 100px 30px;
 }
 
 .search-res .header {
