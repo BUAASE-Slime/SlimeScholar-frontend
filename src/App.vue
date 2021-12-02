@@ -7,10 +7,12 @@
 
 <script>
 import PageHeader from "./components/PageHeader";
+import LucidHeader from "./components/LucidHeader";
 
 export default {
   name: "App",
   components: {
+    LucidHeader,
     PageHeader,
   },
 };

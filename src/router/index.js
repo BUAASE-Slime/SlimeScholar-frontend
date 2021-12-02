@@ -10,6 +10,9 @@ const routes = [
         path: '/',
         name: 'HomePage',
         component: () => import('../views/retrieval/HomePage'),
+        meta: {
+            noNav: true,
+        }
     },
     {
         path: '/advSearch',
