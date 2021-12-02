@@ -84,9 +84,9 @@ const routes = [
         component: () => import('../views/community/test.vue'),
     },
     {
-        path: '/detail',
-        name: 'detail',
-        component: () => import('../views/community/index.vue'),
+        path: '/commentDetail',
+        name: 'CommentDetail',
+        component: () => import('../views/community/CommentDetail.vue'),
     }
 ]
 
