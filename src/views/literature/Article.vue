@@ -10,7 +10,7 @@
             <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}&nbsp;&nbsp;</span>
             <span v-if="articleDetails.authors.length > index + 1">/&nbsp;&nbsp;</span>
           </span>
-          <span class="journal" v-if="articleDetails.journalName">·&nbsp;&nbsp;{{ articleDetails.journalName }}&nbsp;&nbsp;</span>
+          <span class="journal" v-if="articleDetails.journal">·&nbsp;&nbsp;{{ articleDetails.journal }}&nbsp;&nbsp;</span>
           <span class="date" v-if="articleDetails.year">·&nbsp;&nbsp;{{ articleDetails.year }}</span>
         </div>
         <div class="sub-title" v-if="articleDetails.doi">
@@ -80,10 +80,10 @@
             </el-tab-pane>
             <el-tab-pane label="引证文献" name="second">
               <div class="reference-info">
-                <span>共 {{ articleDetails.reference_num }} 条</span>
+                <span>共 {{ articleDetails.citation_count }} 条</span>
               </div>
               <div class="reference-article">
-                <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
+                <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
                   <div @click="toArticle(article.id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
@@ -156,7 +156,7 @@
               <div class="digit-text">引用量</div>
             </el-col>
             <el-col :span="6" class="digit-num _success">
-              {{ articleDetails.outCitations.length }}
+              {{ articleDetails.citation_count }}
               <div class="digit-text" >被引量</div>
             </el-col>
             <el-col :span="6" class="digit-num _warning">
@@ -168,15 +168,15 @@
               <div class="digit-text">评论数</div>
             </el-col>
           </el-row>
-          <el-row class="field _bd_bottom" v-if="articleDetails.fieldsOfStudy">
+          <el-row class="field _bd_bottom" v-if="articleDetails.fields">
             <div class="field-title">领域</div>
-            <div class="field-content" v-for="(field, index) in articleDetails.fieldsOfStudy" :key="index">
-              -&ensp;<span class="_link" @click="toField(field)">{{ field }}</span>
+            <div class="field-content" v-for="(field, index) in articleDetails.fields" :key="index">
+              -&ensp;<span class="_link" @click="toField(field)">{{ field.name }}</span>
             </div>
           </el-row>
-          <el-row class="relation" v-if="articleDetails.reference_msg"> <!-- 假借 -->
+          <el-row class="relation" v-if="articleDetails.related_papers"> <!-- 假借 -->
             <div class="field-title">相关文献</div>
-            <div class="relation-article" v-for="(article, index) in articleDetails.reference_msg" :key="index">
+            <div class="relation-article" v-for="(article, index) in articleDetails.related_papers" :key="index">
               <div class="relation-title">
                 <span class="_link" @click="toArticle(article.id)">{{ article.paper_title }}</span>
               </div>
@@ -237,21 +237,81 @@ export default {
             order: "3"
           }
         ],
-        citation_count: 0,
+        fields: [
+          {
+            fields_id: "123123",
+            name: "Computer Vision"
+          }
+        ],
+        citation_count: 8,
         doi: "10.1051/epjconf/202024507021",
-        fieldsOfStudy: [
-          "Computer Science",
-        ],
         paper_id: "9782951d43920382d2f1229601d018ca87df4dcb",
-        journalName: "EPJ Web of Conferences",
-        journalPages: "07021",
-        journalVolume: "245",
-        outCitations: [
-          "d884573116a4363256d52575a4dd642f3b5b6f24",
-          "44d2abe2175df8153f465f6c39b68b76a0d40ab9"
-        ],
+        journal: "EPJ Web of Conferences",
+        publisher: "Elsevier BV",
+        conference: "",
         abstract: "The Centralised Elasticsearch Service at CERN runs the infrastructure to provide Elasticsearch clusters for more than 100 different use cases.This contribution presents how the infrastructure is managed, covering the resource distribution, instance creation, cluster monitoring and user support. The contribution will present the components that have been identified as critical in order to share resources and minimise the amount of clusters and machines needed to run the service. In particular, all the automation for the instance configuration, including index template management, backups and visualisation settings, will be explained in detail.",
         pdfUrls: [],
+        citation_msg: [
+          {
+            authors: [
+              {
+                author_id: "2772667878",
+                author_name: "Sepp Hochreiter",
+              },
+              {
+                author_id: "2772667878",
+                author_name: "Jürgen Schmidhuber",
+              }
+            ],
+            citation_num: 1,
+            id: "d884573116a4363256d52575a4dd642f3b5b6f24",
+            journalName: "EPJ Web of Conferences",
+            abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
+            reference_num: 2,
+            paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
+            year: 2019
+          },
+        ],
+        related_papers: [
+          {
+            authors: [
+              {
+                author_id: "2772667878",
+                author_name: "Sepp Hochreiter",
+              },
+              {
+                author_id: "2772667878",
+                author_name: "Jürgen Schmidhuber",
+              }
+            ],
+            citation_num: 1,
+            id: "d884573116a4363256d52575a4dd642f3b5b6f24",
+            journalName: "EPJ Web of Conferences",
+            abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
+            reference_num: 2,
+            paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
+            year: 2019
+          },
+          {
+            authors: [
+              {
+                author_id: "2772667878",
+                author_name: "Sepp Hochreiter",
+              },
+              {
+                author_id: "2772667878",
+                author_name: "Jürgen Schmidhuber",
+              }
+            ],
+            citation_num: 1,
+            id: "d884573116a4363256d52575a4dd642f3b5b6f24",
+            journalName: "EPJ Web of Conferences",
+            abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
+            reference_num: 2,
+            paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
+            year: 2019
+          },
+        ],
         reference_msg: [
           {
             authors: [
@@ -293,9 +353,7 @@ export default {
           }
         ],
         reference_num: 2,
-        s2PdfUrl: "",
         paper_title: "Large Elasticsearch cluster management",
-        venue: "",
         year: 2020,
       },
     }
@@ -312,7 +370,7 @@ export default {
       alert("前往" + "id:" + id + "的学者门户")
     },
     toDOI: function(doi) {
-      alert("前往" + ":" + doi )
+      window.open("https://doi.org/" + doi);
     },
     toComment: function(index) {
       alert("前往" + "id:" + id + "的文献评论")

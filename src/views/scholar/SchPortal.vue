@@ -2,22 +2,23 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image class="headImg" :src="headImgUrl">
+            <el-image class="headImg" :src="info.headImgUrl">
             </el-image>
           </el-col>
           <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
-              <el-col>{{ name }}</el-col>
+              <el-col>{{ info.author_name }}</el-col>
             </el-row>
             <el-row style="font-size: medium;margin-top: 15px">
               <i class="el-icon-office-building" style="margin-right: 5px"></i>
-              {{organization}}
+              {{ info.affiliation }}
             </el-row>
             <el-row style="margin-top: 10px">
               <i class="el-icon-tickets" style="margin-right: 10px"></i>
-              <el-link style="font-size: medium;color:#00b1fd;" v-for="(i,j) in fields" v-bind:key="j">
-                {{i}}<span style="margin-left: 4px;margin-right: 4px" v-if="j!==fields.length-1">/</span>
-              </el-link>
+              <span v-for="(area, index) in info.fields" v-bind:key="index" style="color:#00b1fd;">
+                <el-link style="color: #2d94d4; font-size: medium;">{{ area }}</el-link>
+                <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.fields.length-1">/</span>
+              </span>
             </el-row>
           </el-col>
           <el-col class="like-button" :span="2">
@@ -41,24 +42,32 @@
                 年份
               </el-col>
             </el-row>
-            <div class="article-body" v-for="(item,index) in articles" v-bind:key="index">
+            <div class="article-body" v-for="(item,index) in info.papers" v-bind:key="index">
               <el-row  v-if="index < artNumInit">
                 <el-row class="art-div" >
                   <el-col class="art-info" span="19">
-                    <el-row style="color: #217ad9;font-size: 16px;margin: 2px">
-                      {{item.title}}
+                    <el-row style="font-size: 16px;margin: 2px">
+                      <el-link style="color: #217ad9; font-size: 16px;">{{item.paper_title}}</el-link>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
                       <span v-bind:key="i" v-for="(p,i) in item.authors" >
-                        {{p}}<span v-if="i !== item.authors.length-1">, </span>
+                        {{p.author_name}}<span v-if="i !== item.authors.length-1">, </span>
                       </span>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                      <span>{{item.journalName}}  {{item.journalVolume}}  {{item.journalPages}}</span>
+                      <span v-if="item.journal_id !== ''">{{item.journal.name}}</span>
+                      <span v-else-if="item.conference_id !== ''">{{item.conference.name}}</span>
+                      <span v-else-if="item.publisher">{{item.publisher}}</span>
+                      <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
+                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
+                      </span>
+                      <span v-else-if="item.first_page!==''&&item.volume!==''">
+                        {{ item.volume }}, {{ item.first_page }}
+                      </span>
                     </el-row>
                   </el-col>
                   <el-col class="art-citation" span="2" style="padding-top: 5px;text-align: center; font-size: 14px">
-                    <span>{{item.citations}}</span>
+                    <span>{{item.citation_count}}</span>
                   </el-col>
                   <el-col class="art-year" span="3" style="padding-top: 5px;text-align: center;padding-left: 4px;font-size: 14px">
                     <span>{{item.year}}</span>
@@ -89,7 +98,7 @@
                 </span>
                 <el-row class="citationChart">
                   <el-row style="font-size: 15px;font-weight: bold;text-align: left;padding-left: 270px">
-                    总被引用 {{ totalCitations }} 次，被关注 {{totalAttention}} 人
+                    总被引用 {{ info.citation_num }} 次，被关注 {{ info.follow_num }} 人
                   </el-row>
                   <el-row>
                     <div id="citation-chart" style="width:500px;height: 400px;margin-left: 150px"></div>
@@ -122,12 +131,16 @@
               </el-col>
               <el-col :span="17" style="padding-left: 10px">
                 <el-row style="color: black ;font-weight: bold;font-size:small">
-                  <el-col :span="20" style="padding-bottom: 1px">{{i.name}}</el-col>
+                  <el-col :span="20" style="padding-bottom: 1px">{{i.author_name}}</el-col>
                 </el-row>
-                <el-row style="font-size: xx-small">{{i.organization}}</el-row>
+                <el-row style="font-size: 13px; color: #777777">
+                  <el-tooltip class="item" effect="dark" :content="i.affiliation_name" placement="bottom">
+                    <span>{{i.affiliation_name|ellipsis}}</span>
+                  </el-tooltip>
+                </el-row>
               </el-col>
               <el-col :span="2" style="padding-top: 17px;padding-left: 7px;color: #409EFF">
-                <i class="el-icon-right" @click="toHim()"></i>
+                <i class="el-icon-right" @click="toHim(i.author_id)"></i>
               </el-col>
             </el-row>
           </el-scrollbar>
@@ -140,170 +153,178 @@
 export default {
   name: "schPortal.vue",
   data(){
-    return{
-      id:"19373180",
-      name:"Rui Guo",
-      organization:"Software Engineering, BeiHang University",
-      headImgUrl: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg",
-      fields: ["Software Engineering","Visualizing Program","Software Engineering","OpenCV","Visualizing Program"],
-      artNumInit:"6",
-      articles:[
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2018",
-          citations:"156",
-        },
-        {
-          title:" computer-assisted composition,Knowledge-rich",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2009",
-          citations:"186",
-        },
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2014",
-          citations:"178",
-        },
-        {
-          title:"Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2010",
-          citations:"16",
-        },
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets ",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2000",
-          citations:"56",
-        },
-        {
-          title:"Chinese couplets,computer-assistedKnowledge-rich ",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2021",
-          citations:"1515",
-        },
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2018",
-          citations:"156",
-        },
-        {
-          title:" computer-assisted composition,Knowledge-rich",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2009",
-          citations:"186",
-        },
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2014",
-          citations:"178",
-        },
-        {
-          title:"Chinese couplets",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2010",
-          citations:"16",
-        },
-        {
-          title:"Knowledge-rich, computer-assisted composition of Chinese couplets ",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2000",
-          citations:"56",
-        },
-        {
-          title:"Chinese couplets,computer-assistedKnowledge-rich ",
-          authors:["Ming Xiao","Rui Guo","Hong Xiao","Hua Xiao","Zhu Xiao","Zhang Xiao"],
-          journalName: "DSH",
-          journalVolume: "31",
-          journalPages: "152-163",
-          year:"2021",
-          citations:"1515",
-        },
-      ],
+    return {
+      artNumInit: "6",
+      info: {
+        follow_num: 30,
+        citation_num: 48,
+        author_id:"19373180",
+        author_name:"Rui Guo",
+        affiliation:"Software Engineering, BeiHang University",
+        headImgUrl: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg",
+        fields: ["Computer Vision", "Computer Graphics"],
+        papers: [
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "0",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "0",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "0",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          }
+        ],
+      },
+
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
         cia:["198","268","98","200","1","6","198","268","398","200"]
       },
       friends:[
         {
-          id:"19373180",
-          name:"Zuozhou Zhang",
-          organization:"Software Engineering, BeiHang University",
+          affiliation_id: "",
+          affiliation_name: "Independent Researcher Tsing University",
+          author_id: "3323123",
+          author_name: "Sergei Belousov",
+          order: "1",
           headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
         },
         {
-          id:"19373180",
-          name:"Zewan Huang",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/kId5TvGJUiDa7PW.jpg",
+          affiliation_id: "",
+          affiliation_name: "Independent Researcher",
+          author_id: "3323123",
+          author_name: "Sergei Belousov",
+          order: "1",
+          headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
         },
         {
-          id:"19373180",
-          name:"Yu Li",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/7EMrViSdIQDvOya.jpg",
+          affiliation_id: "",
+          affiliation_name: "Independent Researcher",
+          author_id: "3323123",
+          author_name: "Sergei Belousov",
+          order: "1",
+          headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
         },
-        {
-          id:"19373180",
-          name:"Luxia Lin",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/Wenpz8IOtHG7yq4.jpg",
-        },
-        {
-          id:"19373180",
-          name:"Qin Zhou",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/GolXYjUHuZsSnqa.png",
-        },
-        {
-          id:"19373180",
-          name:"Yuning Tong",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/25FSRmioMyBgUha.jpg",
-        },
-        {
-          id:"19373180",
-          name:"Yiting Shi",
-          organization:"Software Engineering, BeiHang University",
-          headImgUrl: "https://i.loli.net/2021/11/14/QbNtj9B3RLMfyrv.jpg",
-        }
       ],
       totalCitations:"80",
       totalAttention:"90",
@@ -312,6 +333,9 @@ export default {
       activeNameChart:"citations",
     }
   },
+  created() {
+    this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+  },
   mounted(){
     //页面加载完成后,才执行
     setTimeout(() => {
@@ -319,16 +343,29 @@ export default {
       this.showRelChart();
     }, 1000);
   },
+  filters: {
+    ellipsis: function(value) {
+      if (!value) return "";
+      if (value.length > 20) {
+        return value.slice(0,20) + "...";
+      }
+      return value;
+    },
+  },
   methods: {
     AddArtNum(){
       let x=parseInt(this.artNumInit);
-      this.flag=(this.articles.length-x);
+      this.flag=(this.info.papers.length-x);
       x+=20;
-      if(x>this.articles.length) x=this.articles.length;
+      if(x>this.info.papers.length) x=this.info.papers.length;
       this.artNumInit=x;
     },
-    toHim(){
-      this.$message("进入了TA的主页");
+    toHim(author_id){
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_self");
     },
     showCiaChart() {
       // 基于准备好的dom，初始化echarts实例
@@ -530,12 +567,14 @@ export default {
   padding-top: 7px;
 }
 
-
-
 .schPortal .friends-item{
   padding-bottom: 13px;
   margin-top: 18px;
   border-bottom: #e2e2e2 solid 1px;
+}
+
+.schPortal .friends-item >>> .el-col-20 {
+  margin-top: 7px;
 }
 
 .schPortal .friends-item >>> .el-image{
