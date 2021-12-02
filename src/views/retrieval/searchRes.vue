@@ -34,7 +34,7 @@
                   <span>类型</span>
                 </div>
                 <el-checkbox-group v-for="(o,index) in aggregation.doctype"
-                     :key="o"
+                     :key="index"
                      style="margin-bottom: 15px; text-align: left"
                      v-model="checkDoctypeList">
                   <div v-for="(val, key) in o" :key="key">
@@ -52,7 +52,7 @@
                   <span>期刊</span>
                 </div>
                 <el-checkbox-group v-for="(o,index) in aggregation.journal"
-                                   :key="o"
+                                   :key="index"
                                    style="margin-bottom: 15px; text-align: left"
                                    v-model="checkJournalList">
                   <el-checkbox :label=o.name>
