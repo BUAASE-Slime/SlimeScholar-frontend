@@ -9,7 +9,12 @@
           <el-col :span="16" style="padding-left: 10px; text-align: left">
             <div class="author-name">{{ item.author_name }}</div>
             <div>{{ item.affiliation }}</div>
-            <div style="margin-top: 3px; margin-bottom: 3px">{{ item.main_areas }}</div>
+            <div style="margin-top: 3px; margin-bottom: 3px">
+              <span v-for="(area, index) in item.fields" v-bind:key="index">
+                <el-link style="color: #2d94d4;">{{ area }}</el-link>
+                <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4;" v-if="index!==item.fields.length-1">/</span>
+              </span>
+            </div>
           </el-col>
           <el-col :span="5">
             <div class="article-count">文献数量：<span style="color: #2d94d4">{{ item.article_count }}</span>

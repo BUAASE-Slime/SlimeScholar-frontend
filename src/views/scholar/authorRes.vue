@@ -103,6 +103,7 @@ export default {
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
+          fields: ["Computer Vision", "Computer Graphics"],
           reference_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
@@ -112,6 +113,7 @@ export default {
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
+          fields: ["Computer Vision", "Computer Graphics"],
           reference_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
@@ -121,6 +123,7 @@ export default {
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
+          fields: ["Computer Vision", "Computer Graphics"],
           reference_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
