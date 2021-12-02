@@ -16,6 +16,11 @@ const routes = [
         name: 'AdvSearch',
         component: () => import('../views/retrieval/AdvSearch'),
     },
+    {
+        path: '/searchRes',
+        name: 'searchRes',
+        component: () => import('../views/retrieval/searchRes'),
+    },
     // 文献详情模块
     {
         path: '/article',
@@ -56,6 +61,11 @@ const routes = [
         path: '/schPortal',
         name: 'SchPortal',
         component: () => import('../views/scholar/SchPortal'),
+    },
+    {
+        path: '/authorRes',
+        name: 'AuthorRes',
+        component: () => import('../views/scholar/authorRes'),
     },
     // 社区模块
     {

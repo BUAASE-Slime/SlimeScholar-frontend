@@ -2,13 +2,13 @@
   <div id="login" class="login">
     <img class="bgbox" id="bgbox" alt="" src="../../../src/assets/images/background1.jpg">
     <div>
-      <img class="logo" src="../../assets/images/SlimeScholar.png" alt="logo" @click="toHome"/>
+      <img class="logo" src="../../assets/images/SlimeScholar-en.png" alt="logo" @click="toHome"/>
     </div>
     <div class="wrap">
       <h1>登 录</h1>
       <el-form :model="form" ref="form" class="form">
         <el-form-item prop="username">
-          <el-input placeholder="用户名" type="username" v-model="form.username" autocomplete="off"></el-input>
+          <el-input placeholder="用户名或邮箱" type="username" v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item id="password" prop="password">
           <el-input
@@ -45,7 +45,10 @@ export default {
   methods: {
     login() {
       const formData = new FormData();
-      formData.append("username", this.form.username);
+      if (this.form.username.indexOf("@") !== -1)
+        formData.append("email", this.form.username);
+      else
+        formData.append("username", this.form.username);
       formData.append("password", this.form.password);
       this.$axios({
         method: 'post',
@@ -112,6 +115,7 @@ export default {
 #login .logo {
   cursor: pointer;
   overflow: hidden;
+  height: 150px;
 }
 #login .wrap {
   width: 300px;
