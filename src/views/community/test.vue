@@ -1,135 +1,86 @@
 <template>
   <div class="block">
-    <el-carousel height="350px">
-      <el-carousel-item v-for="(item, index) in topImg" :key="index">
-        <img :src="item.url" style="width: 100%; height: 100%" alt="" />
-        <div class="cover">
-          <!-- {{ item.title }}<br /> -->
-          欢迎来到Slime交流社区<br />
-          <span style="font-size: 35px">{{ item.subTitle }}</span>
-        </div>
-      </el-carousel-item>
-    </el-carousel>
-    <div class="question" v-for="(ques, index) in questionList" :key="index">
-      <div class="avatar">
-        <div>
-          <el-avatar icon="el-icon-user-solid"></el-avatar>
-        </div>
-        <!-- <div>
-      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-    </div> -->
-      </div>
-      <div class="question-detail">
-        <div class="question-title">{{ ques.title }}</div>
-        <div class="question-author">
-          <i class="el-icon-user"></i>
-          <!-- lllyyyss 创建于 11月13日 22:38 -->
-          {{ ques.author }} 创建于 {{ ques.time }}
-        </div>
-      </div>
-      <div class="question-reply">
-        <i class="el-icon-chat-dot-round"></i> {{ ques.reply }}
-      </div>
-      <div
-        class="question-like"
-        v-if="ques.islike == false"
-        @click="likeIt(ques)"
-      >
-        <el-tooltip
-          class="item"
-          effect="light"
-          content="关注下叭"
-          placement="right"
-        >
-          <i class="el-icon-star-off"></i>
-        </el-tooltip>
-      </div>
-      <div
-        class="question-like"
-        v-if="ques.islike == true"
-        @click="dislikeIt(ques)"
-      >
-        <el-tooltip
-          class="item"
-          effect="dark"
-          content="取消关注"
-          placement="right"
-        >
-          <i class="el-icon-star-on" style="font-size: 21px"></i>
-        </el-tooltip>
-      </div>
-    </div>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="pageSizes"
-      :page-size="PageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="questionList.length"
-    >
-    </el-pagination>
+    <showMore
+      style="margin-top: 20px"
+      :showHeight="showHeight"
+      :content="contenttxt"
+    ></showMore>
   </div>
 </template>
 <script>
+import showMore from "./testcomponent.vue";
 export default {
-  methods: {
-    // 每页显示的条数
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.currentPage = 1;
-      this.pageSize = val;
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-      this.currentPage = val;
-    },
+  // props: {
+  //   showHeight: {
+  //     type: Number,
+  //     required: true,
+  //     default: 200,
+  //   },
+  //   content: {
+  //     type: String,
+  //     default: null,
+  //   },
+  // },
+  components: {
+    showMore,
   },
   data() {
     return {
-      currentPage: 1,
-      pageSize: 5,
-      pageSizes: [4, 5, 7],
-      questionList: [],
+      showHeight: 200,
+      showMore: false,
+      isLongContent: false,
+      contenttxt: "aaa",
+      contentTxt:
+        " 更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这更多” 在这vvvv更多” 在这更多” 在这更多” 在这在这里为了把“显示更多” 在这里为了把“显示更多”做的更通用些，我把它封装成了一个组件，传入两个参数：showHeight用于控制显示的高度（类似上文的200px），content用于展示内容。接下来我们去ShowMore组件中看一下到底是如何把内容隐藏一部分的，上代码： 在这里为了把“显示更多”做的更通用些，我把它封装成了一个组件，传入两个参数：showHeight用于控制显示的高度（类似上文的200px），content用于展示内容。接下来我们去ShowMore组件中看一下到底是如何把内容隐藏一部分的，上代码： 在这里为了把“显示更多”做的更通用些，我把它封装成了一个组件，传入两个参数：showHeight用于控制显示的高度（类似上文的200px），content用于展示内容。接下来我们去ShowMore组件中看一下到底是如何把内容隐藏一部分的，上代码：做的更通用些，我把它封装成了一个组件，传入两个参数：showHeight用于控制显示的高度（类似上文的200px），content用于展示内容。接下来我们去ShowMore组件中看一下到底是如何把内容隐藏一部分的，上代码：",
     };
   },
-  created() {
-    var obj1 = {
-      title: "今天软工写完了嘛",
-      author: "lllysss",
-      time: "2021-11-14 00:15:44",
-      reply: 10,
-      islike: true,
-    };
-    var obj2 = {
-      title: "今天编译写完了嘛",
-      author: "lllyyysss",
-      time: "2021-11-14 00:16:44",
-      reply: 100,
-      islike: false,
-    };
-    this.questionList.push(obj1);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    this.questionList.push(obj2);
-    // console.log(this.projectList);
+  watch: {
+    // 每当内容变化时都重新计算一次高度
+    content() {
+      this._calculateHeight();
+    },
   },
-  computed: {
-    userdata: function () {
-      return this.questionList.slice(
-        (this.currentPage - 1) * this.pageSize,
-        this.currentPage * this.pageSize
-      );
+  methods: {
+    refresh() {
+      this._calculateHeight();
+    },
+    _calculateHeight() {
+      // $nextTick()，等待内容获取完毕再计算高度，异步处理
+      this.$nextTick().then(() => {
+        let contentHeight = this.$refs.content.clientHeight;
+        if (contentHeight > this.showHeight) {
+          this.isLongContent = true;
+        } else {
+          this.isLongContent = false;
+        }
+      });
+    },
+    _toggleShowMore() {
+      this.showMore = !this.showMore;
     },
   },
 };
 </script>
+
+<style scoped>
+.wrapper-container {
+  position: relative;
+  padding-bottom: 40px;
+}
+.control {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding-top: 40px;
+  text-align: center;
+  background-image: linear-gradient(
+    -180deg,
+    rgba(255, 255, 255, 0) 0%,
+    #fff 70%
+  );
+}
+.show-more {
+  padding-top: 0;
+  background: none;
+}
+</style>
