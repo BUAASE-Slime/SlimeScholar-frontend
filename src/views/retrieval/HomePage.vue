@@ -365,7 +365,7 @@ export default {
 }
 
 .homepage .input-box-body {
-  padding-left: 10%;
+  padding-left: 7%;
   padding-right: 10%;
   text-align: left;
 }
