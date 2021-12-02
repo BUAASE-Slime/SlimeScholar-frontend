@@ -64,7 +64,7 @@
             <div>
               <el-row>
                 <el-col span="17">
-                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">论文 ({{total_hits}})</span>
+                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">收藏论文 ({{total_hits}})</span>
                 </el-col>
                 <el-col span="2">
                   <div style="margin-top:10px">
@@ -107,7 +107,7 @@ export default {
   components: { ArticleBlocks },
   data() {
     return {
-      total_hits: 11,
+      total_hits: 1,
       queue: ["匹配程度","发表时间","引用次数"],
       value2: "匹配程度",
 
@@ -120,19 +120,13 @@ export default {
           authors: [
             {
               author_name: "John Lee",
-              ids: [
-                "3362353",
-              ]
             },
             {
               author_name: "Zuo_zuo",
-              ids: [
-                "19373260",
-              ]
             },
           ],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
-          paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
+          paper_title: "Computer-assisted composition of Chinese couplets",
           abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
           citation_num: 3288,
           comment_num: 5,
@@ -145,15 +139,9 @@ export default {
           authors: [
             {
               author_name: "John Lee",
-              ids: [
-                "3362353",
-              ]
             },
             {
               author_name: "Zuo_zuo",
-              ids: [
-                "19373260",
-              ]
             },
           ],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
@@ -170,15 +158,9 @@ export default {
           authors: [
             {
               author_name: "John Lee",
-              ids: [
-                "3362353",
-              ]
             },
             {
               author_name: "Zuo_zuo",
-              ids: [
-                "19373260",
-              ]
             },
           ],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",

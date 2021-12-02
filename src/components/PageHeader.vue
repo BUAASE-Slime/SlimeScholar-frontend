@@ -83,6 +83,18 @@ export default {
         value: '8',
         label: 'DOI'
       }],
+
+      authorOptions: [{
+        value: 'name',
+        label: '姓名'
+      }, {
+        value: 'affiliation',
+        label: '机构'
+      }, {
+        value: 'main_area',
+        label: '领域'
+      }],
+
       select: '1',
     };
   },
@@ -98,10 +110,14 @@ export default {
     setTimeout(() => {
       if (this.$route.path === '/searchRes')
         this.showSearch = true;
-        let _query = this.$route.query;
-        let _search_key = Object.keys(_query)[0];
-        this.input = _query[_search_key];
-        this.select = _search_key;
+      else if (this.$route.path === '/authorRes') {
+        this.showSearch = true;
+        this.options = this.authorOptions;
+      }
+      let _query = this.$route.query;
+      let _search_key = Object.keys(_query)[0];
+      this.input = _query[_search_key];
+      this.select = _search_key;
     }, 100);
   },
   methods: {
@@ -167,7 +183,7 @@ export default {
   padding-right: 50px;
 }
 
-.header .el-menu--horizontal>.el-menu-item {
+.header .el-menu--horizontal >>> .el-menu-item {
   float: left;
   height: 70px;
   line-height: 70px;

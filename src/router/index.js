@@ -62,6 +62,11 @@ const routes = [
         name: 'SchPortal',
         component: () => import('../views/scholar/SchPortal'),
     },
+    {
+        path: '/authorRes',
+        name: 'AuthorRes',
+        component: () => import('../views/scholar/authorRes'),
+    },
     // 社区模块
     {
         path: '/community',
