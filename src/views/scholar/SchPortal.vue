@@ -22,8 +22,11 @@
             </el-row>
           </el-col>
           <el-col class="like-button" :span="2">
-            <el-button style="margin-left:5px;margin-top:50px;height: 35px;width: 80px;text-align: center;vertical-align:middle;border-radius: 10px;padding: 10px" icon="el-icon-message">
+            <el-button class="opera-button" icon="el-icon-message" v-if="isSelf===false">
               关注
+            </el-button>
+            <el-button class="opera-button" v-else icon="el-icon-edit">
+              编辑
             </el-button>
           </el-col>
         </el-row>
@@ -125,22 +128,22 @@
             合著作者
           </el-row>
         <el-scrollbar style="height: 395px">
-            <el-row class="friends-item" v-for="(i,index) in friends" :key="index">
+            <el-row class="friends-item" v-for="(i,index) in info.friends" :key="index">
               <el-col :span="4">
                 <el-image :src="i.headImgUrl"></el-image>
               </el-col>
               <el-col :span="17" style="padding-left: 10px">
                 <el-row style="color: black ;font-weight: bold;font-size:small">
-                  <el-col :span="20" style="padding-bottom: 1px">{{i.author_name}}</el-col>
+                  <el-col :span="20" style="padding-bottom: 1px;">{{i.author_name}}</el-col>
                 </el-row>
                 <el-row style="font-size: 13px; color: #777777">
-                  <el-tooltip class="item" effect="dark" :content="i.affiliation_name" placement="bottom">
+                  <el-tooltip class="item" effect="light" :content="i.affiliation_name" placement="bottom">
                     <span>{{i.affiliation_name|ellipsis}}</span>
                   </el-tooltip>
                 </el-row>
               </el-col>
               <el-col :span="2" style="padding-top: 17px;padding-left: 7px;color: #409EFF">
-                <i class="el-icon-right" @click="toHim(i.author_id)"></i>
+                <i class="el-icon-right" @click="toHim(i.author_id)" style="cursor: pointer"></i>
               </el-col>
             </el-row>
           </el-scrollbar>
@@ -150,14 +153,18 @@
 </template>
 
 <script>
+import user from "../../store/user";
+
 export default {
   name: "schPortal.vue",
   data(){
     return {
+      isSelf: false,
       artNumInit: "6",
       info: {
         follow_num: 30,
         citation_num: 48,
+        user_id: 4,
         author_id:"19373180",
         author_name:"Rui Guo",
         affiliation:"Software Engineering, BeiHang University",
@@ -294,46 +301,47 @@ export default {
             year: "2021"
           }
         ],
+        friends:[
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+        ],
       },
 
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
         cia:["198","268","98","200","1","6","198","268","398","200"]
       },
-      friends:[
-        {
-          affiliation_id: "",
-          affiliation_name: "Independent Researcher Tsing University",
-          author_id: "3323123",
-          author_name: "Sergei Belousov",
-          order: "1",
-          headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-        },
-        {
-          affiliation_id: "",
-          affiliation_name: "Independent Researcher",
-          author_id: "3323123",
-          author_name: "Sergei Belousov",
-          order: "1",
-          headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-        },
-        {
-          affiliation_id: "",
-          affiliation_name: "Independent Researcher",
-          author_id: "3323123",
-          author_name: "Sergei Belousov",
-          order: "1",
-          headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-        },
-      ],
-      totalCitations:"80",
-      totalAttention:"90",
       flag: false,
       activeNameOut: "article",
       activeNameChart:"citations",
     }
   },
   created() {
+    const userInfo = user.getters.getUser(user.state());
+    if (userInfo && userInfo.user.userId === this.info.user_id)
+      this.isSelf = true;
     this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
   },
   mounted(){
@@ -551,6 +559,17 @@ export default {
 .schPortal .dataChart >>> .el-tabs__item.is-active{
   color: #00b1fd;
   font-weight: 500;
+}
+
+.schPortal .opera-button {
+  margin-left:5px;
+  margin-top:50px;
+  height: 35px;
+  width: 80px;
+  text-align: center;
+  vertical-align:middle;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .schPortal .dataChart >>> .el-tabs__active-bar{
