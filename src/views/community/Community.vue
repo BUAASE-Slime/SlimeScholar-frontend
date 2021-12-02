@@ -7,7 +7,7 @@
       <div class="community-describe">在这里您可以讨论各方面学术相关的内容</div>
     </div> -->
     <!-- https://tse1-mm.cn.bing.net/th/id/R-C.8f737f008eecb0965c2e900721b4ad32?rik=TrY2lydT5%2f9mIQ&riu=http%3a%2f%2fwww.bitc.edu.cn%2fxxgk%2fxsxx%2f201809%2fW020180909436995305437.jpg&ehk=LQWbqd%2ffTo5768VA0YkbzGczA0jWUvbdueeBOhXo1H8%3d&risl=&pid=ImgRaw&r=0 -->
-    <el-carousel height="350px">
+    <el-carousel height="280px">
       <el-carousel-item v-for="(item, index) in topImg" :key="index">
         <img :src="item.url" style="width: 100%; height: 100%" alt="" />
         <div class="cover">
@@ -297,7 +297,7 @@ export default {
   color: white;
   font-size: 50px;
   line-height: 60px;
-  padding-top: 120px;
+  padding-top: 80px;
 }
 .el-main {
   width: 100%;
