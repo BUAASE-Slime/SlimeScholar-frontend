@@ -39,7 +39,7 @@
                      v-model="checkDoctypeList">
                   <div v-for="(val, key) in o" :key="key">
                     <el-checkbox :label=key>
-                      <span>{{ key|ellipsis_30 }}&nbsp;({{ val }})</span>
+                      <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
                     </el-checkbox>
                   </div>
                 </el-checkbox-group>
@@ -57,7 +57,7 @@
                                    v-model="checkJournalList">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
-                      <span>{{ o.name|ellipsis_30 }}&nbsp;({{ o.count }})</span>
+                      <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
                     </el-tooltip>
                   </el-checkbox>
                 </el-checkbox-group>
@@ -297,10 +297,10 @@ import ArticleBlocks from "../../components/ArticleBlocks";
         }
         return value;
       },
-      ellipsis_30: function(value) {
+      ellipsis_25: function(value) {
         if (!value) return "";
-        if (value.length > 30) {
-          return value.slice(0,30) + "...";
+        if (value.length > 25) {
+          return value.slice(0,25) + "...";
         }
         return value;
       }

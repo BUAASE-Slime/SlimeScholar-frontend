@@ -22,7 +22,7 @@
         </div>
         <el-divider></el-divider>
         <div class="answerList">
-          <div v-for="(ans, index) in this.info.answers" :key="index">
+          <div v-for="(ans, index) in this.info.answers" v-bind:key="index">
             <el-row :gutter="50">
               <el-col :span="1">
                 <el-avatar icon="el-icon-user-solid"></el-avatar>
@@ -65,7 +65,7 @@
                         autosize
                         placeholder="请输入内容"
                         style="font-size: 15px"
-                        maxlength="100"
+                        maxlength="500"
                         show-word-limit
                         v-model="ans.myAnswer"
                         class="my-answer"
@@ -78,7 +78,7 @@
                         @click="replyAnswer(ans.reply_id, ans.myAnswer)">回复</el-button>
                   </div>
                 </el-row>
-                <el-divider></el-divider>
+                <el-divider v-if="index<info.answers.length-1"></el-divider>
               </el-col>
             </el-row>
           </div>
@@ -86,18 +86,15 @@
         </div>
         <el-divider></el-divider>
         <div class="AnswerIt">
-          <div class="avatarAndtext">
-            <el-input
-              type="textarea"
-              :rows="4"
-              maxlength="500"
-              show-word-limit
-              :autosize="{ minRows: 3, maxRows: 6}"
-              placeholder="请输入你的回答"
-              v-model="myAnswer"
-            >
-            </el-input>
-          </div>
+          <el-input
+            type="textarea"
+            maxlength="500"
+            show-word-limit
+            :autosize="{ minRows: 3, maxRows: 6}"
+            placeholder="请输入你的回答"
+            v-model="myAnswer"
+          >
+          </el-input>
           <div style="width: 100%; text-align: right">
             <el-button type="primary" style="margin-top: 10px;" @click="replyComment">发布</el-button>
           </div>
