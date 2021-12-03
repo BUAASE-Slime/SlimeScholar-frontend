@@ -36,7 +36,7 @@
                 电子邮箱
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.email" placeholder="请输入电子邮箱"></el-input>
+                <el-input v-model="applyInfo.work_email" placeholder="请输入电子邮箱"></el-input>
               </el-col>
             </el-row>
 
@@ -54,7 +54,7 @@
                 个人首页（可选）
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.homepage" placeholder="请输入您的个人首页"></el-input>
+                <el-input v-model="applyInfo.home_page" placeholder="请输入您的个人首页"></el-input>
               </el-col>
             </el-row>
             <el-button type="primary" @click="submit_info"> 下一步</el-button>
@@ -134,9 +134,9 @@ export default {
       applyInfo: {
         author_name: "",
         affiliation_name: "",
-        email: "",
+        work_email: "",
         fields: "",
-        homepage: "",
+        home_page: "",
       },
       papers_group_state: [{open: true, selected: false, author_id: "a123"}, {
         open: true,
