@@ -2,10 +2,10 @@
   <div class="schPortal">
     <el-row class="info-div" style="padding: 30px">
       <el-steps :active="step - 1" finish-status="success" style="padding:20px 50px 0 50px">
-        <el-step title="步骤 1">
+        <el-step title="输入个人信息">
         </el-step>
-        <el-step title="步骤 2"></el-step>
-        <el-step title="步骤 3"></el-step>
+        <el-step title="选择您发表的学术成果"></el-step>
+        <el-step title="完成"></el-step>
       </el-steps>
 
       <el-divider/>
