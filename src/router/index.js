@@ -76,6 +76,14 @@ const routes = [
             noNav: true,
         }
     },
+    {
+        path: '/applySettle',
+        name: 'ApplySettle',
+        component: () => import('../views/scholar/ApplySettle'),
+        meta: {
+            noNav: true,
+        }
+    },
     // 社区模块
     {
         path: '/commentDetail',
