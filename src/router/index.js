@@ -69,6 +69,14 @@ const routes = [
         component: () => import('../views/scholar/SchPortal'),
     },
     {
+        path: '/searchAut',
+        name: 'SearchAut',
+        component: () => import('../views/scholar/searchAut'),
+        meta: {
+            noNav: true,
+        }
+    },
+    {
         path: '/authorRes',
         name: 'AuthorRes',
         component: () => import('../views/scholar/authorRes'),

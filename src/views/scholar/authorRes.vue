@@ -120,7 +120,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          citation_num: 1234,
+          citation_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -130,7 +130,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          citation_num: 1234,
+          citation_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -140,7 +140,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          citation_num: 1234,
+          citation_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },

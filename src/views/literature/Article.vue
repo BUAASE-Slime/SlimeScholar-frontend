@@ -55,7 +55,7 @@
           <el-tabs v-model="activeDetail" type="card">
             <el-tab-pane label="参考文献" name="first">
               <div class="reference-info">
-                <span>共 {{ articleDetails.reference_num }} 条</span>
+                <span>共 {{ articleDetails.reference_count }} 条</span>
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
@@ -152,7 +152,7 @@
         <div class="info-div">
           <el-row class="digit _bd_bottom">
             <el-col :span="6" class="digit-num _primary">
-              {{ articleDetails.reference_num }}
+              {{ articleDetails.reference_count }}
               <div class="digit-text">引用量</div>
             </el-col>
             <el-col :span="6" class="digit-num _success">
@@ -263,11 +263,11 @@ export default {
                 author_name: "Jürgen Schmidhuber",
               }
             ],
-            citation_num: 1,
+            citation_count: 1,
             id: "d884573116a4363256d52575a4dd642f3b5b6f24",
             journalName: "EPJ Web of Conferences",
             abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
-            reference_num: 2,
+            reference_count: 2,
             paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
             year: 2019
           },
@@ -284,11 +284,11 @@ export default {
                 author_name: "Jürgen Schmidhuber",
               }
             ],
-            citation_num: 1,
+            citation_count: 1,
             id: "d884573116a4363256d52575a4dd642f3b5b6f24",
             journalName: "EPJ Web of Conferences",
             abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
-            reference_num: 2,
+            reference_count: 2,
             paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
             year: 2019
           },
@@ -303,11 +303,11 @@ export default {
                 author_name: "Jürgen Schmidhuber",
               }
             ],
-            citation_num: 1,
+            citation_count: 1,
             id: "d884573116a4363256d52575a4dd642f3b5b6f24",
             journalName: "EPJ Web of Conferences",
             abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
-            reference_num: 2,
+            reference_count: 2,
             paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
             year: 2019
           },
@@ -324,11 +324,11 @@ export default {
                 author_name: "Jürgen Schmidhuber",
               }
             ],
-            citation_num: 1,
+            citation_count: 1,
             id: "d884573116a4363256d52575a4dd642f3b5b6f24",
             journalName: "EPJ Web of Conferences",
             abstract: "In early 2016 CERN IT created a new project to consolidate and centralise Elas-ticsearch instances across the site, with the aim to offer a production quality new IT services to experiments and departments. We present the solutions we adapted for securing the system using open source only tools, which allows us to consolidate up to 20 different use cases on a single Elasticsearch cluster.",
-            reference_num: 2,
+            reference_count: 2,
             paper_title: "Securing and sharing Elasticsearch resources with Read-onlyREST",
             year: 2019
           },
@@ -343,16 +343,16 @@ export default {
                 author_name: "Jürgen Schmidhuber",
               }
             ],
-            citation_num: 44135,
+            citation_count: 44135,
             id: "44d2abe2175df8153f465f6c39b68b76a0d40ab9",
             journalName: "Neural Computation",
             abstract: "Learning to store information over extended time intervals by recurrent backpropagation takes a very long time, mostly because of insufficient, decaying error backflow. We briefly review Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, gradient based method called long short-term memory (LSTM). Truncating the gradient where this does not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by enforcing constant error flow through constant error carousels within special units. Multiplicative gate units learn to open and close access to the constant error flow. LSTM is local in space and time; its computational complexity per time step and weight is O. 1. Our experiments with artificial data involve local, distributed, real-valued, and noisy pattern representations. In comparisons with real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous recurrent network algorithms.",
-            reference_num: 42,
+            reference_count: 42,
             paper_title: "Long Short-Term Memory",
             year: 1997
           }
         ],
-        reference_num: 2,
+        reference_count: 2,
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
@@ -423,43 +423,43 @@ export default {
     },
 
     getArticle() {
-
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      const _formData = new FormData();
+      // _formData.append("id", this.$route.query.v);
+      this.$axios({
+        method: 'post',
+        url: '/es/get/paper',
+        data: _formData
+      })
+      .then(res => {
+        _loadingIns.close();
+        switch (res.data.status) {
+          case 200:
+            this.articleData = res.data.details;
+            console.log(this.articleData);
+            break;
+          case 404:
+            // this.$message.error("查无此文献！");
+            // setTimeout(() => {
+            //   this.$router.push("/");
+            // }, 1500);
+            break;
+          case 500:
+            this.$message.error("系统发生错误，请联系管理员！");
+            setTimeout(() => {
+              this.$router.push("/");
+            }, 1500);
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     }
   },
-  // created() {
-  //     let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-  //     const _formData = new FormData();
-  //     // _formData.append("id", this.$route.query.v);
-  //     this.$axios({
-  //       method: 'post',
-  //       url: '/es/get/paper',
-  //       data: _formData
-  //     })
-  //         .then(res => {
-  //           _loadingIns.close();
-  //           switch (res.data.status) {
-  //             case 200:
-  //               this.articleData = res.data.details;
-  //               console.log(this.articleData);
-  //               break;
-  //             case 404:
-  //               // this.$message.error("查无此文献！");
-  //               // setTimeout(() => {
-  //               //   this.$router.push("/");
-  //               // }, 1500);
-  //               break;
-  //             case 500:
-  //               this.$message.error("系统发生错误，请联系管理员！");
-  //               setTimeout(() => {
-  //                 this.$router.push("/");
-  //               }, 1500);
-  //               break;
-  //           }
-  //         })
-  //         .catch(err => {
-  //           console.log(err);
-  //         })
-  //   },
+  created() {
+
+  },
 }
 </script>
 
@@ -529,6 +529,7 @@ export default {
   padding: 16px 16px 6px 16px;
   font-size: 15px;
   line-height: 24px;
+  font-family: Georgia, fantasy;
 }
 
 .article .digit {
