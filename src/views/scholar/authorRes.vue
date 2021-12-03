@@ -116,33 +116,33 @@ export default {
 
       authors: [
         {
-          affiliation: "Beihang University",
+          affiliation_name: "Beihang University",
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
           citation_count: 1234,
-          article_count: 132,
+          paper_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
         {
-          affiliation: "Beihang University",
+          affiliation_name: "Beihang University",
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
           citation_count: 1234,
-          article_count: 132,
+          paper_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
         {
-          affiliation: "Beihang University",
+          affiliation_name: "Beihang University",
           author_id: "2736235158",
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
           citation_count: 1234,
-          article_count: 132,
+          paper_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
       ],
