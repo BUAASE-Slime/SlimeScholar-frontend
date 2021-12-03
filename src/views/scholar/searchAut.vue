@@ -3,10 +3,10 @@
     <div class="background">
       <img src="../../assets/images/background2.png" class="background" alt="">
     </div>
-    <LucidHeader></LucidHeader>
+    <PageHeader mode="white"></PageHeader>
     <div>
       <div class="input-box-body">
-        <div class="title">Make Academia Visible</div>
+        <div class="title">Access Experts</div>
         <div class="input-box">
           <el-input placeholder="请输入内容"
                     v-model="searchValue"
@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import LucidHeader from "../../components/LucidHeader";
+import PageHeader from "../../components/PageHeader";
 
 export default {
   name: "searchAut",
-  components: { LucidHeader },
+  components: {PageHeader},
   data() {
     return {
       searchValue: '',
@@ -53,6 +53,8 @@ export default {
   },
   methods: {
     goSearch() {
+      if (this.searchValue === '')
+        return;
       let routeUrl = this.$router.resolve({
         path: '/authorRes?' + this.select + "=" + this.searchValue,
       });
@@ -100,17 +102,24 @@ export default {
   font-family: "Asap SemiBold",tahoma,arial,"Hiragino Sans GB",\5b8b\4f53, sans-serif;
   font-size: 60px;
   margin-top: 160px;
-  color: white;
+  color: #2f2e2e;
   font-weight: 600;
 }
 
 .search-author >>> .el-scrollbar__wrap {
   overflow-x: hidden;
 }
+
 .search-author >>> .el-input__inner{
   height: 60px !important;
-  border:none;
+  border: 1px solid transparent;
+  border-left: none;
 }
+
+.search-author >>> .el-input-group__append {
+  border: 1px solid;
+}
+
 .search-author >>> .el-input-group__append {
   /* border-radius: inherit; */
   background-color: rgb(43, 124, 245);

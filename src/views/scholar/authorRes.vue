@@ -1,6 +1,6 @@
 <template>
   <div class="author-result">
-    <PageHeader :showSearch="showSearch" :tag="tag" :options="authorOptions" :select="select"></PageHeader>
+    <PageHeader :showSearch="showSearch" :tag="tag" :options="authorOptions" :select="header_select" :input="input"></PageHeader>
     <div class="main-body">
       <el-row class="header">
         <span style="float:left; font-size: 22px; color: #A0A0A0">
@@ -98,7 +98,7 @@ export default {
     return {
       showSearch: true,
       tag: 'authorRes',
-      select: 'name',
+      header_select: 'name',
       authorOptions: [{
         value: 'name',
         label: '姓名'
@@ -109,6 +109,7 @@ export default {
         value: 'main_area',
         label: '领域'
       }],
+      input: '',
 
       queue: ["匹配程度", "文献数量", "被引次数"],
       sortValue: "匹配程度",
@@ -179,6 +180,20 @@ export default {
 
       checkAreaList: [],
       checkAffiliationList: [],
+    }
+  },
+
+  created() {
+    let _query = this.$route.query;
+    let _search_key = Object.keys(_query)[0];
+    let _search_value = _query[_search_key];
+
+    this.header_select = _search_key;
+    this.input = _search_value;
+  },
+  methods: {
+    getAuthorRes() {
+
     }
   },
 

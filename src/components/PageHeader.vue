@@ -5,8 +5,7 @@
         <img src="../assets/images/slime_logo.png" alt="logo" style="height: 40px">
       </el-menu-item>
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
-      <el-menu-item index="3" @click="gotoScholar">学者门户</el-menu-item>
-<!--      <el-menu-item index="4" @click="gotoCommunity">交流社区</el-menu-item>-->
+      <el-menu-item index="3" @click="gotoScholar">搜索学者</el-menu-item>
       <el-menu-item v-if="showSearch">
         <div style="width:700px;" class="input-box">
           <el-input placeholder="请输入内容" v-model="input" class="input-with-select" style="font-size:16px; ">
@@ -25,10 +24,11 @@
       <el-submenu index="5" style="float: right" v-if="isLogin">
         <template slot="title">{{ userName }}</template>
         <el-menu-item index="5-1" class="big-item" @click="gotoLib">个人图书馆</el-menu-item>
-        <el-menu-item index="5-2" class="big-item" @click="settings">账户设置</el-menu-item>
-        <el-menu-item index="5-3" class="big-item" @click="logout">退出</el-menu-item>
+        <el-menu-item index="5-2" class="big-item" @click="gotoMySch">我的门户</el-menu-item>
+        <el-menu-item index="5-3" class="big-item" @click="settings">账户设置</el-menu-item>
+        <el-menu-item index="5-4" class="big-item" @click="logout">退出</el-menu-item>
       </el-submenu>
-      <i v-if="isLogin" class="el-icon-user"></i>
+      <i v-if="isLogin" class="el-icon-user icon"></i>
       <div class="login-button">
         <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
       </div>
@@ -41,7 +41,7 @@ import user from "@/store/user";
 
 export default {
   name: 'pageHeader',
-  props: ['showSearch', 'tag', 'select', 'options', 'input'],
+  props: ['showSearch', 'tag', 'select', 'options', 'input', 'mode'],
   data() {
     return {
       userName: 'huangzehuan',
@@ -56,6 +56,24 @@ export default {
       this.isLogin = true;
       this.userName = userInfo.user.username;
     }
+
+    switch (this.mode) {
+      case 'white':
+        document.documentElement.style.setProperty('--item-font-color', 'black');
+        document.documentElement.style.setProperty('--background-color', 'transparent');
+        document.documentElement.style.setProperty('--border-bottom', 'none');
+        break;
+      case 'black':
+        document.documentElement.style.setProperty('--item-font-color', 'white');
+        document.documentElement.style.setProperty('--background-color', 'transparent');
+        document.documentElement.style.setProperty('--border-bottom', 'none');
+        break;
+      case 'default':
+        document.documentElement.style.setProperty('--item-font-color', 'black');
+        document.documentElement.style.setProperty('--background-color', 'white');
+        document.documentElement.style.setProperty('--border-bottom', '2px solid transparent');
+        break;
+    }
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -69,7 +87,7 @@ export default {
       this.$router.push('/advSearch');
     },
     gotoScholar: function () {
-      this.$router.push('/schPortal');
+      this.$router.push('/searchAut');
     },
     gotoCommunity: function () {
       this.$router.push('/community');
@@ -79,6 +97,9 @@ export default {
     },
     gotoLib() {
       this.$router.push('/schLib');
+    },
+    gotoMySch() {
+      this.$router.push('/schPortal');
     },
     settings() {
       this.$router.push('/settings');
@@ -96,10 +117,31 @@ export default {
 
 
 <style scoped>
-.header .el-menu{
+
+:root {
+  --item-font-color: white;
+  --background-color: transparent;
+  --border-bottom: 2px solid transparent;
+}
+
+.header {
+  background-color: var(--background-color);
+}
+
+.header .icon {
+  color: var(--item-font-color);
+}
+
+.header .el-menu {
   height: 70px;
   padding-left: 50px;
   padding-right: 50px;
+  background-color: var(--background-color);
+  color: black;
+}
+
+.header .el-menu.el-menu--horizontal {
+  border-bottom: var(--border-bottom);
 }
 
 .header .el-menu--horizontal >>> .el-menu-item {
@@ -107,20 +149,18 @@ export default {
   height: 70px;
   line-height: 70px;
   margin: 0;
-  border-bottom: 2px solid transparent;
-  color: black;
+  border-bottom: var(--border-bottom);
+  color: var(--item-font-color);
 }
 
 .header .el-icon-user {
   padding-top: 22px;
   font-size: 24px;
   float: right;
-  /*cursor: pointer;*/
 }
 
 .header .el-menu--horizontal >>>.el-menu-item.is-active {
   border-bottom: 2px solid transparent;
-  /*color: #409EFF !important;*/
 }
 
 .header .el-menu-item {

@@ -275,6 +275,13 @@ import PageHeader from "../../components/PageHeader";
       }
     },
     created() {
+      let _query = this.$route.query;
+      let _search_key = Object.keys(_query)[0];
+      let _search_value = _query[_search_key];
+
+      this.header_select = _search_key;
+      this.input = _search_value;
+
       // this.getSearchRes(1);
     },
     methods:{
@@ -282,13 +289,6 @@ import PageHeader from "../../components/PageHeader";
         item.is_collect=!(item.is_collect);
       },
       getSearchRes(pageIdx) {
-        let _query = this.$route.query;
-        let _search_key = Object.keys(_query)[0];
-        let _search_value = _query[_search_key];
-
-        this.header_select = _search_key;
-        this.input = _search_value;
-
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
         _formData.append(_search_key, _search_value);
