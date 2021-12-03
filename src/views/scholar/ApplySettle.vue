@@ -2,10 +2,10 @@
   <div class="schPortal">
     <el-row class="info-div" style="padding: 30px">
       <el-steps :active="step - 1" finish-status="success" style="padding:20px 50px 0 50px">
-        <el-step title="步骤 1">
+        <el-step title="输入个人信息">
         </el-step>
-        <el-step title="步骤 2"></el-step>
-        <el-step title="步骤 3"></el-step>
+        <el-step title="选择您发表的学术成果"></el-step>
+        <el-step title="完成"></el-step>
       </el-steps>
 
       <el-divider/>
@@ -19,7 +19,7 @@
                 姓名
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.job" placeholder="请输入姓名"></el-input>
+                <el-input v-model="applyInfo.author_name" placeholder="请输入姓名"></el-input>
               </el-col>
             </el-row>
             <el-row class="fill-in-row">
@@ -27,7 +27,7 @@
                 工作单位
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.job" placeholder="请输入工作单位"></el-input>
+                <el-input v-model="applyInfo.affiliation_name" placeholder="请输入工作单位"></el-input>
               </el-col>
             </el-row>
 
@@ -36,7 +36,7 @@
                 电子邮箱
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.job" placeholder="请输入电子邮箱"></el-input>
+                <el-input v-model="applyInfo.email" placeholder="请输入电子邮箱"></el-input>
               </el-col>
             </el-row>
 
@@ -45,7 +45,7 @@
                 研究领域
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.job" placeholder="请输入您的研究领域"></el-input>
+                <el-input v-model="applyInfo.fields" placeholder="多个研究领域用英文半角逗号分隔"></el-input>
               </el-col>
             </el-row>
 
@@ -54,7 +54,7 @@
                 个人首页（可选）
               </el-col>
               <el-col :span="8">
-                <el-input v-model="applyInfo.job" placeholder="请输入您的个人首页"></el-input>
+                <el-input v-model="applyInfo.homepage" placeholder="请输入您的个人首页"></el-input>
               </el-col>
             </el-row>
             <el-button type="primary" @click="submit_info"> 下一步</el-button>
@@ -64,7 +64,8 @@
           <!--      第二步开始-->
           <el-row :hidden="step !== 2">
             <el-row justify="space-between" style="padding: 10px" type="flex">
-              <el-col>已根据您的姓名，检索出 <span style="font-weight: bolder; color: #217ad9; font-size: larger;">3</span>
+              <el-col>已根据您的姓名，检索出 <span
+                  style="font-weight: bolder; color: #217ad9; font-size: larger;">{{ paper_group.length }}</span>
                 个文章组，请选择：
               </el-col>
               <el-col>
@@ -72,14 +73,34 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-collapse v-model="activeNames" @change="handleChange">
-                <el-collapse-item name="1" title="一致性 Consistency">
-                  <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                  <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-                </el-collapse-item>
-                <el-collapse-item name="2" title="反馈 Feedback">
-                  <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                  <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+              <el-collapse v-model="opened_collapse" class="papers-collapse" @change="handleChange">
+                <el-collapse-item v-for="(papers, index) in paper_group" :key="index"
+                                  :name="papers.author_id">
+                  <template slot="title">
+                    <el-checkbox v-model="papers_group_state[index].selected" class="choose-paper-checkbox"
+                                 style="padding-left: 20px"><span
+                        style="font-size: x-large;margin: 30px;font-weight: bolder;"
+                        v-bind="papers_group_state[index].selected">{{
+                        papers.author_name
+                      }}</span>
+                    </el-checkbox>
+                  </template>
+                  <div v-for="item in papers.papers" :key="item" class="article-item" style="margin-left: 50px">
+                    <div style="text-align: left">
+                      <div style="margin-bottom: 10px">
+                        <span class="paper-title" style="font-size: large; font-weight: bold">{{
+                            item.paper_title
+                          }}</span>
+                      </div>
+                      <span v-for="(j, index) in item.authors" :key="j" class="author-name">
+                  {{ j.author_name }}
+                  <span v-if="index<item.authors.length-1"> / </span>
+                </span>
+                      <span class="publish-year"> · {{ item.year }}</span>
+                      -
+                      <span> {{ item.publisher }} </span>
+                    </div>
+                  </div>
                 </el-collapse-item>
               </el-collapse>
             </el-row>
@@ -91,7 +112,7 @@
             <el-col>
               <el-result icon="success" subTitle="您的申请将在3天内由管理员审核，请耐心等待" title="欢迎入驻">
                 <template slot="extra">
-                  <el-button  type="primary">返回</el-button>
+                  <el-button type="primary">返回</el-button>
                 </template>
               </el-result>
             </el-col>
@@ -111,10 +132,100 @@ export default {
     return {
       step: 1,
       applyInfo: {
-        name: "",
-        job: "",
-
-      }
+        author_name: "",
+        affiliation_name: "",
+        email: "",
+        fields: "",
+        homepage: "",
+      },
+      papers_group_state: [{open: true, selected: false, author_id: "a123"}, {
+        open: true,
+        selected: true,
+        author_id: "a12acd3"
+      }],
+      paper_group: [
+        {
+          author_id: "a123",
+          author_name: "Li Yu",
+          papers: [
+            {
+              "authors": [
+                {
+                  "affiliation_id": "",
+                  "affiliation_name": "Independent Researcher",
+                  "author_id": "3192512793",
+                  "author_name": "Sergei Belousov",
+                  "order": "1"
+                }
+              ],
+              "book_title": "",
+              "citation_count": "0",
+              "citation_msg": [],
+              "conference": "",
+              "conference_id": "",
+              "date": "2021-11-01",
+              "doctype": "",
+              "doi": "10.1016/J.SIMPA.2021.100115",
+              "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+              "fields": [],
+              "first_page": "100115",
+              "journal": "",
+              "journal_id": "",
+              "last_page": "",
+              "paper_id": "3191610454",
+              "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+              "publisher": "Elsevier BV",
+              "rank": "23112",
+              "reference_count": "12",
+              "volume": "10",
+              "year": "2021"
+            }
+          ]
+        },
+        {
+          author_id: "a12acd3",
+          author_name: "Li Yu",
+          papers: [
+            {
+              "authors": [
+                {
+                  "affiliation_id": "",
+                  "affiliation_name": "Independent Researcher",
+                  "author_id": "3192512793",
+                  "author_name": "Sergei Belousov",
+                  "order": "1"
+                }
+              ],
+              "book_title": "",
+              "citation_count": "0",
+              "citation_msg": [],
+              "conference": "",
+              "conference_id": "",
+              "date": "2021-11-01",
+              "doctype": "",
+              "doi": "10.1016/J.SIMPA.2021.100115",
+              "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+              "fields": [],
+              "first_page": "100115",
+              "journal": "",
+              "journal_id": "",
+              "last_page": "",
+              "paper_id": "3191610454",
+              "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+              "publisher": "Elsevier BV",
+              "rank": "23112",
+              "reference_count": "12",
+              "volume": "10",
+              "year": "2021"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  computed: {
+    opened_collapse: function () {
+      return this.papers_group_state.filter((x) => x.open).map(x => x.author_id);
     }
   },
 
@@ -122,7 +233,7 @@ export default {
     submit_info() {
       this.step = 2;
     },
-    confirm_choice(){
+    confirm_choice() {
       this.step = 3;
     }
   }
@@ -130,6 +241,7 @@ export default {
 </script>
 
 <style scoped>
+@import "../../styles/article.css";
 
 .schPortal .info-div {
   background-color: white;
@@ -145,6 +257,38 @@ export default {
 
 .fill-in-row {
   padding: 10px;
+}
+
+
+.article-blocks .article-item {
+  margin-top: 20px;
+  display: flex;
+}
+
+.article-blocks .article-item >>> .el-card__body {
+  width: 100%;
+  padding: 25px 30px 15px;
+}
+
+.article-blocks .article-item >>> .el-divider--horizontal {
+  margin: 10px 0;
+}
+
+.choose-paper-checkbox >>> .el-checkbox__inner {
+  width: 20px;
+  height: 20px;
+}
+
+.choose-paper-checkbox >>> .el-checkbox__inner::after {
+
+  height: 12px;
+  left: 7px;
+}
+
+
+.choose-paper-checkbox >>> .el-checkbox__inner {
+  width: 20px;
+  height: 20px;
 }
 
 
