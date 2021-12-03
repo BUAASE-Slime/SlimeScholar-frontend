@@ -149,7 +149,7 @@ export default {
     register() {
       const _formData = new FormData();
       _formData.append("username", this.form.username);
-      _formData.append("confirm_number", this.form.confirmCode);
+      _formData.append("confirm_countber", this.form.confirmCode);
       this.$axios({
         method: 'post',
         url: '/user/confirm',

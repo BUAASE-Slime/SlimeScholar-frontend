@@ -1,18 +1,16 @@
 <template>
   <div id="app">
-    <pageHeader v-if="!$route.meta.noNav" />
+    <pageHeader v-if="!$route.meta.noNav" mode="default" />
     <router-view />
   </div>
 </template>
 
 <script>
 import PageHeader from "./components/PageHeader";
-import LucidHeader from "./components/LucidHeader";
 
 export default {
   name: "App",
   components: {
-    LucidHeader,
     PageHeader,
   },
 };

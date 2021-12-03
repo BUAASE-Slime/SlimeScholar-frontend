@@ -3,7 +3,7 @@
   <div class="background">
     <img src="../../assets/images/3.png" class="background" alt="">
   </div>
-  <LucidHeader></LucidHeader>
+  <PageHeader mode="black"></PageHeader>
   <div>
   <div class="main">
     <div class="input-box-body">
@@ -102,11 +102,11 @@
 </template>
 
 <script>
-import LucidHeader from "../../components/LucidHeader";
 import Articles from "../../components/Articles";
+import PageHeader from "../../components/PageHeader";
 export default {
   name: "HomePage",
-  components: {Articles, LucidHeader},
+  components: {PageHeader, Articles},
   data() {
     return {
       activeNameOut: "topArticle",
@@ -314,7 +314,7 @@ export default {
           author_name: "Z Huang",
           main_areas: "Computer Vision, Computer Graphics",
           fields: ["Computer Vision", "Computer Graphics"],
-          citation_num: 1234,
+          citation_count: 1234,
           article_count: 132,
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
@@ -349,6 +349,8 @@ export default {
   },
   methods:{
     goSearch:function() {
+      if (this.searchValue === '')
+        return;
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.searchValue,
       });

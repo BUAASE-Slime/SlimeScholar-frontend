@@ -101,7 +101,7 @@
                 </span>
                 <el-row class="citationChart">
                   <el-row style="font-size: 15px;font-weight: bold;text-align: left;padding-left: 270px">
-                    总被引用 {{ info.citation_num }} 次，被关注 {{ info.follow_num }} 人
+                    总被引用 {{ info.citation_count }} 次，被关注 {{ info.follow_count }} 人
                   </el-row>
                   <el-row>
                     <div id="citation-chart" style="width:500px;height: 400px;margin-left: 150px"></div>
@@ -162,8 +162,8 @@ export default {
       isSelf: false,
       artNumInit: "6",
       info: {
-        follow_num: 30,
-        citation_num: 48,
+        follow_count: 30,
+        citation_count: 48,
         user_id: 4,
         author_id:"19373180",
         author_name:"Rui Guo",
