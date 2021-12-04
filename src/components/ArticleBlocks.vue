@@ -3,7 +3,7 @@
     <el-card v-for="item in articles" :key="item" class="article-item">
       <div style="text-align: left">
         <div style="margin-bottom: 10px">
-          <span class="paper-title">{{item.paper_title}}</span>
+          <span class="paper-title" @click="openDetail(item.paper_id)">{{item.paper_title}}</span>
         </div>
         <span v-for="(j, index) in item.authors" :key="j" class="author-name">
                   {{j.author_name}}
@@ -11,15 +11,15 @@
                 </span>
         <span class="publish-year">
           <span class="publish-year"> · {{item.year}}</span>
-            <span v-if="item.publisher"> · {{item.publisher}}</span>
-            <span v-if="item.journal_id !== ''"> · {{item.journal_id}}</span>
-            <span v-else-if="item.conference_id !== ''"> · {{item.conference_id}}</span>
-            <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
-                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
-                      </span>
-        <span v-else-if="item.first_page!==''&&item.volume!==''">
-                        {{ item.volume }}, {{ item.first_page }}
-                      </span>
+<!--            <span v-if="item.publisher"> · {{item.publisher}}</span>-->
+<!--            <span v-if="item.journal_id !== ''"> · {{item.journal_id}}</span>-->
+<!--            <span v-else-if="item.conference_id !== ''"> · {{item.conference_id}}</span>-->
+<!--            <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">-->
+<!--                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}-->
+<!--                      </span>-->
+<!--        <span v-else-if="item.first_page!==''&&item.volume!==''">-->
+<!--                        {{ item.volume }}, {{ item.first_page }}-->
+<!--                      </span>-->
         </span>
       </div>
 
@@ -52,6 +52,13 @@ export default {
     collectChange:function(item){
       item.is_collect=!(item.is_collect);
     },
+    openDetail(paper_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/article',
+        query: { v: paper_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    }
   },
   filters: {
     ellipsis: function(value) {

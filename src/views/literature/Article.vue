@@ -10,8 +10,15 @@
             <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}&nbsp;&nbsp;</span>
             <span v-if="articleDetails.authors.length > index + 1">/&nbsp;&nbsp;</span>
           </span>
-          <span class="journal" v-if="articleDetails.journal">·&nbsp;&nbsp;{{ articleDetails.journal }}&nbsp;&nbsp;</span>
-          <span class="date" v-if="articleDetails.year">·&nbsp;&nbsp;{{ articleDetails.year }}</span>
+        </div>
+        <div class="sub-title">
+          <span class="date" v-if="articleDetails.year">{{ articleDetails.year }}</span>
+          <span class="journal" v-if="articleDetails.journal">
+            &nbsp;{{ articleDetails.journal.name }}
+            <span v-if="articleDetails.volume"> | Volume: {{ articleDetails.volume }}</span>
+            <span v-if="articleDetails.first_page">,pp {{ articleDetails.first_page }}</span>
+            <span v-if="articleDetails.last_page">-{{ articleDetails.last_page }}</span>
+          </span>
         </div>
         <div class="sub-title" v-if="articleDetails.doi">
           <span class="_info">DOI: <span class="_link" @click="toDOI(articleDetails.doi)">{{ articleDetails.doi }}</span></span>
@@ -104,7 +111,10 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="文章评论" name="third">
-              <div class="comment-card">
+              <div class="reference-info" v-if="comments===null||comments.length===0">
+                <span>暂无评论</span>
+              </div>
+              <div class="comment-card" v-else>
                 <el-card shadow="hover" class="comment-card-body"
                          v-for="(comment, index) in comments" v-bind:key="index">
                   <el-row class="comment-info">

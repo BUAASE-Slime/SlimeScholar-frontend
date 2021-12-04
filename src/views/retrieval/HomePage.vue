@@ -377,7 +377,7 @@ export default {
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.searchValue,
       });
-      window.open(routeUrl .href, "_blank");
+      window.open(routeUrl .href, "_self");
     }
   },
 }
