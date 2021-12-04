@@ -22,7 +22,7 @@ const routes = [
     {
         path: '/searchRes',
         name: 'searchRes',
-        component: () => import('../views/retrieval/searchRes'),
+        component: () => import('../views/retrieval/SearchRes'),
         meta: {
             noNav: true,
         }
@@ -71,7 +71,7 @@ const routes = [
     {
         path: '/searchAut',
         name: 'SearchAut',
-        component: () => import('../views/scholar/searchAut'),
+        component: () => import('../views/scholar/SearchAut'),
         meta: {
             noNav: true,
         }
@@ -79,7 +79,7 @@ const routes = [
     {
         path: '/authorRes',
         name: 'AuthorRes',
-        component: () => import('../views/scholar/authorRes'),
+        component: () => import('../views/scholar/AuthorRes'),
         meta: {
             noNav: true,
         }
@@ -88,9 +88,6 @@ const routes = [
         path: '/applySettle',
         name: 'ApplySettle',
         component: () => import('../views/scholar/ApplySettle'),
-        meta: {
-            noNav: true,
-        }
     },
     // 社区模块
     {

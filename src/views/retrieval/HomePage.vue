@@ -36,7 +36,7 @@
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Authors</h3>
-              <h2 class="sub-number">{{authornum}}</h2>
+              <h2 class="sub-number">{{ statistic.author_count }}</h2>
             </el-col>
           </el-row>
         </div></el-col>
@@ -47,7 +47,7 @@
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Papers</h3>
-              <h2 class="sub-number">{{papernum}}</h2>
+              <h2 class="sub-number">{{ statistic.paper_count }}</h2>
             </el-col>
           </el-row>
         </div></el-col>
@@ -58,7 +58,7 @@
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Journals</h3>
-              <h2 class="sub-number">{{journalnum}}</h2>
+              <h2 class="sub-number">{{ statistic.journal_count }}</h2>
             </el-col>
           </el-row>
         </div></el-col>
@@ -69,7 +69,7 @@
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Organizations</h3>
-              <h2 class="sub-number">{{orgnum}}</h2>
+              <h2 class="sub-number">{{ statistic.affiliation_count }}</h2>
             </el-col>
           </el-row>
         </div></el-col>
@@ -80,7 +80,7 @@
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Field</h3>
-              <h2 class="sub-number">{{fieldnum}}</h2>
+              <h2 class="sub-number">{{ statistic.fields_count }}</h2>
             </el-col>
           </el-row>
         </div></el-col>
@@ -113,11 +113,17 @@ export default {
 
       searchValue: '',
       select: '1',
-      authornum: 12345,
-      papernum: 233344,
-      journalnum:747,
-      orgnum:1235,
-      fieldnum:75,
+
+      statistic: {
+        affiliation_count: 0,
+        author_count: null,
+        conference_count: 16479,
+        fields_count: 0,
+        journal_count: 49063,
+        paper_count: 269396813,
+        topic_count: 0
+      },
+
       options: [{
           value: '1',
           label: '篇关摘'
@@ -342,10 +348,27 @@ export default {
     }
   },
   created() {
-    this.authornum = this.authornum.toLocaleString();
-    this.papernum = this.papernum.toLocaleString();
-    this.journalnum = this.journalnum.toLocaleString();
-    this.orgnum = this.orgnum.toLocaleString();
+    this.$axios({
+      method: 'post',
+      url: '/count/all',
+    })
+    .then(res => {
+      if (res.data.success) {
+        this.statistic = res.data;
+
+        this.statistic.fields_count = this.statistic.fields_count.toLocaleString();
+        this.statistic.affiliation_count = this.statistic.affiliation_count.toLocaleString();
+        // this.statistic.author_count = this.statistic.author_count.toLocaleString();
+        this.statistic.journal_count = this.statistic.journal_count.toLocaleString();
+        this.statistic.paper_count = this.statistic.paper_count.toLocaleString();
+
+      } else {
+        this.$message.error("系统错误，请联系管理员解决");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
   },
   methods:{
     goSearch:function() {

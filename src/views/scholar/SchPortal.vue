@@ -36,7 +36,7 @@
           <el-tab-pane label="发表文献" name="article" style="text-align: left">
             <el-row style="font-size: 16px ;font-weight: bold;color: #747474">
               <el-col span="19" style="font-size: 16px">
-                文章
+                &nbsp;文章
               </el-col>
               <el-col span="3">
                 引用次数
@@ -207,7 +207,7 @@ export default {
             journal_id: "",
             last_page: "12312",
             paper_id: "3191610454",
-            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
             publisher: "Elsevier BV",
             rank: "23112",
             reference_count: "12",

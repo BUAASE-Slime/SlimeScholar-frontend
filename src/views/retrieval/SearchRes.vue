@@ -17,7 +17,7 @@
 
               <div class="publish-year sub-block">
                 <div class="check-box-title">
-                  <span>发表年份</span>
+                  <span style="color: #303133">发表年份</span>
                 </div>
                 <div style="text-align: left; font-size: 13px">
                   <span>范围：</span>
@@ -291,12 +291,12 @@ import PageHeader from "../../components/PageHeader";
       getSearchRes(pageIdx) {
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
-        _formData.append(_search_key, _search_value);
+        _formData.append(this.header_select, this.input);
         _formData.append("page", pageIdx);
         console.log(_formData);
         this.$axios({
           method: 'post',
-          url: '/es/query/paper/' + _search_key,
+          url: '/es/query/paper/' + this.header_select,
           data: _formData
         })
         .then(res => {
