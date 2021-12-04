@@ -105,40 +105,25 @@
             </el-tab-pane>
             <el-tab-pane label="文章评论" name="third">
               <div class="comment-card">
-                <el-card shadow="hover" class="comment-card-body">
+                <el-card shadow="hover" class="comment-card-body"
+                         v-for="(comment, index) in comments" v-bind:key="index">
                   <el-row class="comment-info">
                     <el-col :span="18" class="comment-author">
-                      <span class="_link" @click="toAuthor(-1)">Zuo_zuo</span>
-                      <span class="comment-date _info">&nbsp;&nbsp;&nbsp;&nbsp;1024 点赞&nbsp;&nbsp;·&nbsp;&nbsp;375 回复&nbsp;&nbsp;·&nbsp;&nbsp;2021/11/20</span>
+                      <span class="_link" @click="toAuthor(-1)">{{ comment.username }}</span>
+                      <span class="comment-date _info">
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ comment.like }} 点赞&nbsp;&nbsp;·&nbsp;&nbsp;{{ comment.reply_count }} 回复&nbsp;&nbsp;·&nbsp;&nbsp;{{ dateFormat(comment.time, "yyyy/MM/dd") }}
+                      </span>
                     </el-col>
                     <el-col :span="5">
                       <span style="font-size: 14px; float: right" class="_info">&ensp;&ensp;赞&ensp;</span>
-                      <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(-1)">查看详情&ensp;&ensp;</span>
+                      <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(comment.id)">查看详情&ensp;&ensp;</span>
                     </el-col>
                     <el-col :span="1">
                       <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>
                     </el-col>
                   </el-row>
                   <el-row class="comment-content _content">
-                    {{ comment }}
-                  </el-row>
-                </el-card>
-                <el-card shadow="hover">
-                  <el-row class="comment-info">
-                    <el-col :span="18" class="comment-author">
-                      <span class="_link" @click="toAuthor(-1)">Zuo_zuo</span>
-                      <span class="comment-date _info">&nbsp;&nbsp;&nbsp;&nbsp;1024 点赞&nbsp;&nbsp;·&nbsp;&nbsp;375 回复&nbsp;&nbsp;·&nbsp;&nbsp;2021/11/20</span>
-                    </el-col>
-                    <el-col :span="5">
-                      <span style="font-size: 14px; float: right" class="_info">&ensp;&ensp;赞&ensp;</span>
-                      <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(-1)">查看详情&ensp;&ensp;</span>
-                    </el-col>
-                    <el-col :span="1">
-                      <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>
-                    </el-col>
-                  </el-row>
-                  <el-row class="comment-content _content">
-                    {{ comment }}
+                    {{ comment.content }}
                   </el-row>
                 </el-card>
               </div>
@@ -195,8 +180,11 @@
 </template>
 
 <script>
+import common from "../../utils/common";
+
 export default {
   name: "Article",
+  mixins: [ common ],
   data() {
     return {
       // 点赞动画
@@ -212,6 +200,18 @@ export default {
 
       // 暂态评论
       comment: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。掌柜态度很专业热情，有问必答，回复也很快，我问了不少问题，他都不觉得烦，都会认真回答我，这点我向掌柜表示由衷的敬意，这样的好掌柜可不多。再说宝贝，正是我需要的，收到的时候包装完整，打开后让我惊喜的是，宝贝比我想象中的还要好!不得不得竖起大拇指。下次需要的时候我还会再来的，到时候麻烦掌柜给个优惠哦!",
+
+      comments: [
+        {
+          id: 1,
+          like: 1,
+          reply_count: 2,
+          time: "2021-11-23T23:09:56+08:00",
+          user_id: 2,
+          username: "syt",
+          content: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。",
+        }
+      ],
 
       articleDetails: {
         authors: [
@@ -372,8 +372,12 @@ export default {
     toDOI: function(doi) {
       window.open("https://doi.org/" + doi);
     },
-    toComment: function(index) {
-      alert("前往" + "id:" + id + "的文献评论")
+    toComment: function(id) {
+      let routeUrl = this.$router.resolve({
+        path: '/commentDetail',
+        query: { v: id }
+      });
+      window.open(routeUrl .href, "_blank");
     },
     toField: function(field) {
       alert("前往" + field + "领域")
@@ -422,21 +426,37 @@ export default {
       window.open(this.articleDetails.pdfUrls.at(0));
     },
 
-    getArticle() {
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+    getArticleDetail() {
       const _formData = new FormData();
-      // _formData.append("id", this.$route.query.v);
-      this.$axios({
+      _formData.append("id", this.$route.query.v);
+      return this.$axios({
         method: 'post',
         url: '/es/get/paper',
         data: _formData
       })
-      .then(res => {
+    },
+
+    getComments() {
+      const _formData = new FormData();
+      _formData.append("paper_id", this.$route.query.v);
+      return this.$axios({
+        method: 'post',
+        url: '/social/get/comments',
+        data: _formData
+      })
+    },
+
+    getArticle() {
+      let self = this;
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      this.$axios.all([this.getArticleDetail(), this.getComments()])
+      .then(this.$axios.spread(function (articleDetail, allComments) {
         _loadingIns.close();
-        switch (res.data.status) {
+
+        // Get Article Detail
+        switch (articleDetail.data.status) {
           case 200:
-            this.articleData = res.data.details;
-            console.log(this.articleData);
+            self.articleDetails = articleDetail.data.details;
             break;
           case 404:
             // this.$message.error("查无此文献！");
@@ -451,14 +471,23 @@ export default {
             }, 1500);
             break;
         }
-      })
+
+        if (allComments.data.success) {
+          self.comments = allComments.data.data.comments;
+        } else {
+          self.$message.error("获取评论错误！");
+        }
+
+        console.log(articleDetail);
+        console.log(allComments);
+      }))
       .catch(err => {
         console.log(err);
       })
     }
   },
   created() {
-
+    this.getArticle();
   },
 }
 </script>

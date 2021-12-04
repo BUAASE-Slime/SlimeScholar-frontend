@@ -2,7 +2,7 @@
   <div class="details">
     <div class="main">
       <div class="question-title">
-        <span style="font-size: 27px; font-weight: 900; font-family: Lato-Black">
+        <span style="font-size: 27px; font-weight: bold; line-height: 40px; color: #353535; font-family: Lato-Black">
           {{ this.info.paper_title }}
         </span>
       </div>
@@ -18,7 +18,7 @@
           <span style="font-size: 18px; line-height: 24px; font-weight: bold">{{ this.info.base_comment.content }}</span>
         </div>
         <div class="authorAndtime">
-          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ this.info.base_comment.time }}
+          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ dateFormat(this.info.base_comment.time, "yyyy/MM/dd HH:mm") }}
         </div>
         <el-divider></el-divider>
         <div class="answerList">
@@ -40,7 +40,7 @@
                       </span>
                     </div>
                   </el-col>
-                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ ans.time }}</el-col>
+                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ dateFormat(ans.time, "yyyy/MM/dd HH:mm") }}</el-col>
                 </el-row>
                 <el-row>
                   <div class="answer-content">{{ ans.content }}</div>
@@ -105,7 +105,11 @@
 </template>
 
 <script>
+import qs from "qs";
+import common from "../../utils/common";
+
 export default {
+  mixins: [ common ],
   data() {
     return {
       myAnswer: '',
@@ -148,7 +152,7 @@ export default {
     };
   },
   created() {
-
+    this.getAnswers();
   },
   methods: {
     replyAnswer(reply_id, myAnswer) {
@@ -156,6 +160,27 @@ export default {
     },
     replyComment() {
       // TODO
+    },
+    getAnswers() {
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      this.$axios({
+        url: '/social/get/replies',
+        method: 'post',
+        data: qs.stringify({
+          comment_id: this.$route.query.v
+        })
+      })
+      .then(res => {
+        _loadingIns.close();
+        if (res.data.success) {
+          this.info = res.data.data;
+        } else {
+          this.$message.error("获取失败！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     }
   }
 };
