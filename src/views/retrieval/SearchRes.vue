@@ -21,10 +21,14 @@
                 </div>
                 <div style="text-align: left; font-size: 13px">
                   <span>范围：</span>
-                  <span style="color: #0274B3; margin-top:2px">{{ year[0] }} ~ {{ year[1] }}</span>
+                  <span style="color: #0274B3; margin-top:2px" class="year-input">
+                    <el-input size="mini" v-model="year[0]" @change="changeYear"></el-input>
+                    &nbsp;~&nbsp;
+                    <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
+                  </span>
                 </div>
                 <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider v-model="year" range :min=minYear :max=maxYear></el-slider>
+                  <el-slider value="year" range :min=minYear :max=maxYear @change="selectSearch" @input="yearHandler"></el-slider>
                 </div>
               </div>
 
@@ -35,9 +39,10 @@
                   <span>类型</span>
                 </div>
                 <el-checkbox-group v-for="(o,index) in aggregation.doctype"
-                     :key="index"
-                     style="margin-bottom: 15px; text-align: left"
-                     v-model="checkDoctypeList">
+                                   :key="index"
+                                   style="margin-bottom: 15px; text-align: left"
+                                   v-model="checkDoctypeList"
+                                   @change="selectSearch">
                   <div v-for="(val, key) in o" :key="key">
                     <el-checkbox :label=key>
                       <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
@@ -55,7 +60,8 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.journal"
                                    :key="index"
                                    style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkJournalList">
+                                   v-model="checkJournalList"
+                                   @change="selectSearch">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
                       <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
@@ -105,11 +111,15 @@
 
 import ArticleBlocks from "../../components/ArticleBlocks";
 import PageHeader from "../../components/PageHeader";
+import qs from "qs";
 
   export default {
     components: {PageHeader, ArticleBlocks},
     data() {
       return {
+        pageIdx: 1,
+        size: 10,
+
         showSearch: true,
         tag: 'searchRes',
         header_select: '1',
@@ -171,7 +181,8 @@ import PageHeader from "../../components/PageHeader";
               citation_count: "19256",
               count: 78,
               issn: "",
-              journalid: "2595428313",
+              id: "2595428313",
+              journal_id: "2595428313",
               name: "arXiv: Software Engineering",
               paper_count: "7794",
               publisher: "",
@@ -182,7 +193,8 @@ import PageHeader from "../../components/PageHeader";
               citation_count: "34541",
               count: 17,
               issn: "",
-              journalid: "2595804992",
+              id: "2595428313",
+              journal_id: "2595804992",
               name: "arXiv: Social and Information Networks",
               paper_count: "7232",
               publisher: "",
@@ -282,7 +294,7 @@ import PageHeader from "../../components/PageHeader";
       this.header_select = _search_key;
       this.input = _search_value;
 
-      // this.getSearchRes(1);
+      this.getSearchRes(1);
     },
     methods:{
       collectChange:function(item){
@@ -305,6 +317,61 @@ import PageHeader from "../../components/PageHeader";
             case 200:
               this.articles = res.data.details;
               this.aggregation = res.data.aggregation;
+              this.total_hits = res.data.total_hits.toLocaleString();
+              if (res.data.total_hits === 10000)
+                this.total_hits = "10000+";
+              break;
+            case 404:
+              this.total_hits = 0;
+              break;
+            case 500:
+              this.$message.error("系统发生错误，请联系管理员！");
+              setTimeout(() => {
+                this.$router.push("/");
+              }, 1500);
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      },
+      yearHandler() {
+      },
+      changeYear() {
+        this.selectSearch();
+      },
+      selectSearch() {
+        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+
+        // 文献期刊数据提取
+        var journals = [];
+        for (var i = 0; i < this.checkJournalList.length; i++)
+          for (var j = 0; j < this.aggregation.journal.length; j++)
+            if (this.checkJournalList[i] === this.aggregation.journal[j].name)
+              // TODO: 修改 journal_id
+              journals.push(this.aggregation.journal[j].id);
+
+        this.$axios({
+          method: 'post',
+          url: '/es/select/paper/' + this.header_select,
+          data: qs.stringify({
+            [this.header_select]: this.input,
+            page: this.pageIdx,
+            size: this.size,
+            min_year: this.year[0],
+            max_year: this.year[1],
+            doctypes: JSON.stringify(this.checkDoctypeList),
+            journals: JSON.stringify(journals),
+          })
+        })
+        .then(res => {
+          _loadingIns.close();
+          console.log(res.data.status);
+          switch (res.data.status) {
+            case 200:
+              this.articles = res.data.details;
+              console.log(this.articles);
               this.total_hits = res.data.total_hits.toLocaleString();
               break;
             case 404:
@@ -359,6 +426,22 @@ import PageHeader from "../../components/PageHeader";
 
 .search-res .box-card .sub-block {
   margin-bottom: 20px;
+}
+
+.search-res .year-input >>> .el-input--mini .el-input__inner {
+  font-size: 13px;
+  color: #0274B3;
+}
+
+.search-res .year-input >>> .el-input__inner {
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
+
+.search-res .year-input >>> .el-input--mini {
+  width: 45px;
+  text-align: center;
 }
 
 .search-res .box-card .check-box-title {
