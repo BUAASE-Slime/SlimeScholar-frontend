@@ -9,7 +9,18 @@
                   {{j.author_name}}
                   <span v-if="index<item.authors.length-1"> / </span>
                 </span>
-        <span class="publish-year"> · {{item.year}}</span>
+        <span class="publish-year">
+          <span class="publish-year"> · {{item.year}}</span>
+            <span v-if="item.publisher"> · {{item.publisher}}</span>
+            <span v-if="item.journal_id !== ''"> · {{item.journal_id}}</span>
+            <span v-else-if="item.conference_id !== ''"> · {{item.conference_id}}</span>
+            <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
+                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
+                      </span>
+        <span v-else-if="item.first_page!==''&&item.volume!==''">
+                        {{ item.volume }}, {{ item.first_page }}
+                      </span>
+        </span>
       </div>
 
       <div style="text-align:left;margin-top:10px;">
