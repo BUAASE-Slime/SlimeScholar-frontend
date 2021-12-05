@@ -8,7 +8,11 @@
       <el-menu-item index="3" @click="gotoScholar">搜索学者</el-menu-item>
       <el-menu-item v-if="showSearch">
         <div style="width:700px;" class="input-box">
-          <el-input placeholder="请输入内容" v-model="input" class="input-with-select" style="font-size:16px; ">
+          <el-input placeholder="请输入内容"
+                    v-model="input"
+                    class="input-with-select"
+                    style="font-size:16px; "
+                    @keyup.enter.native="newSearch">
             <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:1px solid grey" class="pre">
               <el-option
                   v-for="item in options"
@@ -17,7 +21,7 @@
                   :value="item.value">
               </el-option>
             </el-select>
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button slot="append" icon="el-icon-search" @click="newSearch"></el-button>
           </el-input>
         </div>
       </el-menu-item>
@@ -76,6 +80,14 @@ export default {
     }
   },
   methods: {
+    newSearch() {
+      if (this.input === '')
+        return;
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes?' + this.select + "=" + this.input,
+      });
+      window.open(routeUrl .href, "_self");
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },

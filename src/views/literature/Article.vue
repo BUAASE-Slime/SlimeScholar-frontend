@@ -129,13 +129,28 @@
                       <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(comment.id)">查看详情&ensp;&ensp;</span>
                     </el-col>
                     <el-col :span="1">
-                      <div v-bind:class="{'dislike' : !like, 'like' : like, 'is_animating' : isAnimating}" @click="likeClick"></div>
+                      <div v-bind:class="{'dislike' : !comment.is_like, 'like' : comment.is_like, 'is_animating' : comment.is_animating}" @click="likeClick(comment)"></div>
                     </el-col>
                   </el-row>
                   <el-row class="comment-content _content">
                     {{ comment.content }}
                   </el-row>
                 </el-card>
+              </div>
+
+              <div class="AnswerIt">
+                <el-input
+                  type="textarea"
+                  maxlength="500"
+                  show-word-limit
+                  :autosize="{ minRows: 3, maxRows: 6}"
+                  placeholder="请输入你的回答"
+                  v-model="myAnswer"
+                >
+                </el-input>
+                <div style="width: 100%; text-align: right">
+                  <el-button type="primary" style="margin-top: 10px;" @click="createComment(articleDetails.paper_id,myAnswer)">发布</el-button>
+                </div>
               </div>
 
             </el-tab-pane>
@@ -191,6 +206,8 @@
 
 <script>
 import common from "../../utils/common";
+import user from "../../store/user";
+import qs from "qs";
 
 export default {
   name: "Article",
@@ -208,6 +225,8 @@ export default {
       // 标签页
       activeDetail: "first",
 
+      myAnswer: '',
+
       // 暂态评论
       comment: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。掌柜态度很专业热情，有问必答，回复也很快，我问了不少问题，他都不觉得烦，都会认真回答我，这点我向掌柜表示由衷的敬意，这样的好掌柜可不多。再说宝贝，正是我需要的，收到的时候包装完整，打开后让我惊喜的是，宝贝比我想象中的还要好!不得不得竖起大拇指。下次需要的时候我还会再来的，到时候麻烦掌柜给个优惠哦!",
 
@@ -215,6 +234,8 @@ export default {
         {
           id: 1,
           like: 1,
+          is_like: false,
+          is_animating: false,
           reply_count: 2,
           time: "2021-11-23T23:09:56+08:00",
           user_id: 2,
@@ -369,6 +390,49 @@ export default {
     }
   },
   methods: {
+    createComment(paper_id, content) {
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$message.warning("请先登录！");
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 500);
+        return;
+      }
+
+      this.$axios({
+        url: '/social/create/comment',
+        method: 'post',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          id: paper_id,
+          content: content
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.$message.success("回复成功！");
+            break;
+          case 400:
+            this.$message.error("用户登录信息已失效，请重新登录！");
+            this.$store.dispatch('clear');
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 1000);
+            break;
+          case 403:
+            this.$message.error("评论创建失败，请稍后重试！");
+            break;
+          case 404:
+            this.$message.error("系统未获取到您的用户信息，请联系管理员！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     toArticle: function(paper_id) {
       let routeUrl = this.$router.resolve({
         path: '/article',
@@ -405,14 +469,58 @@ export default {
       }
       return num
     },
-    likeClick: function() {
-      if (!this.like) {
-        this.isAnimating = true
-        setTimeout(this.likeHandler, 800);
+    likeClick: function(commentIns) {
+      if (!commentIns.is_like) {
+        const userInfo = user.getters.getUser(user.state());
+        if (!userInfo) {
+          this.$message.warning("请先登录！");
+          setTimeout(() => {
+            this.$router.push('/login');
+          }, 500);
+          return;
+        }
+
+        this.$axios({
+          url: '/social/like/comment',
+          method: 'post',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            comment_id: commentIns.id,
+            option: 0,
+            content: content
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            // TODO
+            case 200:
+              commentIns.is_animating = true;
+              setTimeout(() => {
+                commentIns.is_like = !commentIns.is_like;
+              }, 800);
+              break;
+            case 400:
+              this.$message.error("用户登录信息已失效，请重新登录！");
+              this.$store.dispatch('clear');
+              setTimeout(() => {
+                this.$router.push('/login');
+              }, 1000);
+              break;
+            case 403:
+              this.$message.error("评论创建失败，请稍后重试！");
+              break;
+            case 404:
+              this.$message.error("系统未获取到您的用户信息，请联系管理员！");
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
       else {
-        this.likeHandler()
-        this.isAnimating = false
+        this.likeHandler();
+        commentIns.is_animating = false;
       }
     },
     likeHandler: function() {

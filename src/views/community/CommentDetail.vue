@@ -96,7 +96,7 @@
           >
           </el-input>
           <div style="width: 100%; text-align: right">
-            <el-button type="primary" style="margin-top: 10px;" @click="replyComment">发布</el-button>
+            <el-button type="primary" style="margin-top: 10px;" @click="replyAnswer(info.base_comment.id,myAnswer)">发布</el-button>
           </div>
         </div>
       </div>
@@ -107,6 +107,7 @@
 <script>
 import qs from "qs";
 import common from "../../utils/common";
+import user from "../../store/user";
 
 export default {
   mixins: [ common ],
@@ -156,10 +157,44 @@ export default {
   },
   methods: {
     replyAnswer(reply_id, myAnswer) {
-      // TODO
-    },
-    replyComment() {
-      // TODO
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$message.warning("请先登录！");
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 500);
+        return;
+      }
+
+      this.$axios({
+        url: '/social/reply/comment',
+        method: 'post',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          comment_id: reply_id,
+          content: myAnswer
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.$message.success("回复成功！");
+            break;
+          case 400:
+            this.$message.error("用户登录信息已失效，请重新登录！");
+            this.$store.dispatch('clear');
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 1000);
+            break;
+          case 404:
+            this.$message.error("系统未获取到您的用户信息，请联系管理员！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     getAnswers() {
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});

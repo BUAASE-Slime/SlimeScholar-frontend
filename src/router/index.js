@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import user from "../store/user";
+import user from "../store/user";
 
 Vue.use(VueRouter)
 
@@ -103,26 +103,25 @@ const router = new VueRouter({
     routes
 })
 
-// router.beforeEach((to, from, next) => {
-// const userInfo = user.getters.getUser(user.state());
-// console.log(userInfo.user.Authorization);
-// Record the router address of page accessed before login
-// if (to.path === '/login') {
-//     localStorage.setItem("preRoute", router.currentRoute.fullPath);
-// }
-// Login is required to access the following pages
-// if (!userInfo && to.meta.requireAuth) {
-//     next({
-//         name: 'Login',
-//     })
-// }
-// Not login is required to access the following pages
-// if (userInfo && to.meta.requireNotAuth) {
-//     next({
-//         name: 'HomePage',
-//     })
-// }
-// next()
-// })
+router.beforeEach((to, from, next) => {
+    const userInfo = user.getters.getUser(user.state());
+    // Record the router address of page accessed before login
+    if (to.path === '/login') {
+        localStorage.setItem("preRoute", router.currentRoute.fullPath);
+    }
+    // Login is required to access the following pages
+    // if (!userInfo && to.meta.requireAuth) {
+    //     next({
+    //         name: 'Login',
+    //     })
+    // }
+    // Not login is required to access the following pages
+    // if (userInfo && to.meta.requireNotAuth) {
+    //     next({
+    //         name: 'HomePage',
+    //     })
+    // }
+    next()
+})
 
 export default router
