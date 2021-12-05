@@ -1,4 +1,4 @@
 {
   "baseUrl": "http://localhost:8081",
-  "backUrl": "http://82.156.217.192:8000/api/v1"
+  "backUrl": "https://slime.matrix53.top/api/v1"
 }
