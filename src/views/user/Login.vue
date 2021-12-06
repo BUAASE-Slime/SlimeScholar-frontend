@@ -62,7 +62,8 @@ export default {
             user: {
               'username': res.data.detail.username,
               'Authorization': res.data.Authorization,
-              'userId': res.data.detail.user_id
+              'userId': res.data.detail.user_id,
+              'userType': res.data.detail.user_type,
             }
           });
           const history_pth = localStorage.getItem('preRoute');

@@ -2,22 +2,22 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image class="headImg" :src="info.headImgUrl">
+            <el-image class="headImg" :src="info.people.headImgUrl">
             </el-image>
           </el-col>
           <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
-              <el-col>{{ info.author_name }}</el-col>
+              <el-col>{{ info.people.author_name }}</el-col>
             </el-row>
             <el-row style="font-size: medium;margin-top: 15px">
               <i class="el-icon-office-building" style="margin-right: 5px"></i>
-              {{ info.affiliation }}
+              {{ info.people.affiliation }}
             </el-row>
             <el-row style="margin-top: 10px">
               <i class="el-icon-tickets" style="margin-right: 10px"></i>
-              <span v-for="(area, index) in info.fields" v-bind:key="index" style="color:#00b1fd;">
+              <span v-for="(area, index) in info.people.fields" v-bind:key="index" style="color:#00b1fd;">
                 <el-link style="color: #2d94d4; font-size: medium;">{{ area }}</el-link>
-                <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.fields.length-1">/</span>
+                <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.people.fields.length-1">/</span>
               </span>
             </el-row>
           </el-col>
@@ -50,7 +50,7 @@
                 <el-row class="art-div" >
                   <el-col class="art-info" span="19">
                     <el-row style="font-size: 16px;margin: 2px">
-                      <el-link style="color: #217ad9; font-size: 16px;">{{item.paper_title}}</el-link>
+                      <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(item.paper_id)">{{item.paper_title}}</el-link>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
                       <span v-bind:key="i" v-for="(p,i) in item.authors" >
@@ -58,9 +58,9 @@
                       </span>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                      <span v-if="item.journal_id !== ''">{{item.journal.name}}</span>
-                      <span v-else-if="item.conference_id !== ''">{{item.conference.name}}</span>
-                      <span v-else-if="item.publisher">{{item.publisher}}</span>
+<!--                      <span v-if="item.journal_id !== ''">{{item.journal.name}}</span>-->
+<!--                      <span v-else-if="item.conference_id !== ''">{{item.conference.name}}</span>-->
+<!--                      <span v-else-if="item.publisher">{{item.publisher}}</span>-->
                       <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
                         {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
                       </span>
@@ -101,7 +101,7 @@
                 </span>
                 <el-row class="citationChart">
                   <el-row style="font-size: 15px;font-weight: bold;text-align: left;padding-left: 270px">
-                    总被引用 {{ info.citation_count }} 次，被关注 {{ info.follow_count }} 人
+                    总被引用 {{ info.people.citation_count }} 次，被关注 {{ info.people.follow_count }} 人
                   </el-row>
                   <el-row>
                     <div id="citation-chart" style="width:500px;height: 400px;margin-left: 150px"></div>
@@ -154,6 +154,7 @@
 
 <script>
 import user from "../../store/user";
+import qs from "qs";
 
 export default {
   name: "schPortal.vue",
@@ -162,14 +163,26 @@ export default {
       isSelf: false,
       artNumInit: "6",
       info: {
-        follow_count: 30,
-        citation_count: 48,
-        user_id: 4,
-        author_id:"19373180",
-        author_name:"Rui Guo",
-        affiliation:"Software Engineering, BeiHang University",
-        headImgUrl: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg",
-        fields: ["Computer Vision", "Computer Graphics"],
+        people: {
+          user_id: 1,
+          username: "liyu",
+          password: "handsome",
+          user_info: "",
+          user_type: 1,
+          affiliation: "buaa",
+          author_name: "ly",
+          home_page: "https://blog.bflame.studio/",
+          email: "bflame@qq.com",
+          work_email: "bflame@qq.com",
+          fields: ["Deep learning"],
+          has_confirmed: true,
+          confirm_number: 797547,
+          reg_time: "2021-11-13T22:15:49+08:00",
+          paper_count: 108,
+          follow_count: 30,
+          citation_count: 48,
+          headImgUrl: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg",
+        },
         papers: [
           {
             authors: [
@@ -339,9 +352,31 @@ export default {
     }
   },
   created() {
+    // 查询的是别人的门户
+    if (this.$route.query.v) {
+      // TODO: 别人的
+    }
+
+    // 自己的门户
     const userInfo = user.getters.getUser(user.state());
-    if (userInfo && userInfo.user.userId === this.info.user_id)
-      this.isSelf = true;
+    // 未登录则先登录
+    if (!userInfo) {
+      this.$message.warning("请先登录！");
+      setTimeout(() => {
+        this.$router.push('/login');
+      }, 1000);
+      return;
+    }
+    // 未入驻则申请入驻
+    if (userInfo.user.userType !== 1) {
+      this.$message.warning("您未认证，请先申请入驻！");
+      setTimeout(() => {
+        this.$router.push('/applySettle');
+      }, 1000);
+      return;
+    }
+    // 已入驻则调用接口返回信息
+    this.getSchInfo(userInfo.user.userId, 'user_id');
     this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
   },
   mounted(){
@@ -361,6 +396,51 @@ export default {
     },
   },
   methods: {
+    getSchInfo(id, tag) {
+      this.$axios({
+        method: 'post',
+        url: '/scholar/info',
+        data: qs.stringify({
+          [tag]: id
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.info = res.data;
+            const userInfo = user.getters.getUser(user.state());
+            if (userInfo && userInfo.user.userId === this.info.people.user_id)
+              this.isSelf = true;
+            break;
+          case 401:
+            this.$message.error("参数错误！");
+            break;
+          case 402:
+            this.$message.warning("您未认证，请先申请入驻！");
+            setTimeout(() => {
+              this.$router.push('/applySettle');
+            }, 1000);
+            break;
+          case 404:
+            this.$message.error("查无您的用户信息，请尝试重新登录！");
+            setTimeout(() => {
+              this.$store.dispatch('clear');
+              this.$router.push("/login");
+            }, 1000);
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    gotoArticle(paper_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/article',
+        query: { v: paper_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    },
     AddArtNum(){
       let x=parseInt(this.artNumInit);
       this.flag=(this.info.papers.length-x);
@@ -417,63 +497,7 @@ export default {
     },
     showRelChart(){
     },
-    /**
-     * 数据集合
-     */
-    dataEChart(){
-      let data = [
-        {
-          name: '张1',
-          symbolSize:"50",
-          id: '1',
-        },
-        {
-          name: '张2',
-          id: '2',
-        },
-        {
-          name: '张3',
-          id: '3',
-        },
-        {
-          name: '张4',
-          id: '4',
-        },
-        {
-          name: '张5',
-          id: '5',
-        },
-        {
-          name: '张6',
-          id: '6',
-        },
-        {
-          name: '张7',
-          id: '7',
-        },
-        {
-          name: '张6',
-          id: '8',
-        },
-      ];
-      return data;
-    },
-    /**
-     * 关系数据集合
-     */
-    linkEChart(){
-      let dataLink=[
-        {value: "同事",source: "1",target: "2"},
-        {value: "同事",source: "1",target: "3"},
-        {value: "同事",source: "1",target: "4"},
-        {value: "同学",source: "1",target: "5"},
-        {value: "同学",source: "1",target: "6"},
-        {value: "同学",source: "1",target: "7"},
-        {value: "爸爸",source: "1",target: "8"},
-      ];
-      return dataLink;
-    },
-}
+},
 }
 </script>
 
