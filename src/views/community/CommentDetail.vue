@@ -22,7 +22,8 @@
         </div>
         <el-divider></el-divider>
         <div class="answerList">
-          <div v-for="(ans, index) in this.info.answers" v-bind:key="index">
+          <div v-if="info.answers.length===0" style="color: #909eb4; font-size: 14px;">暂无回复</div>
+          <div v-else v-for="(ans, index) in this.info.answers" v-bind:key="index">
             <el-row :gutter="50">
               <el-col :span="1">
                 <el-avatar icon="el-icon-user-solid"></el-avatar>
@@ -179,6 +180,7 @@ export default {
         switch (res.data.status) {
           case 200:
             this.$message.success("回复成功！");
+            this.info = res.data.data;
             break;
           case 400:
             this.$message.error("用户登录信息已失效，请重新登录！");
@@ -207,10 +209,14 @@ export default {
       })
       .then(res => {
         _loadingIns.close();
-        if (res.data.success) {
-          this.info = res.data.data;
-        } else {
-          this.$message.error("获取失败！");
+        switch (res.data.status) {
+          case 200:
+            this.info = res.data.data;
+            break;
+          case 403:
+            this.info = res.data.data;
+            this.info['answers'] = [];
+            break;
         }
       })
       .catch(err => {

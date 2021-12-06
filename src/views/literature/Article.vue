@@ -13,10 +13,10 @@
         </div>
         <div class="sub-title">
           <span class="date" v-if="articleDetails.year">{{ articleDetails.year }}</span>
-          <span class="journal" v-if="articleDetails.journal">
+          <span class="journal" v-if="articleDetails.journal_id!==''">
             &nbsp;{{ articleDetails.journal.name }}
             <span v-if="articleDetails.volume"> | Volume: {{ articleDetails.volume }}</span>
-            <span v-if="articleDetails.first_page">,pp {{ articleDetails.first_page }}</span>
+            <span v-if="articleDetails.first_page">, pp {{ articleDetails.first_page }}</span>
             <span v-if="articleDetails.last_page">-{{ articleDetails.last_page }}</span>
           </span>
         </div>
@@ -64,6 +64,9 @@
               <div class="reference-info">
                 <span>共 {{ articleDetails.reference_count }} 条</span>
               </div>
+              <div class="reference-info" v-if="articleDetails.reference_count>0">
+                <span>由于版权限制，此处只展示部分相关论文</span>
+              </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
                   <div @click="toArticle(article.id)">
@@ -88,6 +91,9 @@
             <el-tab-pane label="引证文献" name="second">
               <div class="reference-info">
                 <span>共 {{ articleDetails.citation_count }} 条</span>
+              </div>
+              <div class="reference-info" v-if="articleDetails.citation_count>0">
+                <span>由于版权限制，此处只展示部分相关论文</span>
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
@@ -129,7 +135,7 @@
                       <span style="font-size: 14px; float: right" class="_link _bd_right" @click="toComment(comment.id)">查看详情&ensp;&ensp;</span>
                     </el-col>
                     <el-col :span="1">
-                      <div v-bind:class="{'dislike' : !comment.is_like, 'like' : comment.is_like, 'is_animating' : comment.is_animating}" @click="likeClick(comment)"></div>
+                      <div v-bind:class="{'dislike' : !comment.is_like, 'like' : comment.is_like, 'is_animating' : isAnimating}" @click="likeClick(comment)"></div>
                     </el-col>
                   </el-row>
                   <el-row class="comment-content _content">
@@ -400,12 +406,17 @@ export default {
         return;
       }
 
+      if (content === '') {
+        this.$message.warning('无法发布空白评论！');
+        return;
+      }
+
       this.$axios({
         url: '/social/create/comment',
         method: 'post',
         data: qs.stringify({
           user_id: userInfo.user.userId,
-          id: paper_id,
+          paper_id: paper_id,
           content: content
         })
       })
@@ -413,6 +424,8 @@ export default {
         switch (res.data.status) {
           case 200:
             this.$message.success("回复成功！");
+            this.myAnswer = '';
+            this.comments = res.data.data.comments;
             break;
           case 400:
             this.$message.error("用户登录信息已失效，请重新登录！");
@@ -565,7 +578,7 @@ export default {
         url: '/social/get/comments',
         data: qs.stringify({
           paper_id: this.$route.query.v,
-          user_id: 0
+          user_id: userId
         })
       })
     },
@@ -592,7 +605,7 @@ export default {
             this.$message.error("系统发生错误，请联系管理员！");
             setTimeout(() => {
               this.$router.push("/");
-            }, 1500);
+            }, 1000);
             break;
         }
 
@@ -602,6 +615,9 @@ export default {
             break;
           case 403:
             self.comments = [];
+            break;
+          default:
+            self.$message.error("评论获取失败！");
             break;
         }
       }))
