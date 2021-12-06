@@ -6,7 +6,7 @@
           <div class="grid-content">
             <el-card class="box-card1">
               <div style="padding: 25px 0">
-                <img src="../../assets/images/doctor-bg.png" style="height:300px" alt="Image">
+                <img src="../../assets/images/avatar-grey-bg.jpg" style="height:300px" alt="Image">
                 <h2>{{ info.username }}</h2>
               </div>
             </el-card>

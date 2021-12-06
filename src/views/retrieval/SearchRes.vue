@@ -69,6 +69,25 @@
                   </el-checkbox>
                 </el-checkbox-group>
               </div>
+
+              <el-divider></el-divider>
+
+              <div class="publish-journal sub-block">
+                <div class="check-box-title">
+                  <span>会议</span>
+                </div>
+                <el-checkbox-group v-for="(o,index) in aggregation.conference"
+                                   :key="index"
+                                   style="margin-bottom: 15px; text-align: left"
+                                   v-model="checkConferenceList"
+                                   @change="selectSearch">
+                  <el-checkbox :label=o.name>
+                    <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
+                      <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
+                    </el-tooltip>
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
             </el-card>
           </div>
           </el-col>
@@ -159,6 +178,31 @@ import qs from "qs";
         year: [1900, 2021],
 
         aggregation: {
+          conference: [
+            {
+              citation_count: 384,
+              conference_id: "3083037350",
+              count: 8,
+              end: "2021-05-29",
+              id: "3083037350",
+              location: "Madrid, Spain",
+              name: "ICSE 2021",
+              offical_url: "https://conf.researchr.org/home/icse-2021",
+              paper_count: 471,
+              start: "2021-05-23"
+            },
+            {
+              citation_count: 3246,
+              conference_id: "71090686",
+              count: 8,
+              end: "2014-06-01",
+              id: "71090686",
+              location: "Hyderabad, India",
+              name: "MSR 2014",
+              offical_url: "http://2014.msrconf.org/",
+              paper_count: 63,
+              start: "2014-05-31"
+            },],
           doctype: [
             {
               "Conference": 286
@@ -206,6 +250,7 @@ import qs from "qs";
 
         checkDoctypeList: [],
         checkJournalList: [],
+        checkConferenceList: [],
 
         articles:[
           {
@@ -349,8 +394,14 @@ import qs from "qs";
         for (var i = 0; i < this.checkJournalList.length; i++)
           for (var j = 0; j < this.aggregation.journal.length; j++)
             if (this.checkJournalList[i] === this.aggregation.journal[j].name)
-              // TODO: 修改 journal_id
-              journals.push(this.aggregation.journal[j].id);
+              journals.push(this.aggregation.journal[j].journal_id);
+
+        // 文献会议数据提取
+        var conferences = [];
+        for (var k = 0; k < this.checkConferenceList.length; k++)
+          for (var l = 0; l < this.aggregation.conference.length; l++)
+            if (this.checkConferenceList[k] === this.aggregation.conference[l].name)
+              conferences.push(this.aggregation.conference[l].conference_id);
 
         this.$axios({
           method: 'post',
@@ -363,6 +414,7 @@ import qs from "qs";
             max_year: this.year[1],
             doctypes: JSON.stringify(this.checkDoctypeList),
             journals: JSON.stringify(journals),
+            conferences: JSON.stringify(conferences)
           })
         })
         .then(res => {

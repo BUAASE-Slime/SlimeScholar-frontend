@@ -1,7 +1,7 @@
 <template>
   <div class="search-author">
     <div class="background">
-      <img src="../../assets/images/background2.png" class="background" alt="">
+      <img src="../../assets/images/background2.jpg" class="background" alt="">
     </div>
     <PageHeader mode="white"></PageHeader>
     <div>

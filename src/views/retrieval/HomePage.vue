@@ -1,7 +1,7 @@
 <template>
 <div class="homepage">
   <div class="background">
-    <img src="../../assets/images/3.png" class="background" alt="">
+    <img src="../../assets/images/background3.jpg" class="background" alt="">
   </div>
   <PageHeader mode="black"></PageHeader>
   <div>
@@ -32,7 +32,7 @@
         <el-col :span="5"><div class="grid-content bg-purple test_a">
           <el-row>
             <el-col :span="5" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_aut.png" style="width:70px">
+              <img class="image" src="../../assets/images/home_aut.jpg" style="width:70px">
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Authors</h3>
@@ -43,7 +43,7 @@
         <el-col :span="5"><div class="grid-content bg-purple test_a">
           <el-row>
             <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_art.png" style="width:70px">
+              <img class="image" src="../../assets/images/home_art.jpg" style="width:70px">
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Papers</h3>
@@ -54,7 +54,7 @@
         <el-col :span="5"><div class="grid-content bg-purple test_a">
           <el-row>
             <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_jou.png" style="width:70px">
+              <img class="image" src="../../assets/images/home_jou.jpg" style="width:70px">
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Journals</h3>
@@ -65,7 +65,7 @@
         <el-col :span="5"><div class="grid-content bg-purple test_a">
           <el-row>
             <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_org.png" style="width:70px">
+              <img class="image" src="../../assets/images/home_org.jpg" style="width:70px">
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Organizations</h3>
@@ -76,7 +76,7 @@
         <el-col :span="5"><div class="grid-content bg-purple test_a">
           <el-row>
             <el-col :span="6" style="padding:10px; margin-right:20px">
-              <img class="image" src="../../assets/images/home_fie.png" style="width:70px">
+              <img class="image" src="../../assets/images/home_fie.jpg" style="width:70px">
             </el-col>
             <el-col :span="5" style="padding:10px; margin-left:20px">
               <h3 class="sub-title">Field</h3>

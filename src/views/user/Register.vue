@@ -1,9 +1,6 @@
 <template>
   <div id="register" class="register">
     <img class="bgbox" id="bgbox" alt="" src="../../../src/assets/images/background1.jpg">
-    <div>
-<!--      <img class="logo" src="../../assets/images/SlimeScholar.png" alt="logo" @click="toHome"/>-->
-    </div>
     <div class="wrap">
       <h1>注 册</h1>
       <el-form :model="form" :rules="rules" ref="form" class="form">

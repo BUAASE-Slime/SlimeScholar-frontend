@@ -555,12 +555,18 @@ export default {
     },
 
     getComments() {
-      const _formData = new FormData();
-      _formData.append("paper_id", this.$route.query.v);
+      let userId;
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) userId = 0;
+      else userId = userInfo.user.userId;
+
       return this.$axios({
         method: 'post',
         url: '/social/get/comments',
-        data: _formData
+        data: qs.stringify({
+          paper_id: this.$route.query.v,
+          user_id: 0
+        })
       })
     },
 
@@ -590,14 +596,14 @@ export default {
             break;
         }
 
-        if (allComments.data.success) {
-          self.comments = allComments.data.data.comments;
-        } else {
-          self.$message.error("获取评论错误！");
+        switch (allComments.data.status) {
+          case 200:
+            self.comments = allComments.data.data.comments;
+            break;
+          case 403:
+            self.comments = [];
+            break;
         }
-
-        console.log(articleDetail);
-        console.log(allComments);
       }))
       .catch(err => {
         console.log(err);
@@ -764,7 +770,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
   background-position: left;
   background-repeat:no-repeat;
   background-size:2900%;
@@ -774,7 +780,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png');
+  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
   background-position: right;
   background-repeat:no-repeat;
   background-size:2900%;

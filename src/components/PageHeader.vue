@@ -2,7 +2,7 @@
   <div class="header">
     <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
       <el-menu-item index="1" style="font-size: 26px" @click="gotoHome">
-        <img src="../assets/images/slime_logo.png" alt="logo" style="height: 40px">
+        <img src="../assets/images/slime_logo.jpg" alt="logo" style="height: 40px">
       </el-menu-item>
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
       <el-menu-item index="3" @click="gotoScholar">搜索学者</el-menu-item>
