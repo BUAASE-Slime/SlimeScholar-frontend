@@ -95,15 +95,15 @@
           <el-col :span="16"><div class="grid-content bg-purple">
             <div>
               <el-row>
-                <el-col span="17">
+                <el-col :span="17">
                   <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">论文 ({{total_hits}})</span>
                 </el-col>
-                <el-col span="2">
+                <el-col :span="2">
                   <div style="margin-top:10px">
                     <span style="font-size:16px;color: #A0A0A0">排序</span>
                   </div>
                 </el-col>
-                <el-col span="5">
+                <el-col :span="5">
                   <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
                     <el-option
                         v-for="item in queue"
@@ -117,6 +117,29 @@
             </div>
 
             <ArticleBlocks :articles="articles" flag="searchRes"></ArticleBlocks>
+            <div>
+              <el-row>
+                <el-col :span="5" style="text-align:right">
+                  <div >
+                    <span>每页</span>
+                    <el-input-number style="margin:15px; width:100px; margin-top:22px" el-input-number v-model="pageSize" controls-position="right" @change="handleSizeChange" :min="1" :max="20"></el-input-number>
+                    <!-- height:34px; -->
+                    <span>条</span>
+                  </div>
+                </el-col>
+                <el-col :span="15">
+                  <el-pagination layout="prev, pager, next, jumper" 
+                    background
+                    :current-page="currentPage" 
+                    :page-size="pageSize"
+                    :total="total_hits" 
+                    @size-change="handleSizeChange" 
+                    @current-change="handleCurrentChange"
+                    style="margin: 20px">
+                  </el-pagination>
+                </el-col>
+              </el-row>
+            </div>
 
           </div></el-col>
         </el-row>
@@ -138,7 +161,10 @@ import qs from "qs";
       return {
         pageIdx: 1,
         size: 10,
-
+        
+        currentPage: 1,
+        pageSize:2,
+        pageSizes:[2,3,5,7,10],
         showSearch: true,
         tag: 'searchRes',
         header_select: '1',
@@ -252,6 +278,7 @@ import qs from "qs";
         checkJournalList: [],
         checkConferenceList: [],
 
+        //articles表示当前页面显示的文章块数组
         articles:[
           {
             authors: [
@@ -268,6 +295,7 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:["AI","computer science","Software Engineering"],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -293,6 +321,7 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:["AI","computer science","Software Engineering","AI","computer science","Software Engineering","AI","computer science","Software Engineering"],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -318,6 +347,7 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:["AI","computer science","Software Engineering"],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -342,11 +372,17 @@ import qs from "qs";
       this.getSearchRes(1);
     },
     methods:{
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
       collectChange:function(item){
         item.is_collect=!(item.is_collect);
       },
       getSearchRes(pageIdx) {
-        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+        // let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
         _formData.append(this.header_select, this.input);
         _formData.append("page", pageIdx);
@@ -458,11 +494,45 @@ import qs from "qs";
         }
         return value;
       }
-    }, 
+    },
   };
 </script>
 
 <style scoped>
+
+/* .search-res >>> .el-input-number.is-controls-right .el-input-number__decrease{
+  width:15px !important;
+  height: 14px;
+
+}
+
+.search-res >>> .el-input-number.is-controls-right .el-input-number__increase{
+  width:15px !important;
+  height: 14px;
+  margin-top: 3px;
+}
+
+.search-res >>> .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 10px;
+    padding-right: 20px;
+    height: 30px;
+} */
+
+.search-res >>> .el-pager li{
+  width:40px;
+  height:40px;
+  padding: 7px;
+}
+
+.search-res >>> .el-pagination .btn-prev .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
+
+.search-res >>> .el-pagination .btn-next .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
 
 .search-res .main-body {
   padding: 0 40px 20px 80px;
@@ -494,6 +564,14 @@ import qs from "qs";
 .search-res .year-input >>> .el-input--mini {
   width: 45px;
   text-align: center;
+}
+
+.search-res >>> .el-pagination__editor.el-input .el-input__inner {
+    height: 40px;
+}
+
+.search-res >>> .el-pagination__jump{
+  font-size: 15px;
 }
 
 .search-res .box-card .check-box-title {

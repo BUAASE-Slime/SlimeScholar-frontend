@@ -22,9 +22,16 @@
 <!--                      </span>-->
         </span>
       </div>
-
+      
       <div style="text-align:left;margin-top:10px;">
         <span class="abstract">{{item.abstract|ellipsis}}</span>
+      </div>
+      <div id="fields">
+        <el-row>
+        <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:15px; margin-right:10px; float:left;">
+          <span style="border-style:solid; border-width:1px; border-radius:5px; padding:5px"><i class="el-icon-menu"></i>{{item1}}</span>
+        </div>
+        </el-row>
       </div>
       <el-divider></el-divider>
       <div style="text-align:left; font-size: 15px">
