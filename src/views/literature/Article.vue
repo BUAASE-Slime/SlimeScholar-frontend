@@ -627,7 +627,7 @@ export default {
     }
   },
   created() {
-    this.getArticle();
+    // this.getArticle();
   },
 }
 </script>
@@ -786,7 +786,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
+  background-image:url( 'https://cssanimation.rocks/images/posts/steps/heart.png');
   background-position: left;
   background-repeat:no-repeat;
   background-size:2900%;
@@ -796,7 +796,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
+  background-image:url( 'https://cssanimation.rocks/images/posts/steps/heart.png');
   background-position: right;
   background-repeat:no-repeat;
   background-size:2900%;
