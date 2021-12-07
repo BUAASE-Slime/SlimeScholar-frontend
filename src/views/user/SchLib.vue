@@ -101,6 +101,8 @@
 <script>
 
 import ArticleBlocks from "../../components/ArticleBlocks";
+import user from "../../store/user";
+import qs from "qs";
 
 export default {
   name: "SchLib",
@@ -209,7 +211,64 @@ export default {
       ]
     }
   },
+  created() {
+    const userInfo = user.getters.getUser(user.state());
+    if (!userInfo) {
+      this.$message.warning("请先登录！");
+      setTimeout(() => {
+        this.$router.push('/login');
+      }, 500);
+      return;
+    }
+    this.getInfo();
+  },
   methods: {
+    getInfo() {
+      let self = this;
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      this.$axios.all([this.getAllTags()])
+      .then(this.$axios.spread(function (allTags) {
+        _loadingIns.close();
+        switch (allTags.data.status) {
+          case 200:
+            self.tagData = allTags.data.data;
+            break;
+          case 400:
+            this.$message.error("用户登录信息已失效，请重新登录！");
+            this.$store.dispatch('clear');
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 1000);
+            break;
+          case 403:
+            this.$message.error("获取标签失败！");
+            break;
+          case 404:
+            this.$message.error("用户信息获取失败，请尝试重新登录！");
+            this.$store.dispatch('clear');
+            setTimeout(() => {
+              this.$router.push('/login');
+            }, 1000);
+            break;
+        }
+      }))
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    getAllTags() {
+      const userInfo = user.getters.getUser(user.state());
+      return this.$axios({
+        method: 'post',
+        url: '/social/get/tags',
+        data: qs.stringify({
+          user_id: userInfo.user.userId
+        })
+      })
+    },
+    getArticles() {
+
+    },
     handleClose(tag) {
       this.tagData.splice(this.tagData.indexOf(tag), 1);
     },

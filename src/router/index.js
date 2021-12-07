@@ -105,16 +105,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     const userInfo = user.getters.getUser(user.state());
+
     // Record the router address of page accessed before login
     if (to.path === '/login') {
         localStorage.setItem("preRoute", router.currentRoute.fullPath);
     }
-    // Login is required to access the following pages
-    // if (!userInfo && to.meta.requireAuth) {
-    //     next({
-    //         name: 'Login',
-    //     })
-    // }
+
     // Not login is required to access the following pages
     // if (userInfo && to.meta.requireNotAuth) {
     //     next({
