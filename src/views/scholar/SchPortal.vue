@@ -2,7 +2,13 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image class="headImg" :src="info.people.headImgUrl">
+            <el-image v-if="info.people.headImgUrl&&info.people.headImgUrl!==''"
+                      class="headImg"
+                      :src="info.people.headImgUrl">
+            </el-image>
+            <el-image v-else
+                      class="headImg"
+                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
             </el-image>
           </el-col>
           <el-col class="people-text" :span="17">
@@ -397,6 +403,7 @@ export default {
   },
   methods: {
     getSchInfo(id, tag) {
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
       this.$axios({
         method: 'post',
         url: '/scholar/info',
@@ -405,6 +412,7 @@ export default {
         })
       })
       .then(res => {
+        _loadingIns.close();
         switch (res.data.status) {
           case 200:
             this.info = res.data;

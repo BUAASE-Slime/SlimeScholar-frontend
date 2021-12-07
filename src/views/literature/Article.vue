@@ -483,61 +483,46 @@ export default {
       return num
     },
     likeClick: function(commentIns) {
-      if (!commentIns.is_like) {
-        const userInfo = user.getters.getUser(user.state());
-        if (!userInfo) {
-          this.$message.warning("请先登录！");
-          setTimeout(() => {
-            this.$router.push('/login');
-          }, 500);
-          return;
-        }
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$message.warning("请先登录！");
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 500);
+        return;
+      }
 
-        this.$axios({
-          url: '/social/like/comment',
-          method: 'post',
-          data: qs.stringify({
-            user_id: userInfo.user.userId,
-            comment_id: commentIns.id,
-            option: 0,
-            content: content
-          })
-        })
-        .then(res => {
-          switch (res.data.status) {
-            // TODO
-            case 200:
-              commentIns.is_animating = true;
-              setTimeout(() => {
-                commentIns.is_like = !commentIns.is_like;
-              }, 800);
-              break;
-            case 400:
-              this.$message.error("用户登录信息已失效，请重新登录！");
-              this.$store.dispatch('clear');
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 1000);
-              break;
-            case 403:
-              this.$message.error("评论创建失败，请稍后重试！");
-              break;
-            case 404:
-              this.$message.error("系统未获取到您的用户信息，请联系管理员！");
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
-      else {
-        this.likeHandler();
-        commentIns.is_animating = false;
-      }
+      if (!commentIns.is_like)
+        this.likeHandler(commentIns, 'comment');
+      else
+        this.likeHandler(commentIns, 'cancel');
     },
-    likeHandler: function() {
-      this.like = !this.like
+    likeHandler: function(commentIns, tag) {
+      const userInfo = user.getters.getUser(user.state());
+      this.$axios({
+        url: '/social/like/' + tag,
+        method: 'post',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          comment_id: commentIns.id,
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            commentIns.is_animating = tag === 'comment';
+            setTimeout(() => {
+              commentIns.is_like = !commentIns.is_like;
+            }, 800);
+            break;
+          case 403:
+            this.$message.error("评论不存在，请刷新重试！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     share(message) {
       let aux = document.createElement("input");
@@ -786,7 +771,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
+  background-image:url( 'https://img-1304418829.cos.ap-beijing.myqcloud.com/heart.png');
   background-position: left;
   background-repeat:no-repeat;
   background-size:2900%;
@@ -796,7 +781,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.jpg');
+  background-image:url( 'https://img-1304418829.cos.ap-beijing.myqcloud.com/heart.png');
   background-position: right;
   background-repeat:no-repeat;
   background-size:2900%;
