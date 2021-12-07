@@ -156,7 +156,7 @@ import PageHeader from "../../components/PageHeader";
 import qs from "qs";
 
   export default {
-    components: {PageHeader, ArticleBlocks},
+    components: {AdvancedSearch, PageHeader, ArticleBlocks},
     data() {
       return {
         pageIdx: 1,
@@ -361,16 +361,16 @@ import qs from "qs";
         ]
       }
     },
-    created() {
-      let _query = this.$route.query;
-      let _search_key = Object.keys(_query)[0];
-      let _search_value = _query[_search_key];
-
-      this.header_select = _search_key;
-      this.input = _search_value;
-
-      this.getSearchRes(1);
-    },
+    // created() {
+    //   let _query = this.$route.query;
+    //   let _search_key = Object.keys(_query)[0];
+    //   let _search_value = _query[_search_key];
+    //
+    //   this.header_select = _search_key;
+    //   this.input = _search_value;
+    //
+    //   this.getSearchRes(1);
+    // },
     methods:{
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);

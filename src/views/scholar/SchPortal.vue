@@ -357,41 +357,41 @@ export default {
       activeNameChart:"citations",
     }
   },
-  created() {
-    // 查询的是别人的门户
-    if (this.$route.query.v) {
-      // TODO: 别人的
-    }
-
-    // 自己的门户
-    const userInfo = user.getters.getUser(user.state());
-    // 未登录则先登录
-    if (!userInfo) {
-      this.$message.warning("请先登录！");
-      setTimeout(() => {
-        this.$router.push('/login');
-      }, 1000);
-      return;
-    }
-    // 未入驻则申请入驻
-    if (userInfo.user.userType !== 1) {
-      this.$message.warning("您未认证，请先申请入驻！");
-      setTimeout(() => {
-        this.$router.push('/applySettle');
-      }, 1000);
-      return;
-    }
-    // 已入驻则调用接口返回信息
-    this.getSchInfo(userInfo.user.userId, 'user_id');
-    this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
-  },
-  mounted(){
-    //页面加载完成后,才执行
-    setTimeout(() => {
-      this.showCiaChart();
-      this.showRelChart();
-    }, 1000);
-  },
+  // created() {
+  //   // 查询的是别人的门户
+  //   if (this.$route.query.v) {
+  //     // TODO: 别人的
+  //   }
+  //
+  //   // 自己的门户
+  //   const userInfo = user.getters.getUser(user.state());
+  //   // 未登录则先登录
+  //   if (!userInfo) {
+  //     this.$message.warning("请先登录！");
+  //     setTimeout(() => {
+  //       this.$router.push('/login');
+  //     }, 1000);
+  //     return;
+  //   }
+  //   // 未入驻则申请入驻
+  //   if (userInfo.user.userType !== 1) {
+  //     this.$message.warning("您未认证，请先申请入驻！");
+  //     setTimeout(() => {
+  //       this.$router.push('/applySettle');
+  //     }, 1000);
+  //     return;
+  //   }
+  //   // 已入驻则调用接口返回信息
+  //   this.getSchInfo(userInfo.user.userId, 'user_id');
+  //   this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+  // },
+  // mounted(){
+  //   //页面加载完成后,才执行
+  //   setTimeout(() => {
+  //     this.showCiaChart();
+  //     this.showRelChart();
+  //   }, 1000);
+  // },
   filters: {
     ellipsis: function(value) {
       if (!value) return "";
