@@ -5,7 +5,7 @@
       <el-row class="header">
         <span style="float:left; font-size: 22px; color: #A0A0A0">
         为您查询到
-        <span style="color: #525455">&nbsp;{{ total_hits }}&nbsp;</span>
+        <span style="color: #525455">&nbsp;{{ total_hits_str }}&nbsp;</span>
         条结果
         </span>
       </el-row>
@@ -88,6 +88,25 @@
                   </el-checkbox>
                 </el-checkbox-group>
               </div>
+
+              <el-divider></el-divider>
+
+              <div class="publish-type sub-block">
+                <div class="check-box-title">
+                  <span>出版商</span>
+                </div>
+                <el-checkbox-group v-for="(o,index) in aggregation.publisher"
+                                   :key="index"
+                                   style="margin-bottom: 15px; text-align: left"
+                                   v-model="checkPublisherList"
+                                   @change="selectSearch">
+                  <div v-for="(val, key) in o" :key="key">
+                    <el-checkbox :label=key>
+                      <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
+                    </el-checkbox>
+                  </div>
+                </el-checkbox-group>
+              </div>
             </el-card>
           </div>
           </el-col>
@@ -96,7 +115,7 @@
             <div>
               <el-row>
                 <el-col :span="17">
-                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">论文 ({{total_hits}})</span>
+                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">论文 ({{total_hits_str}})</span>
                 </el-col>
                 <el-col :span="2">
                   <div style="margin-top:10px">
@@ -104,12 +123,15 @@
                   </div>
                 </el-col>
                 <el-col :span="5">
-                  <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
+                  <el-select v-model="sorter"
+                             placeholder="请选择"
+                             style="float:right; height:30px; margin-bottom:5px"
+                             @change="selectSearch">
                     <el-option
                         v-for="item in queue"
                         :key="item"
-                        :label="item"
-                        :value="item">
+                        :label="item.label"
+                        :value="item.value">
                     </el-option>
                   </el-select>
                 </el-col>
@@ -122,7 +144,7 @@
                 <el-col :span="5" style="text-align:right">
                   <div >
                     <span>每页</span>
-                    <el-input-number style="margin:15px; width:100px; margin-top:22px" el-input-number v-model="pageSize" controls-position="right" @change="handleSizeChange" :min="1" :max="20"></el-input-number>
+                    <el-input-number style="width:100px; margin: 22px 15px 15px;" el-input-number v-model="size" controls-position="right" @change="handleSizeChange" :min="1" :max="20"></el-input-number>
                     <!-- height:34px; -->
                     <span>条</span>
                   </div>
@@ -130,8 +152,8 @@
                 <el-col :span="15">
                   <el-pagination layout="prev, pager, next, jumper" 
                     background
-                    :current-page="currentPage" 
-                    :page-size="pageSize"
+                    :current-page="pageIdx" 
+                    :page-size="size"
                     :total="total_hits" 
                     @size-change="handleSizeChange" 
                     @current-change="handleCurrentChange"
@@ -156,15 +178,11 @@ import PageHeader from "../../components/PageHeader";
 import qs from "qs";
 
   export default {
-    components: {AdvancedSearch, PageHeader, ArticleBlocks},
+    components: {PageHeader, ArticleBlocks},
     data() {
       return {
         pageIdx: 1,
         size: 10,
-        
-        currentPage: 1,
-        pageSize:2,
-        pageSizes:[2,3,5,7,10],
         showSearch: true,
         tag: 'searchRes',
         header_select: '1',
@@ -196,9 +214,35 @@ import qs from "qs";
         }],
 
         total_hits:45112,
+        total_hits_str: '',
         select: '1',
-        queue:["匹配程度","发表时间","引用次数"],
-        value2:"匹配程度",
+        queue: [
+          {
+            value: 1,
+            label: "按匹配程度递减",
+          },
+          {
+            value: 2,
+            label: "按匹配程度递增",
+          },
+          {
+            value: 3,
+            label: "按被引用量递减",
+          },
+          {
+            value: 4,
+            label: "按被引用量递增",
+          },
+          {
+            value: 5,
+            label: "按发表时间递减",
+          },
+          {
+            value: 6,
+            label: "按发表时间递增",
+          }
+        ],
+        sorter: 1,
         minYear: 1900,
         maxYear: 2021,
         year: [1900, 2021],
@@ -271,12 +315,42 @@ import qs from "qs";
               rank: "10327",
               webpage: ""
             },
+          ],
+          publisher: [
+            {
+              "IEEE": 13
+            },
+            {
+              "Apress, Berkeley, CA": 8
+            },
+            {
+              "IOP Publishing": 7
+            },
+            {
+              "ACM": 5
+            },
+            {
+              "The Open Journal": 4
+            },
+            {
+              "Elsevier BV": 3
+            },
+            {
+              "Github": 3
+            },
+            {
+              "Packt Publishing": 3
+            },
+            {
+              "Apress": 2
+            }
           ]
         },
 
         checkDoctypeList: [],
         checkJournalList: [],
         checkConferenceList: [],
+        checkPublisherList: [],
 
         //articles表示当前页面显示的文章块数组
         articles:[
@@ -295,7 +369,25 @@ import qs from "qs";
                 ]
               },
             ],
-            fields:["AI","computer science","Software Engineering"],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -321,7 +413,25 @@ import qs from "qs";
                 ]
               },
             ],
-            fields:["AI","computer science","Software Engineering","AI","computer science","Software Engineering","AI","computer science","Software Engineering"],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -347,7 +457,25 @@ import qs from "qs";
                 ]
               },
             ],
-            fields:["AI","computer science","Software Engineering"],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -361,32 +489,33 @@ import qs from "qs";
         ]
       }
     },
-    // created() {
-    //   let _query = this.$route.query;
-    //   let _search_key = Object.keys(_query)[0];
-    //   let _search_value = _query[_search_key];
-    //
-    //   this.header_select = _search_key;
-    //   this.input = _search_value;
-    //
-    //   this.getSearchRes(1);
-    // },
+    created() {
+      let _query = this.$route.query;
+      let _search_key = Object.keys(_query)[0];
+      let _search_value = _query[_search_key];
+
+      this.header_select = _search_key;
+      this.input = _search_value;
+
+      this.getSearchRes(1);
+    },
     methods:{
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.size = val;
+        this.selectSearch();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.pageIdx = val;
+        this.selectSearch();
       },
       collectChange:function(item){
         item.is_collect=!(item.is_collect);
       },
       getSearchRes(pageIdx) {
-        // let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         const _formData = new FormData();
         _formData.append(this.header_select, this.input);
         _formData.append("page", pageIdx);
-        console.log(_formData);
         this.$axios({
           method: 'post',
           url: '/es/query/paper/' + this.header_select,
@@ -398,12 +527,14 @@ import qs from "qs";
             case 200:
               this.articles = res.data.details;
               this.aggregation = res.data.aggregation;
-              this.total_hits = res.data.total_hits.toLocaleString();
+              this.total_hits = res.data.total_hits;
+              this.total_hits_str = res.data.total_hits.toLocaleString();
               if (res.data.total_hits === 10000)
-                this.total_hits = "10000+";
+                this.total_hits_str = "10000+";
               break;
             case 404:
               this.total_hits = 0;
+              this.total_hits_str = '0';
               break;
             case 500:
               this.$message.error("系统发生错误，请联系管理员！");
@@ -450,7 +581,10 @@ import qs from "qs";
             max_year: this.year[1],
             doctypes: JSON.stringify(this.checkDoctypeList),
             journals: JSON.stringify(journals),
-            conferences: JSON.stringify(conferences)
+            conferences: JSON.stringify(conferences),
+            publishers: JSON.stringify(this.checkPublisherList),
+            sort_type: Math.ceil(this.sorter/2),
+            sort_ascending: this.sorter%2===0,
           })
         })
         .then(res => {
@@ -459,11 +593,14 @@ import qs from "qs";
           switch (res.data.status) {
             case 200:
               this.articles = res.data.details;
-              console.log(this.articles);
-              this.total_hits = res.data.total_hits.toLocaleString();
+              this.total_hits = res.data.total_hits;
+              this.total_hits_str = res.data.total_hits.toLocaleString();
+              if (res.data.total_hits === 10000)
+                this.total_hits_str = "10000+";
               break;
             case 404:
               this.total_hits = 0;
+              this.total_hits_str = '0';
               break;
             case 500:
               this.$message.error("系统发生错误，请联系管理员！");

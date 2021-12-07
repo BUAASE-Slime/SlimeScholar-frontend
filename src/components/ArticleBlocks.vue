@@ -29,7 +29,10 @@
       <div id="fields">
         <el-row>
         <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:15px; margin-right:10px; float:left;">
-          <span style="border-style:solid; border-width:1px; border-radius:5px; padding:5px"><i class="el-icon-menu"></i>{{item1}}</span>
+          <span style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" @click="searchField(item1.name, item1.field_id)">
+            <i class="el-icon-menu"></i>
+            &nbsp;{{item1.name}}
+          </span>
         </div>
         </el-row>
       </div>
@@ -45,7 +48,12 @@
         <div v-else-if="flag==='schLib'">
         <!--  TODO: 删除图标       -->
         </div>
-        <span style="float:right; text-align:right;">被引次数：{{item.reference_count}}</span>
+        <span style="float:right; text-align:right;">
+          被引次数：
+          <span style="color: #2d94d4;">
+            {{item.citation_count.toLocaleString()}}
+          </span>
+        </span>
       </div>
     </el-card>
   </div>
@@ -65,6 +73,9 @@ export default {
         query: { v: paper_id }
       });
       window.open(routeUrl .href, "_blank");
+    },
+    searchField(field_name, field_id) {
+      // TODO:
     }
   },
   filters: {
