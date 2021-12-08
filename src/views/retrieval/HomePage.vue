@@ -128,26 +128,26 @@ export default {
           value: '1',
           label: '篇关摘'
         }, {
-          value: '2',
-          label: 'DOI'
-        }, {
-          value: '3',
-          label: '关键字'
-        }, {
           value: 'title',
           label: '篇名'
         }, {
           value: '5',
           label: '摘要'
-        },{
-          value: '6',
+        }, {
+          value: '3',
+          label: '领域'
+        }, {
+          value: 'author_name',
           label: '作者'
         }, {
-          value: '7',
+          value: 'affiliation_name',
           label: '作者单位'
         }, {
-          value: '8',
+          value: 'publisher',
           label: '文献来源'
+        }, {
+          value: 'doi',
+          label: 'DOI'
         },
       ],
       value: '',
@@ -358,7 +358,7 @@ export default {
 
         this.statistic.fields_count = this.statistic.fields_count.toLocaleString();
         this.statistic.affiliation_count = this.statistic.affiliation_count.toLocaleString();
-        // this.statistic.author_count = this.statistic.author_count.toLocaleString();
+        this.statistic.author_count = this.statistic.author_count.toLocaleString();
         this.statistic.journal_count = this.statistic.journal_count.toLocaleString();
         this.statistic.paper_count = this.statistic.paper_count.toLocaleString();
 

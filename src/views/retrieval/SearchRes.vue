@@ -2,7 +2,6 @@
   <div class="search-res">
     <PageHeader :showSearch="showSearch"
                 :tag="tag"
-                :options="articleOptions"
                 :select="header_select"
                 :input="input"></PageHeader>
     <ArticleRes :header_select="header_select"
@@ -19,6 +18,7 @@
 
 import PageHeader from "../../components/PageHeader";
 import ArticleRes from "../../components/ArticleRes";
+import qs from "qs";
 
   export default {
     components: {ArticleRes, PageHeader},
@@ -28,31 +28,6 @@ import ArticleRes from "../../components/ArticleRes";
         tag: 'searchRes',
         header_select: '1',
         input: "",
-        articleOptions: [{
-          value: '1',
-          label: '篇关摘'
-        }, {
-          value: '2',
-          label: '文献来源'
-        }, {
-          value: '3',
-          label: '关键字'
-        }, {
-          value: 'title',
-          label: '篇名'
-        }, {
-          value: '5',
-          label: '摘要'
-        },{
-          value: '6',
-          label: '作者'
-        }, {
-          value: '7',
-          label: '作者单位'
-        }, {
-          value: '8',
-          label: 'DOI'
-        }],
 
         total_hits:45112,
         total_hits_str: '',
@@ -299,9 +274,47 @@ import ArticleRes from "../../components/ArticleRes";
 
       this.header_select = _search_key;
       this.input = _search_value;
+      this.getSearchRes(1);
     },
     methods:{
-
+      getSearchRes(pageIdx) {
+        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+        this.$axios({
+          method: 'post',
+          url: '/es/query/paper/' + this.header_select,
+          data: qs.stringify({
+            [this.header_select]: this.input,
+            page: pageIdx,
+            is_precise: true,
+          })
+        })
+        .then(res => {
+          _loadingIns.close();
+          switch (res.data.status) {
+            case 200:
+              this.articles = res.data.details;
+              this.aggregation = res.data.aggregation;
+              this.total_hits = res.data.total_hits;
+              this.total_hits_str = res.data.total_hits.toLocaleString();
+              if (res.data.total_hits === 10000)
+                this.total_hits_str = "10000+";
+              break;
+            case 404:
+              this.total_hits = 0;
+              this.total_hits_str = '0';
+              break;
+            case 500:
+              this.$message.error("系统发生错误，请联系管理员！");
+              setTimeout(() => {
+                this.$router.push("/");
+              }, 1500);
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      },
     },
   };
 </script>

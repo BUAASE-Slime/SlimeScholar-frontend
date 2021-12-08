@@ -227,7 +227,6 @@ export default {
   created() {
     switch (this.mode) {
       case 'normal':
-        this.getSearchRes(1);
         break;
     }
   },
@@ -247,43 +246,6 @@ export default {
     },
     changeYear() {
       this.selectSearch();
-    },
-    getSearchRes(pageIdx) {
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-      this.$axios({
-        method: 'post',
-        url: '/es/query/paper/' + this.header_select,
-        data: qs.stringify({
-          [this.header_select]: this.input,
-          page: pageIdx
-        })
-      })
-      .then(res => {
-        _loadingIns.close();
-        switch (res.data.status) {
-          case 200:
-            this.articles = res.data.details;
-            this.aggregation = res.data.aggregation;
-            this.total_hits = res.data.total_hits;
-            this.total_hits_str = res.data.total_hits.toLocaleString();
-            if (res.data.total_hits === 10000)
-              this.total_hits_str = "10000+";
-            break;
-          case 404:
-            this.total_hits = 0;
-            this.total_hits_str = '0';
-            break;
-          case 500:
-            this.$message.error("系统发生错误，请联系管理员！");
-            setTimeout(() => {
-              this.$router.push("/");
-            }, 1500);
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
     },
     selectSearch() {
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
