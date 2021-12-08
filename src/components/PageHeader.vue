@@ -45,39 +45,12 @@ import user from "@/store/user";
 
 export default {
   name: 'pageHeader',
-  props: ['showSearch', 'tag', 'select', 'input', 'mode'],
+  props: ['showSearch', 'tag', 'select', 'input', 'mode', 'options'],
   data() {
     return {
       userName: 'huangzehuan',
       activeIndex: '1',
       isLogin: false,
-
-      options: [{
-          value: '1',
-          label: '篇关摘'
-        }, {
-          value: 'title',
-          label: '篇名'
-        }, {
-          value: '5',
-          label: '摘要'
-        }, {
-          value: '3',
-          label: '领域'
-        }, {
-          value: 'author_name',
-          label: '作者'
-        }, {
-          value: 'affiliation_name',
-          label: '作者单位'
-        }, {
-          value: 'publisher',
-          label: '文献来源'
-        }, {
-          value: 'doi',
-          label: 'DOI'
-        },
-      ],
     };
   },
   created() {

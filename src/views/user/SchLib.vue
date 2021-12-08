@@ -84,7 +84,7 @@
               </el-row>
             </div>
 
-            <ArticleBlocks :articles="articles" flag="searchRes"></ArticleBlocks>
+            <ArticleBlocks :articles="articles" flag="schLib"></ArticleBlocks>
 
           </div></el-col>
         </el-row>
@@ -220,7 +220,7 @@ export default {
       }, 500);
       return;
     }
-    this.getInfo();
+    // this.getInfo();
   },
   methods: {
     getInfo() {

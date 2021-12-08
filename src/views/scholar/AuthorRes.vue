@@ -53,7 +53,7 @@
           </div>
           </el-col>
 
-          <el-col :span="15"><div class="grid-content bg-purple">
+          <el-col :span="16"><div class="grid-content bg-purple">
             <div>
               <el-row>
                 <el-col span="17">
@@ -212,7 +212,7 @@ export default {
 <style scoped>
 
 .author-result .main-body {
-  padding: 0 100px 30px;
+  padding: 0 40px 20px 80px;
 }
 
 .author-result .header {
