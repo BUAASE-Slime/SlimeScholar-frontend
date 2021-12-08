@@ -360,7 +360,9 @@ export default {
   created() {
     // 查询的是别人的门户
     if (this.$route.query.v) {
-      // TODO: 别人的
+      this.getSchInfo(this.$route.query.v, 'author_id');
+      this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+      return;
     }
 
     // 自己的门户

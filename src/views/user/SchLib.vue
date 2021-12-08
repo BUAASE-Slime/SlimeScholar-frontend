@@ -220,7 +220,7 @@ export default {
       }, 500);
       return;
     }
-    // this.getInfo();
+    this.getInfo();
   },
   methods: {
     getInfo() {
