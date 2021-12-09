@@ -58,8 +58,7 @@
             </span>
           </span>
         </el-col>
-        <el-col :span="0.5" v-if="flag==='searchRes'" style="cursor: pointer"><span @click="collectChange(item)">&nbsp;收藏</span></el-col>
-
+        <el-col :span="0.5" v-if="flag==='searchRes'" style="cursor: pointer"><span @click="collectChange(item); openDia()">&nbsp;收藏</span></el-col>
         <el-col :span="0.5" v-if="flag==='schLib'" style="cursor: pointer">
           <span @click="delFromTag(item)">
             <span>
@@ -76,6 +75,43 @@
         </span>
       </el-row>
     </el-card>
+    <div>
+      <el-dialog
+        title="收藏"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose">
+        <el-divider></el-divider>
+        <div style="text-align:left;">
+          <el-tag
+            :key="tag"
+            v-for="tag in tagData"
+            closable
+            :disable-transitions="false"
+            @close="handleCloseTag(tag)"
+            :effect=tag.tagState
+            @click.native="choosed(tag)"
+            style="margin:10px">
+            {{tag.tag_name}}
+          </el-tag>
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -88,34 +124,42 @@ export default {
   props: ['articles', 'flag'],
   data() {
     return {
+      dialogVisible: false,
+      
+      inputVisible: false,
+      inputValue: '',
       tagData: [
         {
           tag_id: 1,
           tag_name: "默认",
           user_id: 2,
           username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
+          create_time: "2021-11-18T17:22:27+08:00",
+          tagState:"plain",
         },
         {
           tag_id: 2,
           tag_name: "CV",
           user_id: 2,
           username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
+          create_time: "2021-11-18T17:22:27+08:00",
+          tagState:"plain",
         },
         {
           tag_id: 2,
           tag_name: "CV",
           user_id: 2,
           username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
+          create_time: "2021-11-18T17:22:27+08:00",
+          tagState:"plain",
         },
         {
           tag_id: 2,
           tag_name: "CV",
           user_id: 2,
           username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
+          create_time: "2021-11-18T17:22:27+08:00",
+          tagState:"plain",
         }
       ]
     }
@@ -130,6 +174,7 @@ export default {
       if (!item.is_collect) {
         // 收藏
         this.collect(item, userInfo.user.userId);
+        
       } else {
         // 取消收藏
         this.$axios({
@@ -239,7 +284,7 @@ export default {
           case 200:
             this.tagData = res.data.data;
             // TODO: 打开标签弹窗供用户选择
-
+            
             // 选择后向后端发送收藏请求
             let tag_name = '';
             this.doCollect(item, item.paper_id, userId, tag_name);
@@ -266,6 +311,43 @@ export default {
       .catch(err => {
         console.log(err);
       })
+    },
+    openDia(){
+      this.dialogVisible=true;
+    },
+    //删除标签函数
+    handleCloseTag(tag) {
+      this.tagData.splice(this.tagData.indexOf(tag), 1);
+    },
+
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    //新建标签函数
+    handleInputConfirm() {
+      let inputValue = this.inputValue; //新标签的名字
+      ////////////////这两个注释中间的可以删，就是为了看一下新建标签的效果
+      if (inputValue) {
+        var item={
+          tag_id: (this.tagData[this.tagData.length-1].tag_id)+1,
+          tag_name: inputValue,
+          user_id: this.tagData[0].user_id,
+          username: "",
+          create_time: "2021-11-18T17:22:27+08:00",
+          tagState:"plain"
+        }
+        this.tagData.push(item);
+      }
+      ////////////////////////////////////////////////////////////////
+      this.inputVisible = false;
+      this.inputValue = '';
+    },
+    choosed(tag){
+      if(tag.tagState=="plain")tag.tagState="dark";
+      else tag.tagState="plain";
     }
   },
   filters: {
@@ -276,7 +358,8 @@ export default {
       }
       return value;
     },
-  }
+  },
+  
 }
 </script>
 
@@ -298,4 +381,25 @@ export default {
   margin: 10px 0;
 }
 
+  .article-blocks .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .article-blocks .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .article-blocks .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
+  .article-blocks >>> .el-dialog__body{
+    padding-top: 0 !important;
+  }
+  .article-blocks >>> .el-dialog__body .el-divider--horizontal{
+    margin-top:5px;
+  }
 </style>
