@@ -64,14 +64,17 @@
                       </span>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
-<!--                      <span v-if="item.journal_id !== ''">{{item.journal.name}}</span>-->
-<!--                      <span v-else-if="item.conference_id !== ''">{{item.conference.name}}</span>-->
-<!--                      <span v-else-if="item.publisher">{{item.publisher}}</span>-->
+                      <span v-if="item.journal && item.journal.name!== ''">{{item.journal.name}}</span>
+                      <span v-else-if="item.conference && item.conference.name !== ''">{{item.conference.name}}</span>
+                      <span v-else-if="item.publisher">{{item.publisher}}</span>
                       <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
                         {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
                       </span>
                       <span v-else-if="item.first_page!==''&&item.volume!==''">
                         {{ item.volume }}, {{ item.first_page }}
+                      </span>
+                      <span v-else-if="item.volume!==''">
+                        {{ item.volume }}
                       </span>
                     </el-row>
                   </el-col>
@@ -167,7 +170,7 @@ export default {
   data(){
     return {
       isSelf: false,
-      artNumInit: "6",
+      artNumInit: 6,
       info: {
         people: {
           user_id: 1,
@@ -377,7 +380,6 @@ export default {
     }
     // 调用接口返回信息
     this.getSchInfo(userInfo.user.userId, 'user_id');
-    this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
   },
   mounted(){
     //页面加载完成后,才执行
@@ -413,6 +415,8 @@ export default {
             const userInfo = user.getters.getUser(user.state());
             if (userInfo && userInfo.user.userId === this.info.people.user_id)
               this.isSelf = true;
+            this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+            this.flag = (this.info.papers.length<=this.artNumInit);
             break;
           case 401:
             this.$message.error("参数错误！");
@@ -444,11 +448,11 @@ export default {
       window.open(routeUrl .href, "_blank");
     },
     AddArtNum(){
-      let x=parseInt(this.artNumInit);
-      this.flag=(this.info.papers.length-x);
+      let x = parseInt(this.artNumInit);
       x+=20;
       if(x>this.info.papers.length) x=this.info.papers.length;
       this.artNumInit=x;
+      this.flag = (this.info.papers.length<=this.artNumInit);
     },
     toHim(author_id){
       let routeUrl = this.$router.resolve({

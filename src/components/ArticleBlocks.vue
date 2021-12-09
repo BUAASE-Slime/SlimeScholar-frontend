@@ -129,7 +129,7 @@ export default {
       }
       if (!item.is_collect) {
         // 收藏
-        this.collect(item);
+        this.collect(item, userInfo.user.userId);
       } else {
         // 取消收藏
         this.$axios({
@@ -221,13 +221,13 @@ export default {
         console.log(err);
       })
     },
-    collect(item) {
+    collect(item, userId) {
       // 获取用户所有标签
       this.$axios({
         method: 'post',
         url: '/social/get/tags',
         data: qs.stringify({
-          user_id: userInfo.user.userId
+          user_id: userId
         })
       })
       .then(res => {
@@ -238,7 +238,7 @@ export default {
 
             // 选择后向后端发送收藏请求
             let tag_name = '';
-            this.doCollect(item, item.paper_id, userInfo.user.userId, tag_name);
+            this.doCollect(item, item.paper_id, userId, tag_name);
             break;
           case 400:
             this.$message.error("用户登录信息已失效，请重新登录！");

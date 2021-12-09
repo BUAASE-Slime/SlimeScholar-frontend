@@ -454,7 +454,11 @@ export default {
       window.open(routeUrl .href, "_self");
     },
     toAuthor: function(id) {
-      alert("前往" + "id:" + id + "的学者门户")
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: id }
+      });
+      window.open(routeUrl .href, "_self");
     },
     toDOI: function(doi) {
       window.open("https://doi.org/" + doi);
