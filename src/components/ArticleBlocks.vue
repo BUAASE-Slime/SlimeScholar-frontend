@@ -58,7 +58,7 @@
             </span>
           </span>
         </el-col>
-        <el-col :span="0.5" v-if="flag==='searchRes'" style="cursor: pointer"><span @click="collectChange(item); openDia()">&nbsp;收藏</span></el-col>
+        <el-col :span="0.5" v-if="flag==='searchRes'" style="cursor: pointer"><span @click="collectChange(item);">&nbsp;收藏</span></el-col>
         <el-col :span="0.5" v-if="flag==='schLib'" style="cursor: pointer">
           <span @click="delFromTag(item)">
             <span>
@@ -79,19 +79,18 @@
       <el-dialog
         title="收藏"
         :visible.sync="dialogVisible"
-        width="30%"
-        :before-close="handleClose">
+        width="30%">
         <el-divider></el-divider>
-        <div style="text-align:left;">
+        <div style="text-align:left; padding-left: 10px; padding-right: 10px">
           <el-tag
             :key="tag"
             v-for="tag in tagData"
             closable
             :disable-transitions="false"
             @close="handleCloseTag(tag)"
+            @click.native="chooseTag(tag)"
             :effect=tag.tagState
-            @click.native="choosed(tag)"
-            style="margin:10px">
+            style="margin-top:10px; margin-bottom: 10px; cursor: pointer">
             {{tag.tag_name}}
           </el-tag>
           <el-input
@@ -108,7 +107,7 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="sureCollect">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -125,42 +124,28 @@ export default {
   data() {
     return {
       dialogVisible: false,
+
+      curPaper: '',
       
       inputVisible: false,
       inputValue: '',
       tagData: [
-        {
-          tag_id: 1,
-          tag_name: "默认",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00",
-          tagState:"plain",
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00",
-          tagState:"plain",
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00",
-          tagState:"plain",
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00",
-          tagState:"plain",
-        }
+        // {
+        //   tag_id: 1,
+        //   tag_name: "默认",
+        //   user_id: 2,
+        //   username: "",
+        //   create_time: "2021-11-18T17:22:27+08:00",
+        //   tagState:"plain",
+        // },
+        // {
+        //   tag_id: 2,
+        //   tag_name: "CV",
+        //   user_id: 2,
+        //   username: "",
+        //   create_time: "2021-11-18T17:22:27+08:00",
+        //   tagState:"plain",
+        // }
       ]
     }
   },
@@ -172,45 +157,35 @@ export default {
         return;
       }
       if (!item.is_collect) {
-        // 收藏
-        this.collect(item, userInfo.user.userId);
-        
+        // 收藏 - 获取tags，打开dialog，供用户选择
+        this.getTags(userInfo.user.userId).then(() => {
+          this.curPaper = item;
+          this.dialogVisible = true;
+        });
       } else {
         // 取消收藏
-        this.$axios({
-          url: '/social/delete/collect/paper',
-          method: 'post',
-          data: qs.stringify({
-            user_id: userInfo.user.userId,
-            paper_id: item.paper_id
-          })
-        })
-        .then(res => {
-          switch (res.data.status) {
-            case 200:
-              let data = { paper: item, newStatus: false };
-              this.$emit('changeCollect', data);
-              break;
-            case 400:
-              this.$userApi.userInvalid();
-              break;
-            case 404:
-              this.$userApi.userNotFound();
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
+        this.doDelCollect(item, userInfo.user.userId);
       }
+    },
+    sureCollect() {
+      const userInfo = user.getters.getUser(user.state());
+      // TODO: tag_name改为数组
+      let tag_name = '';
+      for (let i = 0; i < this.tagData.length; i++)
+        if (this.tagData[i].tagState === 'dark')
+          tag_name = this.tagData[i].tag_name;
+      this.doCollect(this.curPaper, userInfo.user.userId, tag_name);
     },
     // 从个人图书馆中删除
     delFromTag(item) {
       this.$emit('delArticle', item);
     },
+
+    // 引用
     quote(item) {
       this.$message.success("引用" + item.paper_id + " " + item.paper_title);
     },
+    // 查看文献详情
     openDetail(paper_id) {
       let routeUrl = this.$router.resolve({
         path: '/article',
@@ -218,6 +193,7 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
+    // 查看领域下的文献
     searchField(field_name, field_id) {
       let routeUrl = this.$router.resolve({
         path: '/searchRes',
@@ -225,6 +201,7 @@ export default {
       });
       window.open(routeUrl .href, "_self");
     },
+    // 查看作者门户
     gotoSch(author_id) {
       let routeUrl = this.$router.resolve({
         path: '/schPortal',
@@ -232,37 +209,29 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
-    doCollect(item, paper_id, user_id, tag_name) {
+    // 取消收藏（与后端交互）
+    doDelCollect(item, user_id) {
       this.$axios({
-        url: '/social/collect/paper',
+        url: '/social/delete/collect/paper',
         method: 'post',
         data: qs.stringify({
           user_id: user_id,
-          paper_id: paper_id,
-          tag_name: tag_name
+          paper_id: item.paper_id
         })
       })
       .then(res => {
         switch (res.data.status) {
           case 200:
-            item.is_collect = true;
+            let data = { paper: item, newStatus: false };
+            this.$forceUpdate();
+            this.$emit('changeCollect', data);
+            this.$message.success("成功取消收藏！");
             break;
           case 400:
-            this.$message.error("用户登录信息已失效，请重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
-            break;
-          case 403:
-            this.$message.error("文献已收藏！");
+            this.$userApi.userInvalid();
             break;
           case 404:
-            this.$message.error("用户信息获取失败，请尝试重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
+            this.$userApi.userNotFound();
             break;
         }
       })
@@ -270,7 +239,44 @@ export default {
         console.log(err);
       })
     },
-    collect(item, userId) {
+    // 收藏（与后端交互）
+    doCollect(item, user_id, tag_name) {
+      this.$axios({
+        url: '/social/collect/paper',
+        method: 'post',
+        data: qs.stringify({
+          user_id: user_id,
+          paper_id: item.paper_id,
+          tag_name: tag_name
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            let data = { paper: item, newStatus: true };
+            this.$emit('changeCollect', data);
+            this.dialogVisible = false;
+            break;
+          case 400:
+            this.$userApi.userInvalid();
+            break;
+          case 403:
+            this.$message.error("文献已收藏！");
+            break;
+          case 404:
+            this.$userApi.userNotFound();
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    initTag() {
+      for (let i = 0; i < this.tagData.length; i++)
+        this.tagData[i]["tagState"] = "plain";
+    },
+    async getTags(userId) {
       // 获取用户所有标签
       this.$axios({
         method: 'post',
@@ -283,28 +289,16 @@ export default {
         switch (res.data.status) {
           case 200:
             this.tagData = res.data.data;
-            // TODO: 打开标签弹窗供用户选择
-            
-            // 选择后向后端发送收藏请求
-            let tag_name = '';
-            this.doCollect(item, item.paper_id, userId, tag_name);
+            this.initTag(); // 在 tagData 中添加前端选中字段属性
             break;
           case 400:
-            this.$message.error("用户登录信息已失效，请重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
+            this.$userApi.userInvalid();
             break;
           case 403:
             this.$message.error("获取标签失败！");
             break;
           case 404:
-            this.$message.error("用户信息获取失败，请尝试重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
+            this.$userApi.userNotFound();
             break;
         }
       })
@@ -312,12 +306,43 @@ export default {
         console.log(err);
       })
     },
-    openDia(){
-      this.dialogVisible=true;
-    },
     //删除标签函数
     handleCloseTag(tag) {
-      this.tagData.splice(this.tagData.indexOf(tag), 1);
+      const userInfo = user.getters.getUser(user.state());
+      let tagName = tag.tag_name;
+      if (tagName === '默认') {
+        this.$message.error("无法删除默认收藏夹！");
+        return;
+      }
+      if (tagName) {
+        this.$axios({
+          method: 'post',
+          url: '/social/delete/tag',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            tag_name: tagName,
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.tagData.splice(this.tagData.indexOf(tag), 1);
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 403:
+              this.$message.error("标签不存在！");
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
     },
 
     showInput() {
@@ -328,26 +353,47 @@ export default {
     },
     //新建标签函数
     handleInputConfirm() {
-      let inputValue = this.inputValue; //新标签的名字
-      ////////////////这两个注释中间的可以删，就是为了看一下新建标签的效果
-      if (inputValue) {
-        var item={
-          tag_id: (this.tagData[this.tagData.length-1].tag_id)+1,
-          tag_name: inputValue,
-          user_id: this.tagData[0].user_id,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00",
-          tagState:"plain"
-        }
-        this.tagData.push(item);
+      const userInfo = user.getters.getUser(user.state());
+      const user_id = userInfo.user.userId;
+      let newTagName = this.inputValue;
+      if (newTagName && newTagName !== '') {
+        this.$axios({
+          method: 'post',
+          url: '/social/create/tag',
+          data: qs.stringify({
+            user_id: user_id,
+            tag_name: newTagName,
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.getTags(user_id);
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 402:
+              this.$message.error("无法建立重复标签！");
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
-      ////////////////////////////////////////////////////////////////
       this.inputVisible = false;
       this.inputValue = '';
     },
-    choosed(tag){
-      if(tag.tagState=="plain")tag.tagState="dark";
-      else tag.tagState="plain";
+    chooseTag(tag) {
+      // TIP: 数据层次多导致没有触发 render 进行自动更新，需要手动调用
+      this.$forceUpdate();
+      if (tag.tagState === "plain")
+        tag.tagState = "dark";
+      else tag.tagState = "plain";
     }
   },
   filters: {
@@ -381,25 +427,25 @@ export default {
   margin: 10px 0;
 }
 
-  .article-blocks .el-tag + .el-tag {
-    margin-left: 10px;
-  }
-  .article-blocks .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .article-blocks .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
-  .article-blocks >>> .el-dialog__body{
-    padding-top: 0 !important;
-  }
-  .article-blocks >>> .el-dialog__body .el-divider--horizontal{
-    margin-top:5px;
-  }
+.article-blocks .el-tag {
+  margin-right: 10px;
+}
+.article-blocks .button-new-tag {
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 10px;
+}
+.article-blocks .input-new-tag {
+  margin-top: 10px;
+  width: 90px;
+  vertical-align: bottom;
+}
+.article-blocks >>> .el-dialog__body{
+  padding-top: 0 !important;
+}
+.article-blocks >>> .el-dialog__body .el-divider--horizontal{
+  margin-top:5px;
+}
 </style>

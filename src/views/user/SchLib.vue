@@ -276,34 +276,20 @@ export default {
       newTagName: '',
       thisTagName: '',
       tagData: [
-        {
-          tag_id: 1,
-          tag_name: "默认",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
-        },
-        {
-          tag_id: 2,
-          tag_name: "CV",
-          user_id: 2,
-          username: "",
-          create_time: "2021-11-18T17:22:27+08:00"
-        }
+        // {
+        //   tag_id: 1,
+        //   tag_name: "默认",
+        //   user_id: 2,
+        //   username: "",
+        //   create_time: "2021-11-18T17:22:27+08:00"
+        // },
+        // {
+        //   tag_id: 2,
+        //   tag_name: "CV",
+        //   user_id: 2,
+        //   username: "",
+        //   create_time: "2021-11-18T17:22:27+08:00"
+        // }
       ]
     }
   },
@@ -432,6 +418,10 @@ export default {
     handleClose(tag) {
       const userInfo = user.getters.getUser(user.state());
       let tagName = tag.tag_name;
+      if (tagName === '默认') {
+        this.$message.error("无法删除默认收藏夹！");
+        return;
+      }
       if (tagName) {
         this.$axios({
           method: 'post',
@@ -472,13 +462,14 @@ export default {
     // New a tag
     handleInputConfirm() {
       const userInfo = user.getters.getUser(user.state());
+      const user_id = userInfo.user.userId;
       let newTagName = this.newTagName;
-      if (newTagName) {
+      if (newTagName && newTagName !== '') {
         this.$axios({
           method: 'post',
           url: '/social/create/tag',
           data: qs.stringify({
-            user_id: userInfo.user.userId,
+            user_id: user_id,
             tag_name: newTagName,
           })
         })
