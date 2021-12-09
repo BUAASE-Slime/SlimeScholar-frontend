@@ -306,7 +306,7 @@ import qs from "qs";
     },
     methods:{
       getSearchRes(pageIdx) {
-        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+        // let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         this.$axios({
           method: 'post',
           url: '/es/query/paper/' + this.header_select,
