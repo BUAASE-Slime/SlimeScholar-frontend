@@ -50,10 +50,14 @@
                 </div>
                 <div style="text-align: left; font-size: 13px">
                   <span>范围：</span>
-                  <span style="color: #0274B3; margin-top:2px">{{ year[0] }} ~ {{ year[1] }}</span>
+                  <span style="color: #0274B3; margin-top:2px" class="year-input">
+                    <el-input size="mini" v-model="year[0]" @change="changeYear"></el-input>
+                    &nbsp;~&nbsp;
+                    <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
+                  </span>
                 </div>
                 <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider v-model="year" range :min=minYear :max=maxYear></el-slider>
+                  <el-slider v-model="year" range :min=minYear :max=maxYear @change="getCollectByYear"></el-slider>
                 </div>
               </div>
 
@@ -376,6 +380,42 @@ export default {
       })
     },
 
+    changeYear() {
+
+    },
+    getCollectByYear() {
+      const userInfo = user.getters.getUser(user.state());
+      this.$axios({
+        method: 'post',
+        url: '/social/get/collect/year/paper',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          tag_name: this.tag_name,
+          min_year: this.year[0],
+          max_year: this.year[1]
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.articles = res.data.data;
+            break;
+          case 400:
+            this.$userApi.userInvalid();
+            break;
+          case 402:
+            this.articles = [];
+            break;
+          case 404:
+            this.$userApi.userNotFound();
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
     // 分页
     indexMethod(index) {
       return (this.pageIdx-1)*this.size+index;
@@ -610,6 +650,22 @@ export default {
   margin-top: 10px;
   width: 90px;
   vertical-align: bottom;
+}
+
+.schLib .year-input >>> .el-input--mini .el-input__inner {
+  font-size: 13px;
+  color: #0274B3;
+}
+
+.schLib .year-input >>> .el-input__inner {
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
+
+.schLib .year-input >>> .el-input--mini {
+  width: 45px;
+  text-align: center;
 }
 
 </style>
