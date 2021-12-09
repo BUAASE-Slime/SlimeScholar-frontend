@@ -174,6 +174,10 @@ export default {
       for (let i = 0; i < this.tagData.length; i++)
         if (this.tagData[i].tagState === 'dark')
           tag_name = this.tagData[i].tag_name;
+      if (tag_name === '') {
+        this.$message.warning("请选择收藏的标签！");
+        return;
+      }
       this.doCollect(this.curPaper, userInfo.user.userId, tag_name);
     },
     // 从个人图书馆中删除
@@ -436,9 +440,11 @@ export default {
   padding-top: 0;
   padding-bottom: 0;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 .article-blocks .input-new-tag {
   margin-top: 10px;
+  margin-bottom: 10px;
   width: 90px;
   vertical-align: bottom;
 }
