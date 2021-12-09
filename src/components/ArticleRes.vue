@@ -137,7 +137,10 @@
               </el-row>
             </div>
 
-            <ArticleBlocks :articles="articles" flag="searchRes"></ArticleBlocks>
+            <ArticleBlocks :articles="articles"
+                           @changeCollect="changeCollect"
+                           flag="searchRes"></ArticleBlocks>
+
             <div>
               <el-row>
                 <el-col :span="5" style="text-align:right">
@@ -239,8 +242,8 @@ export default {
       this.pageIdx = val;
       this.selectSearch();
     },
-    collectChange:function(item){
-      item.is_collect=!(item.is_collect);
+    changeCollect(data) {
+      this.$emit('changeCollect', data);
     },
     yearHandler() {
     },

@@ -11,6 +11,7 @@
                 :articles="articles"
                 :total_hits_str="total_hits_str"
                 :total_hits="total_hits"
+                @changeCollect="changeCollect"
                 mode="normal"></ArticleRes>
   </div>
 </template>
@@ -341,6 +342,13 @@ import qs from "qs";
         .catch(err => {
           console.log(err);
         })
+      },
+      changeCollect(data) {
+        let paper = data.paper;
+        let status = data.newStatus;
+        for (var i = 0; i < this.articles.length; i++)
+          if (this.articles[i].paper_id === paper.paper_id)
+            this.articles[i].is_collect = status;
       },
     },
   };

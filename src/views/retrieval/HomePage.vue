@@ -1,7 +1,7 @@
 <template>
 <div class="homepage">
   <div class="background">
-    <img src="../../assets/images/background3.jpg" class="background" alt="">
+    <img src="../../assets/images/background4.jpg" class="background" alt="">
   </div>
   <PageHeader mode="black"></PageHeader>
   <div>

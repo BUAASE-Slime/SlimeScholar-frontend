@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import common from "../../utils/common";
+import common from "../../utils/commonApi";
 import user from "../../store/user";
 import qs from "qs";
 

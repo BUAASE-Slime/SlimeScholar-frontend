@@ -107,7 +107,7 @@
 
 <script>
 import qs from "qs";
-import common from "../../utils/common";
+import common from "../../utils/commonApi";
 import user from "../../store/user";
 
 export default {

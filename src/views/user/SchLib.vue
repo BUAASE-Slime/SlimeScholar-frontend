@@ -8,7 +8,7 @@
       </el-row>
 
       <div class="content-select-result">
-        <el-row :gutter="0" v-if="total_hits!==0">
+        <el-row :gutter="0" v-if="articles.length!==0">
           <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
@@ -23,7 +23,8 @@
                       v-for="tag in tagData"
                       closable
                       :disable-transitions="false"
-                      style="margin-top: 10px;"
+                      style="margin-top: 10px; cursor: pointer"
+                      @click="openTag(tag)"
                       @close="handleClose(tag)">
                     {{tag.tag_name}}
                   </el-tag>
@@ -60,31 +61,43 @@
           </div>
           </el-col>
 
-          <el-col :span="15"><div class="grid-content bg-purple">
+          <el-col :span="16"><div class="grid-content bg-purple">
             <div>
               <el-row>
                 <el-col span="17">
-                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">收藏论文 ({{total_hits}})</span>
-                </el-col>
-                <el-col span="2">
-                  <div style="margin-top:10px">
-                    <span style="font-size:16px;color: #A0A0A0">排序</span>
-                  </div>
-                </el-col>
-                <el-col span="5">
-                  <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
-                    <el-option
-                        v-for="item in queue"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                    </el-option>
-                  </el-select>
+                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">收藏论文 ({{articles.length}})</span>
                 </el-col>
               </el-row>
             </div>
 
-            <ArticleBlocks :articles="articles" flag="schLib"></ArticleBlocks>
+            <ArticleBlocks v-if="userdata.length>0"
+                           :articles="userdata"
+                           @delArticle="delArticle"
+                           flag="schLib"></ArticleBlocks>
+
+            <div>
+              <el-row>
+                <el-col :span="5" style="text-align:right">
+                  <div >
+                    <span>每页</span>
+                    <el-input-number style="width:100px; margin: 22px 15px 15px;" el-input-number v-model="size" controls-position="right" @change="handleSizeChange" :min="1" :max="20"></el-input-number>
+                    <!-- height:34px; -->
+                    <span>条</span>
+                  </div>
+                </el-col>
+                <el-col :span="15">
+                  <el-pagination layout="prev, pager, next, jumper"
+                                 background
+                                 :current-page="pageIdx"
+                                 :page-size="size"
+                                 :total="articles.length"
+                                 @size-change="handleSizeChange"
+                                 @current-change="handleCurrentChange"
+                                 style="margin: 20px">
+                  </el-pagination>
+                </el-col>
+              </el-row>
+            </div>
 
           </div></el-col>
         </el-row>
@@ -109,7 +122,9 @@ export default {
   components: { ArticleBlocks },
   data() {
     return {
-      total_hits: 1,
+      pageIdx: 1,
+      size: 5,
+
       queue: ["匹配程度","发表时间","引用次数"],
       value2: "匹配程度",
 
@@ -174,11 +189,88 @@ export default {
           reference_count: 42,
           is_collect:true,
           // 是否收藏
-        }
+        },
+        {
+          authors: [
+            {
+              author_name: "John Lee",
+            },
+            {
+              author_name: "Zuo_zuo",
+            },
+          ],
+          paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
+          paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          citation_count: 3288,
+          comment_count: 5,
+          year:2021,
+          reference_count: 42,
+          is_collect:true,
+          // 是否收藏
+        },
+        {
+          authors: [
+            {
+              author_name: "John Lee",
+            },
+            {
+              author_name: "Zuo_zuo",
+            },
+          ],
+          paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
+          paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          citation_count: 3288,
+          comment_count: 5,
+          year:2021,
+          reference_count: 42,
+          is_collect:true,
+          // 是否收藏
+        },
+        {
+          authors: [
+            {
+              author_name: "John Lee",
+            },
+            {
+              author_name: "Zuo_zuo",
+            },
+          ],
+          paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
+          paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          citation_count: 3288,
+          comment_count: 5,
+          year:2021,
+          reference_count: 42,
+          is_collect:true,
+          // 是否收藏
+        },
+        {
+          authors: [
+            {
+              author_name: "John Lee",
+            },
+            {
+              author_name: "Zuo_zuo",
+            },
+          ],
+          paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
+          paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          citation_count: 3288,
+          comment_count: 5,
+          year:2021,
+          reference_count: 42,
+          is_collect:true,
+          // 是否收藏
+        },
       ],
 
       newTagInputVisible: false,
       newTagName: '',
+      thisTagName: '',
       tagData: [
         {
           tag_id: 1,
@@ -226,29 +318,36 @@ export default {
     getInfo() {
       let self = this;
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-      this.$axios.all([this.getAllTags()])
-      .then(this.$axios.spread(function (allTags) {
+      this.$axios.all([this.getAllTags(), this.getArticles()])
+      .then(this.$axios.spread(function (allTags, allArticles) {
         _loadingIns.close();
         switch (allTags.data.status) {
           case 200:
             self.tagData = allTags.data.data;
             break;
           case 400:
-            this.$message.error("用户登录信息已失效，请重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
+            this.$userApi.userInvalid();
             break;
           case 403:
             this.$message.error("获取标签失败！");
             break;
           case 404:
-            this.$message.error("用户信息获取失败，请尝试重新登录！");
-            this.$store.dispatch('clear');
-            setTimeout(() => {
-              this.$router.push('/login');
-            }, 1000);
+            this.$userApi.userNotFound();
+            break;
+        }
+
+        switch (allArticles.data.status) {
+          case 200:
+            self.articles = allArticles.data.data;
+            break;
+          case 400:
+            this.$userApi.userInvalid();
+            break;
+          case 402:
+            self.articles = [];
+            break;
+          case 404:
+            this.$userApi.userNotFound();
             break;
         }
       }))
@@ -267,25 +366,181 @@ export default {
       })
     },
     getArticles() {
-
+      const userInfo = user.getters.getUser(user.state());
+      return this.$axios({
+        method: 'post',
+        url: '/social/get/collect/paper',
+        data: qs.stringify({
+          user_id: userInfo.user.userId
+        })
+      })
     },
+
+    // 分页
+    indexMethod(index) {
+      return (this.pageIdx-1)*this.size+index;
+    },
+    handleSizeChange(val) {
+      this.pageIdx = 1;
+      this.size = val;
+    },
+    handleCurrentChange(val) {
+      this.pageIdx = val;
+    },
+
+    // Delete a tag
     handleClose(tag) {
-      this.tagData.splice(this.tagData.indexOf(tag), 1);
+      const userInfo = user.getters.getUser(user.state());
+      let tagName = tag.tag_name;
+      if (tagName) {
+        this.$axios({
+          method: 'post',
+          url: '/social/delete/tag',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            tag_name: tagName,
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.tagData.splice(this.tagData.indexOf(tag), 1);
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 403:
+              this.$message.error("标签不存在！");
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
     },
-
+    // Show new tag input
     showInput() {
       this.newTagInputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
+    // New a tag
     handleInputConfirm() {
+      const userInfo = user.getters.getUser(user.state());
       let newTagName = this.newTagName;
       if (newTagName) {
-        this.tagData.push({tag_name: newTagName});
+        this.$axios({
+          method: 'post',
+          url: '/social/create/tag',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            tag_name: newTagName,
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.tagData.push({tag_name: newTagName});
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 402:
+              this.$message.error("无法建立重复标签！");
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
       this.newTagInputVisible = false;
       this.newTagName = '';
+    },
+    // Look up articles in certain tag
+    openTag(tag) {
+      const userInfo = user.getters.getUser(user.state());
+      let tagName = tag.tag_name;
+      this.thisTagName = tagName;
+      if (tagName) {
+        this.$axios({
+          method: 'post',
+          url: '/social/get/collect/paper',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            tag_name: tagName,
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.articles = res.data.data;
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 402:
+              this.articles = [];
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
+    },
+    // delete specific article from schLib
+    delArticle(article) {
+      const userInfo = user.getters.getUser(user.state());
+      this.$axios({
+        url: '/social/delete/collect/paper',
+        method: 'post',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          tag_name: this.tag_name,
+          paper_id: article.paper_id
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            this.delArticleInLists(article.paper_id);
+            this.$message.success("成功删除文章！");
+            break;
+          case 400:
+            this.$userApi.userInvalid();
+            break;
+          case 404:
+            this.$userApi.userNotFound();
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    delArticleInLists(paper_id) {
+      let i;
+      for (i = 0; i < this.articles.length; i++)
+        if (this.articles[i].paper_id === paper_id)
+          break;
+      this.articles.splice(i,1);
+    }
+  },
+  computed: {
+    userdata: function(){
+      return this.articles.slice((this.pageIdx-1)*this.size,this.pageIdx*this.size);
     }
   }
 }
@@ -294,11 +549,31 @@ export default {
 <style scoped>
 
 .schLib .main-body {
-  padding: 30px 100px;
+  padding: 30px 40px 20px 80px;
 }
 
 .schLib .header {
   margin-bottom: 30px;
+}
+
+.schLib >>> .el-pagination .btn-prev .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
+
+.schLib >>> .el-pagination__jump{
+  font-size: 15px;
+}
+
+.schLib >>> .el-pagination .btn-next .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
+
+.schLib >>> .el-pager li{
+  width:40px;
+  height:40px;
+  padding: 7px;
 }
 
 .schLib .box-card {
@@ -313,6 +588,10 @@ export default {
   text-align: left;
   font-size: 17px;
   margin-bottom: 20px;
+}
+
+.schLib >>> .el-pagination__editor.el-input .el-input__inner {
+  height: 40px;
 }
 
 .schLib .el-tag {

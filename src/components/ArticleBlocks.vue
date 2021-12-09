@@ -61,13 +61,13 @@
         <el-col :span="0.5" v-if="flag==='searchRes'" style="cursor: pointer"><span @click="collectChange(item)">&nbsp;收藏</span></el-col>
 
         <el-col :span="0.5" v-if="flag==='schLib'" style="cursor: pointer">
-          <span @click="collectChange(item)">
+          <span @click="delFromTag(item)">
             <span>
               <svg t="1638971387775" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3017" width="18" height="18"><path d="M959.04 192.256h-35.84V958.72a64 64 0 0 1-63.936 63.872H160.64a63.872 63.872 0 0 1-63.872-63.872V192.256h-31.872a31.872 31.872 0 1 1 0-63.872h223.552V32.64c0-17.664 14.272-31.936 31.936-31.936h383.168c17.664 0 32 14.272 32 32v95.68h223.488a32 32 0 0 1 0 64z m-287.424-127.744h-319.36v63.872h319.36v-63.872z m191.68 191.616v-63.872H160.64v734.592a32 32 0 0 0 32 31.936h638.72a32 32 0 0 0 31.936-32V256.192z m-191.68 143.744h63.936v407.168h-63.936V399.872zM480.064 336H544v470.976h-63.872v-471.04z m-191.616 63.872h63.872v407.168h-63.872V399.872z" fill="#7dc5eb" p-id="3018"></path></svg>
             </span>
           </span>
         </el-col>
-        <el-col :span="0.5" v-if="flag==='schLib'" style="cursor: pointer"><span>&nbsp;删除</span></el-col>
+        <el-col :span="0.5" v-if="flag==='schLib'" style="cursor: pointer"><span @click="delFromTag(item)">&nbsp;删除</span></el-col>
         <span style="float:right; text-align:right;">
           被引次数：
           <span style="color: #2d94d4;">
@@ -121,9 +121,47 @@ export default {
     }
   },
   methods: {
-    collectChange:function(item){
-      item.is_collect=!(item.is_collect);
-      this.$message.success("收藏" + item.paper_id + " " + item.paper_title);
+    collectChange(item) {
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$userApi.userNotLogin(false);
+        return;
+      }
+      if (!item.is_collect) {
+        // 收藏
+        this.collect(item);
+      } else {
+        // 取消收藏
+        this.$axios({
+          url: '/social/delete/collect/paper',
+          method: 'post',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            paper_id: item.paper_id
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              let data = { paper: item, newStatus: false };
+              this.$emit('changeCollect', data);
+              break;
+            case 400:
+              this.$userApi.userInvalid();
+              break;
+            case 404:
+              this.$userApi.userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
+    },
+    // 从个人图书馆中删除
+    delFromTag(item) {
+      this.$emit('delArticle', item);
     },
     quote(item) {
       this.$message.success("引用" + item.paper_id + " " + item.paper_title);
@@ -184,15 +222,6 @@ export default {
       })
     },
     collect(item) {
-      // 验证用户是否登录
-      const userInfo = user.getters.getUser(user.state());
-      if (!userInfo) {
-        this.$message.warning("请先登录！");
-        setTimeout(() => {
-          this.$router.push('/login');
-        }, 500);
-        return;
-      }
       // 获取用户所有标签
       this.$axios({
         method: 'post',
