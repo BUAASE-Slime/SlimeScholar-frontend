@@ -112,29 +112,29 @@ export default {
       activeNameOut: "topArticle",
 
       searchValue: '',
-      select: '1',
+      select: 'title_abstract',
 
       statistic: {
-        affiliation_count: 0,
-        author_count: null,
+        affiliation_count: 27063,
+        author_count: 280050502,
         conference_count: 16479,
-        fields_count: 0,
+        fields_count: 714856,
         journal_count: 49063,
-        paper_count: 269396813,
+        paper_count: 269451039,
         topic_count: 0
       },
 
       options: [{
-          value: '1',
+          value: 'title_abstract',
           label: '篇关摘'
         }, {
           value: 'title',
           label: '篇名'
         }, {
-          value: '5',
+          value: 'abstract',
           label: '摘要'
         }, {
-          value: '3',
+          value: 'field',
           label: '领域'
         }, {
           value: 'author_name',
@@ -372,8 +372,10 @@ export default {
   },
   methods:{
     goSearch:function() {
-      if (this.searchValue === '')
+      if (this.searchValue === '') {
+        this.$message.warning("请输入检索词！");
         return;
+      }
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.searchValue,
       });

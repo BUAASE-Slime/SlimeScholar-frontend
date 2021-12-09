@@ -176,18 +176,18 @@
               <div class="digit-text" >被引量</div>
             </el-col>
             <el-col :span="6" class="digit-num _warning">
-              {{ toBigNum(17232) }}
+              {{ toBigNum(articleDetails.collect_count) }}
               <div class="digit-text">收藏数</div>
             </el-col>
             <el-col :span="6" class="digit-num _danger">
-              {{ toBigNum(1000) }}
+              {{ toBigNum(this.comments.length) }}
               <div class="digit-text">评论数</div>
             </el-col>
           </el-row>
           <el-row class="field _bd_bottom" v-if="articleDetails.fields">
             <div class="field-title">领域</div>
             <div class="field-content" v-for="(field, index) in articleDetails.fields" :key="index">
-              -&ensp;<span class="_link" @click="toField(field)">{{ field.name }}</span>
+              -&ensp;<span class="_link" @click="toField(field.name)">{{ field.name }}</span>
             </div>
           </el-row>
           <el-row class="relation" v-if="articleDetails.related_papers"> <!-- 假借 -->
@@ -232,9 +232,6 @@ export default {
       activeDetail: "first",
 
       myAnswer: '',
-
-      // 暂态评论
-      comment: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。掌柜态度很专业热情，有问必答，回复也很快，我问了不少问题，他都不觉得烦，都会认真回答我，这点我向掌柜表示由衷的敬意，这样的好掌柜可不多。再说宝贝，正是我需要的，收到的时候包装完整，打开后让我惊喜的是，宝贝比我想象中的还要好!不得不得竖起大拇指。下次需要的时候我还会再来的，到时候麻烦掌柜给个优惠哦!",
 
       comments: [
         {
@@ -281,6 +278,7 @@ export default {
           }
         ],
         citation_count: 8,
+        collect_count: 16,
         doi: "10.1051/epjconf/202024507021",
         paper_id: "9782951d43920382d2f1229601d018ca87df4dcb",
         journal: "EPJ Web of Conferences",
@@ -470,8 +468,12 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
-    toField: function(field) {
-      alert("前往" + field + "领域")
+    toField: function(field_name) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: field_name }
+      });
+      window.open(routeUrl .href, "_self");
     },
     toBigNum: function(num) {
       if (num>=10000) {

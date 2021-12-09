@@ -81,8 +81,10 @@ export default {
   },
   methods: {
     newSearch() {
-      if (this.input === '')
+      if (this.input === '') {
+        this.$message.warning("请输入检索词！");
         return;
+      }
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.input,
       });

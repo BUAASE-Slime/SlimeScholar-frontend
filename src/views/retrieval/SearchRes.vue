@@ -31,30 +31,30 @@ import qs from "qs";
         header_select: '1',
         input: "",
         articleOptions: [{
-          value: '1',
-          label: '篇关摘'
-        }, {
-          value: 'title',
-          label: '篇名'
-        }, {
-          value: '5',
-          label: '摘要'
-        }, {
-          value: '3',
-          label: '领域'
-        }, {
-          value: 'author_name',
-          label: '作者'
-        }, {
-          value: 'affiliation_name',
-          label: '作者单位'
-        }, {
-          value: 'publisher',
-          label: '文献来源'
-        }, {
-          value: 'doi',
-          label: 'DOI'
-        },
+            value: 'title_abstract',
+            label: '篇关摘'
+          }, {
+            value: 'title',
+            label: '篇名'
+          }, {
+            value: 'abstract',
+            label: '摘要'
+          }, {
+            value: 'field',
+            label: '领域'
+          }, {
+            value: 'author_name',
+            label: '作者'
+          }, {
+            value: 'affiliation_name',
+            label: '作者单位'
+          }, {
+            value: 'publisher',
+            label: '文献来源'
+          }, {
+            value: 'doi',
+            label: 'DOI'
+          },
         ],
 
         total_hits:45112,

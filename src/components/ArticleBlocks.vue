@@ -174,7 +174,11 @@ export default {
       window.open(routeUrl .href, "_blank");
     },
     searchField(field_name, field_id) {
-      // TODO:
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: field_name }
+      });
+      window.open(routeUrl .href, "_self");
     },
     gotoSch(author_id) {
       let routeUrl = this.$router.resolve({
