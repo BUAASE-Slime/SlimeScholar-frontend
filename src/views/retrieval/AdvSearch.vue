@@ -6,9 +6,9 @@
             <el-row :class="{'category-first':!index, 'category': index}" v-for="(item, index) in searchValue" :key="index">
               <el-col :span="21">
                 <el-input placeholder="请输入内容" v-model="item.content" class="input-with-select">
-                  <el-select v-if="index>0" v-model="item.logic" slot="prepend" style="width: 80px; margin-right: 10px">
+                  <el-select v-if="index>0" v-model="item.type" slot="prepend" style="width: 80px; margin-right: 10px">
                     <el-option
-                        v-for="(item, index) in logics"
+                        v-for="(item, index) in types"
                         :key="index"
                         :label="item.label"
                         :value="item.value">
@@ -36,6 +36,7 @@
               <span style="color: #8f9298; font-size: 14px; margin-right: 47px">发表日期</span>
               <el-date-picker
                   v-model="timeRange"
+                  value-format="yyyy-MM-dd"
                   type="daterange"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -51,11 +52,15 @@
     <el-button icon="el-icon-arrow-down" @click="isShow=!isShow" v-if="!isShow" class="changeButton"></el-button>
     <el-button icon="el-icon-arrow-up" @click="isShow=!isShow" v-if="isShow" class="changeButton"></el-button>
 <!--    <el-row style="margin-top: 50px" >这里是文章列表</el-row>-->
-    <ArticleRes mode="advance"
+    <ArticleRes v-if="isShowRes"
+                mode="advance"
                 :total_hits="total_hits"
                 :total_hits_str="total_hits_str"
                 :articles="articles"
                 :aggregation="aggregation"
+                :conditions="this.searchValue"
+                :min_date="timeRange[0]"
+                :max_date="timeRange[1]"
                 style="margin-top: 30px"></ArticleRes>
   </div>
 </template>
@@ -208,7 +213,7 @@ export default {
             }],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
           paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
-          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonotypeal principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
           citation_count: 3288,
           comment_count: 5,
           year:2021,
@@ -252,7 +257,7 @@ export default {
             }],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
           paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
-          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonotypeal principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
           citation_count: 3288,
           comment_count: 5,
           year:2021,
@@ -296,7 +301,7 @@ export default {
             }],
           paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
           paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
-          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
+          abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonotypeal principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
           citation_count: 3288,
           comment_count: 5,
           year:2021,
@@ -307,25 +312,25 @@ export default {
       ],
 
       isShow:true,
-      isChangeHei:false,
+      isShowRes: false,
       searchValue: [
         {
           category: 'title_key_abstract',
           content: "",
-          logic: 'musts',
+          type: 1,
         },
         {
           category: 'title',
           content: "",
-          logic: 'musts',
+          type: 1,
         },
         {
           category: 'author',
           content: "",
-          logic: 'musts',
+          type: 1,
         },
       ],
-      timeRange: '',
+      timeRange: ['0', '0'],
       options: [
         {
           value: 'title_key_abstract',
@@ -354,141 +359,57 @@ export default {
           label: '文献来源'
         },
       ],
-      logics: [
+      types: [
         {
-          value: 'musts',
+          value: 1,
           label: 'AND',
         }, {
-          value: 'ors',
+          value: 2,
           label: 'OR'
         }, {
-          value: 'nots',
+          value: 3,
           label: 'NOT'
         },
       ],
-
-      emptyAdvanceInfo: {
-        musts: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        ors: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        nots: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        min_year: 1900,
-        max_year: 2030,
-      },
-
-      advanceInfo: {
-        musts: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        ors: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        nots: {
-          title_key_abstract: [],
-          title: [],
-          author: [],
-          abstract: [],
-          field: [],
-          doi: [],
-          author_affiliation: [],
-          source: [],
-        },
-        min_year: 1900,
-        max_year: 2030,
-      }
     }
   },
   methods:{
     deleteCategory: function (index) {
       this.searchValue.splice(index, 1)
-      this.$message({
-        message: '该检索项已被删除',
-      });
     },
     addCategory: function (index) {
       if (this.searchValue.length >= 10) {
-        this.$message.error('添加失败！检索项必须在10条以内！')
-        return
+        this.$message.warning('添加失败！检索项必须在10条以内！')
+        return;
       }
       this.searchValue.push({
         category: this.searchValue[index].category,
         content: '',
-        logic: this.searchValue[index].logic,
+        type: this.searchValue[index].type,
       })
-      this.$message({
-        message: '新的检索项已添加至末尾',
-        type: 'success'
-      });
     },
-    dataProcess() {
-      let able = false;
-      this.advanceInfo = JSON.parse(JSON.stringify(this.emptyAdvanceInfo));
-      for (let i = 0; i < this.searchValue.length; i++) {
-        let item = this.searchValue[i];
-        if (item.content !== '') {
-          able = true;
-          this.advanceInfo[item.logic][item.category].push(item.content);
-        }
-      }
-
-      return able;
+    isValueEmpty() {
+      for (let i = 0; i < this.searchValue.length; i++)
+        if (this.searchValue[i].content !== '')
+          return false;
+      return true;
     },
     advanceSearch() {
-      if (!this.dataProcess()) {
+      if (this.isValueEmpty()) {
         this.$message.warning("请输入检索词！");
         return;
       }
+      // 清除空检索依据
+      this.searchValue = this.searchValue.filter(item => item.content !== '');
 
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
       this.$axios({
         method: 'post',
         url: '/es/query/paper/advanced',
         data: qs.stringify({
-          musts: JSON.stringify(this.advanceInfo.musts),
-          ors: JSON.stringify(this.advanceInfo.ors),
-          nots: JSON.stringify(this.advanceInfo.nots),
-          min_year: this.advanceInfo.min_year,
-          max_year: this.advanceInfo.max_year,
+          conditions: JSON.stringify(this.searchValue),
+          min_date: this.timeRange[0],
+          max_date: this.timeRange[1],
           page: 1,
           size: 10,
         })
@@ -503,6 +424,8 @@ export default {
             this.total_hits_str = res.data.total_hits.toLocaleString();
             if (res.data.total_hits === 10000)
               this.total_hits_str = "10000+";
+            this.isShow = false;
+            this.isShowRes = true;
             break;
           case 401:
             this.$message.error('参数错误！');
@@ -510,6 +433,7 @@ export default {
           case 404:
             this.total_hits = 0;
             this.total_hits_str = '0';
+            this.isShow = false;
             break;
           case 500:
             this.$message.error("系统发生错误，请联系管理员！");
