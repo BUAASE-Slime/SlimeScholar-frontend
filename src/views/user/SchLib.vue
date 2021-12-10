@@ -316,13 +316,13 @@ export default {
             self.tagData = allTags.data.data;
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 403:
             this.$message.error("获取标签失败！");
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
 
@@ -331,13 +331,13 @@ export default {
             self.articles = allArticles.data.data;
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 402:
             self.articles = [];
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       }))
@@ -387,13 +387,13 @@ export default {
             this.articles = res.data.data;
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 402:
             this.articles = [];
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       })
@@ -437,13 +437,13 @@ export default {
               this.tagData.splice(this.tagData.indexOf(tag), 1);
               break;
             case 400:
-              this.$userApi.userInvalid();
+              this.$userNotFound();
               break;
             case 403:
               this.$message.error("标签不存在！");
               break;
             case 404:
-              this.$userApi.userNotFound();
+              this.$userNotFound();
               break;
           }
         })
@@ -479,13 +479,13 @@ export default {
               this.tagData.push({tag_name: newTagName});
               break;
             case 400:
-              this.$userApi.userInvalid();
+              this.$userNotFound();
               break;
             case 402:
               this.$message.error("无法建立重复标签！");
               break;
             case 404:
-              this.$userApi.userNotFound();
+              this.$userNotFound();
               break;
           }
         })
@@ -516,13 +516,13 @@ export default {
               this.articles = res.data.data;
               break;
             case 400:
-              this.$userApi.userInvalid();
+              this.$userNotFound();
               break;
             case 402:
               this.articles = [];
               break;
             case 404:
-              this.$userApi.userNotFound();
+              this.$userNotFound();
               break;
           }
         })
@@ -550,10 +550,10 @@ export default {
             this.$message.success("成功删除文章！");
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       })

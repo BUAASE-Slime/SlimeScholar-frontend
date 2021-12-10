@@ -18,11 +18,11 @@ Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 
-// mount utils javascript methods
+// TIP: mount utils javascript methods
 import userApi from "./utils/userApi";
 import commonApi from "./utils/commonApi";
-Vue.prototype.$userApi = userApi;
-Vue.prototype.$commonApi = commonApi;
+Vue.use(userApi);
+Vue.use(commonApi);
 
 // mount axios globally
 Vue.prototype.$axios = axios;

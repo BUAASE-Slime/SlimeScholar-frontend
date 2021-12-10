@@ -153,7 +153,7 @@ export default {
     collectChange(item) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
-        this.$userApi.userNotLogin(false);
+        this.$userNotLogin(false);
         return;
       }
       if (!item.is_collect) {
@@ -169,11 +169,10 @@ export default {
     },
     sureCollect() {
       const userInfo = user.getters.getUser(user.state());
-      // TODO: tag_name改为数组
       let tag_name = '';
       for (let i = 0; i < this.tagData.length; i++)
         if (this.tagData[i].tagState === 'dark')
-          tag_name = this.tagData[i].tag_name;
+          tag_name += this.tagData[i].tag_name + '-<^_^>-';
       if (tag_name === '') {
         this.$message.warning("请选择收藏的标签！");
         return;
@@ -232,10 +231,10 @@ export default {
             this.$message.success("成功取消收藏！");
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       })
@@ -262,13 +261,13 @@ export default {
             this.dialogVisible = false;
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 403:
             this.$message.error("文献已收藏！");
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       })
@@ -296,13 +295,13 @@ export default {
             this.initTag(); // 在 tagData 中添加前端选中字段属性
             break;
           case 400:
-            this.$userApi.userInvalid();
+            this.$userNotFound();
             break;
           case 403:
             this.$message.error("获取标签失败！");
             break;
           case 404:
-            this.$userApi.userNotFound();
+            this.$userNotFound();
             break;
         }
       })
@@ -333,13 +332,13 @@ export default {
               this.tagData.splice(this.tagData.indexOf(tag), 1);
               break;
             case 400:
-              this.$userApi.userInvalid();
+              this.$userNotFound();
               break;
             case 403:
               this.$message.error("标签不存在！");
               break;
             case 404:
-              this.$userApi.userNotFound();
+              this.$userNotFound();
               break;
           }
         })
@@ -375,13 +374,13 @@ export default {
               this.getTags(user_id);
               break;
             case 400:
-              this.$userApi.userInvalid();
+              this.$userNotFound();
               break;
             case 402:
               this.$message.error("无法建立重复标签！");
               break;
             case 404:
-              this.$userApi.userNotFound();
+              this.$userNotFound();
               break;
           }
         })

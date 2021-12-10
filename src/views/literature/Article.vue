@@ -127,7 +127,7 @@
                     <el-col :span="18" class="comment-author">
                       <span class="_link" @click="toAuthor(-1)">{{ comment.username }}</span>
                       <span class="comment-date _info">
-                        &nbsp;&nbsp;&nbsp;&nbsp;{{ comment.like }} 点赞&nbsp;&nbsp;·&nbsp;&nbsp;{{ comment.reply_count }} 回复&nbsp;&nbsp;·&nbsp;&nbsp;{{ dateFormat(comment.time, "yyyy/MM/dd") }}
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ comment.like }} 点赞&nbsp;&nbsp;·&nbsp;&nbsp;{{ comment.reply_count }} 回复&nbsp;&nbsp;·&nbsp;&nbsp;{{ $dateFormat(comment.time, "yyyy/MM/dd") }}
                       </span>
                     </el-col>
                     <el-col :span="5">
@@ -211,13 +211,11 @@
 </template>
 
 <script>
-import common from "../../utils/commonApi";
 import user from "../../store/user";
 import qs from "qs";
 
 export default {
   name: "Article",
-  mixins: [ common ],
   data() {
     return {
       // 点赞动画

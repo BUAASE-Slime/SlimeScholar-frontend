@@ -18,7 +18,7 @@
           <span style="font-size: 18px; line-height: 24px; font-weight: bold">{{ this.info.base_comment.content }}</span>
         </div>
         <div class="authorAndtime">
-          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ dateFormat(this.info.base_comment.time, "yyyy/MM/dd HH:mm") }}
+          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ $dateFormat(this.info.base_comment.time, "yyyy/MM/dd HH:mm") }}
         </div>
         <el-divider></el-divider>
         <div class="answerList">
@@ -41,7 +41,7 @@
                       </span>
                     </div>
                   </el-col>
-                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ dateFormat(ans.time, "yyyy/MM/dd HH:mm") }}</el-col>
+                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ $dateFormat(ans.time, "yyyy/MM/dd HH:mm") }}</el-col>
                 </el-row>
                 <el-row>
                   <div class="answer-content">{{ ans.content }}</div>
@@ -107,11 +107,9 @@
 
 <script>
 import qs from "qs";
-import common from "../../utils/commonApi";
 import user from "../../store/user";
 
 export default {
-  mixins: [ common ],
   data() {
     return {
       myAnswer: '',

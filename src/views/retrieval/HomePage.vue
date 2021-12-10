@@ -438,7 +438,7 @@ export default {
 }
 
 .homepage .logos {
-  margin-top: 147px;
+  margin-top: 230px;
   padding-top: 0px;
   padding-left: 5%;
   background-color: rgba(0, 0, 0, 0.2);
