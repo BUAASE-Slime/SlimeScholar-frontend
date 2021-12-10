@@ -15,12 +15,17 @@
             <el-row style="color: black ;font-weight: bold;font-size:28px">
               <el-col>{{ info.people.author_name }}</el-col>
             </el-row>
-            <el-row style="font-size: medium;margin-top: 15px">
-              <i class="el-icon-office-building" style="margin-right: 5px"></i>
-              {{ info.people.affiliation }}
+            <el-row style="margin-top: 15px">
+              <i class="el-icon-office-building" style="margin-right: 10px"></i>
+              <span v-if="info.people.affiliation !== ''">{{ info.people.affiliation }}</span>
+              <span v-else>暂无机构信息</span>
+              <span v-if="info.people.home_page && info.people.home_page !== ''">
+                &nbsp;-&nbsp;
+                <span style="color: #2d94d4; cursor: pointer" @click="gotoHomePage(info.people.home_page)">个人主页</span>
+              </span>
             </el-row>
             <el-row style="margin-top: 10px">
-              <i class="el-icon-tickets" style="margin-right: 10px"></i>
+              <i class="el-icon-edit-outline" style="margin-right: 10px"></i>
               <span v-for="(area, index) in info.people.fields" v-bind:key="index" style="color:#00b1fd;">
                 <el-link style="color: #2d94d4; font-size: medium;">{{ area }}</el-link>
                 <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.people.fields.length-1">/</span>
@@ -439,6 +444,9 @@ export default {
       .catch(err => {
         console.log(err);
       })
+    },
+    gotoHomePage(home_page) {
+      window.open(home_page);
     },
     gotoArticle(paper_id) {
       let routeUrl = this.$router.resolve({

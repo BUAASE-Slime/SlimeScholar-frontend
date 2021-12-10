@@ -97,7 +97,7 @@
           >
           </el-input>
           <div style="width: 100%; text-align: right">
-            <el-button type="primary" style="margin-top: 10px;" @click="replyAnswer(info.base_comment.id,myAnswer)">发布</el-button>
+            <el-button type="primary" style="margin-top: 10px;" @click="replyAnswer(info.base_comment.id,myAnswer,true)">发布</el-button>
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@ export default {
     this.getAnswers();
   },
   methods: {
-    replyAnswer(reply_id, myAnswer) {
+    replyAnswer(reply_id, myAnswer, globalComment) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
         this.$message.warning("请先登录！");
@@ -179,6 +179,8 @@ export default {
           case 200:
             this.$message.success("回复成功！");
             this.info = res.data.data;
+            if (globalComment === true)
+              this.myAnswer = '';
             break;
           case 400:
             this.$message.error("用户登录信息已失效，请重新登录！");

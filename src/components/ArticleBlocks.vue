@@ -258,6 +258,7 @@ export default {
           case 200:
             let data = { paper: item, newStatus: true };
             this.$emit('changeCollect', data);
+            this.$message.success("收藏成功！");
             this.dialogVisible = false;
             break;
           case 400:
@@ -408,7 +409,6 @@ export default {
       return value;
     },
   },
-  
 }
 </script>
 

@@ -21,6 +21,7 @@
 import PageHeader from "../../components/PageHeader";
 import ArticleRes from "../../components/ArticleRes";
 import qs from "qs";
+import user from "../../store/user";
 
   export default {
     components: {ArticleRes, PageHeader},
@@ -326,6 +327,9 @@ import qs from "qs";
               this.total_hits_str = res.data.total_hits.toLocaleString();
               if (res.data.total_hits === 10000)
                 this.total_hits_str = "10000+";
+              // 获取 paper 是否收藏
+              this.getCollectStatus();
+              this.$forceUpdate();
               break;
             case 404:
               this.total_hits = 0;
@@ -349,6 +353,49 @@ import qs from "qs";
         for (var i = 0; i < this.articles.length; i++)
           if (this.articles[i].paper_id === paper.paper_id)
             this.articles[i].is_collect = status;
+      },
+      getCollectStatus() {
+        const userInfo = user.getters.getUser(user.state());
+        if (!userInfo) return;
+        // 处理 paper_ids
+        let paper_ids = [];
+        let paper_collects = [];
+        for (let i = 0; i < this.articles.length; i++)
+          paper_ids.push(this.articles[i].paper_id);
+
+        this.$axios({
+          method: 'post',
+          url: '/social/get/paper',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            paper_ids: JSON.stringify(paper_ids),
+          })
+        })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              paper_collects = res.data.papers_attribute;
+              for (let i = 0; i < this.articles.length; i++)
+                for (let j = 0; j < paper_collects.length; j++)
+                  if (this.articles[i].paper_id === paper_collects[j].paper_id)
+                    // TIP: 数组层次多，直接改变其值子组件不重新渲染
+                    this.$set(this.articles[i], 'is_collect', paper_collects[j].is_collected);
+                    // this.articles[i].is_collect = paper_collects[j].is_collected;
+              break;
+            case 401:
+              console.log("传参错误！");
+              break;
+            case 402:
+              this.$userInvalid();
+              break;
+            case 404:
+              this.$userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       },
     },
   };
