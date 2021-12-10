@@ -2,7 +2,7 @@
   <div class="schLib">
     <div class="main-body">
       <el-row class="header">
-        <span style="float:left; font-size: 22px; color: #2c3e50">
+        <span style="float:left; font-size: 22px; color: #2c3e50; cursor: pointer" @click="backToSchLib">
           个人图书馆
         </span>
       </el-row>
@@ -567,6 +567,12 @@ export default {
         if (this.articles[i].paper_id === paper_id)
           break;
       this.articles.splice(i,1);
+    },
+    backToSchLib() {
+      let routeUrl = this.$router.resolve({
+        path: '/schLib',
+      });
+      window.open(routeUrl .href, "_self");
     }
   },
   computed: {
