@@ -18,7 +18,7 @@
           <span style="font-size: 18px; line-height: 24px; font-weight: bold">{{ this.info.base_comment.content }}</span>
         </div>
         <div class="authorAndtime">
-          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ dateFormat(this.info.base_comment.time, "yyyy/MM/dd HH:mm") }}
+          {{ this.info.base_comment.username }} · {{ this.info.answers.length }}&nbsp;回答 · {{ $dateFormat(this.info.base_comment.time, "yyyy/MM/dd HH:mm") }}
         </div>
         <el-divider></el-divider>
         <div class="answerList">
@@ -41,7 +41,7 @@
                       </span>
                     </div>
                   </el-col>
-                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ dateFormat(ans.time, "yyyy/MM/dd HH:mm") }}</el-col>
+                  <el-col :span="6" style="text-align: right; font-size: 12px; color: #73716f;">{{ $dateFormat(ans.time, "yyyy/MM/dd HH:mm") }}</el-col>
                 </el-row>
                 <el-row>
                   <div class="answer-content">{{ ans.content }}</div>
@@ -97,7 +97,7 @@
           >
           </el-input>
           <div style="width: 100%; text-align: right">
-            <el-button type="primary" style="margin-top: 10px;" @click="replyAnswer(info.base_comment.id,myAnswer)">发布</el-button>
+            <el-button type="primary" style="margin-top: 10px;" @click="replyAnswer(info.base_comment.id,myAnswer,true)">发布</el-button>
           </div>
         </div>
       </div>
@@ -107,11 +107,9 @@
 
 <script>
 import qs from "qs";
-import common from "../../utils/common";
 import user from "../../store/user";
 
 export default {
-  mixins: [ common ],
   data() {
     return {
       myAnswer: '',
@@ -157,7 +155,7 @@ export default {
     this.getAnswers();
   },
   methods: {
-    replyAnswer(reply_id, myAnswer) {
+    replyAnswer(reply_id, myAnswer, globalComment) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
         this.$message.warning("请先登录！");
@@ -181,6 +179,8 @@ export default {
           case 200:
             this.$message.success("回复成功！");
             this.info = res.data.data;
+            if (globalComment === true)
+              this.myAnswer = '';
             break;
           case 400:
             this.$message.error("用户登录信息已失效，请重新登录！");

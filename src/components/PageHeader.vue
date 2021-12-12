@@ -45,7 +45,7 @@ import user from "@/store/user";
 
 export default {
   name: 'pageHeader',
-  props: ['showSearch', 'tag', 'select', 'options', 'input', 'mode'],
+  props: ['showSearch', 'tag', 'select', 'input', 'mode', 'options'],
   data() {
     return {
       userName: 'huangzehuan',
@@ -81,8 +81,10 @@ export default {
   },
   methods: {
     newSearch() {
-      if (this.input === '')
+      if (this.input === '') {
+        this.$message.warning("请输入检索词！");
         return;
+      }
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.input,
       });

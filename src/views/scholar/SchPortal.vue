@@ -2,19 +2,30 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image class="headImg" :src="info.people.headImgUrl">
+            <el-image v-if="info.people.headImgUrl&&info.people.headImgUrl!==''"
+                      class="headImg"
+                      :src="info.people.headImgUrl">
+            </el-image>
+            <el-image v-else
+                      class="headImg"
+                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
             </el-image>
           </el-col>
           <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
               <el-col>{{ info.people.author_name }}</el-col>
             </el-row>
-            <el-row style="font-size: medium;margin-top: 15px">
-              <i class="el-icon-office-building" style="margin-right: 5px"></i>
-              {{ info.people.affiliation }}
+            <el-row style="margin-top: 15px">
+              <i class="el-icon-office-building" style="margin-right: 10px"></i>
+              <span v-if="info.people.affiliation !== ''">{{ info.people.affiliation }}</span>
+              <span v-else>暂无机构信息</span>
+              <span v-if="info.people.home_page && info.people.home_page !== ''">
+                &nbsp;-&nbsp;
+                <span style="color: #2d94d4; cursor: pointer" @click="gotoHomePage(info.people.home_page)">个人主页</span>
+              </span>
             </el-row>
             <el-row style="margin-top: 10px">
-              <i class="el-icon-tickets" style="margin-right: 10px"></i>
+              <i class="el-icon-edit-outline" style="margin-right: 10px"></i>
               <span v-for="(area, index) in info.people.fields" v-bind:key="index" style="color:#00b1fd;">
                 <el-link style="color: #2d94d4; font-size: medium;">{{ area }}</el-link>
                 <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.people.fields.length-1">/</span>
@@ -58,14 +69,17 @@
                       </span>
                     </el-row>
                     <el-row style="color: #999999;font-size: small;padding-left: 2px">
-<!--                      <span v-if="item.journal_id !== ''">{{item.journal.name}}</span>-->
-<!--                      <span v-else-if="item.conference_id !== ''">{{item.conference.name}}</span>-->
-<!--                      <span v-else-if="item.publisher">{{item.publisher}}</span>-->
+                      <span v-if="item.journal && item.journal.name!== ''">{{item.journal.name}}</span>
+                      <span v-else-if="item.conference && item.conference.name !== ''">{{item.conference.name}}</span>
+                      <span v-else-if="item.publisher">{{item.publisher}}</span>
                       <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
                         {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
                       </span>
                       <span v-else-if="item.first_page!==''&&item.volume!==''">
                         {{ item.volume }}, {{ item.first_page }}
+                      </span>
+                      <span v-else-if="item.volume!==''">
+                        {{ item.volume }}
                       </span>
                     </el-row>
                   </el-col>
@@ -161,7 +175,7 @@ export default {
   data(){
     return {
       isSelf: false,
-      artNumInit: "6",
+      artNumInit: 6,
       info: {
         people: {
           user_id: 1,
@@ -354,7 +368,9 @@ export default {
   created() {
     // 查询的是别人的门户
     if (this.$route.query.v) {
-      // TODO: 别人的
+      this.getSchInfo(this.$route.query.v, 'author_id');
+      this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+      return;
     }
 
     // 自己的门户
@@ -367,17 +383,8 @@ export default {
       }, 1000);
       return;
     }
-    // 未入驻则申请入驻
-    if (userInfo.user.userType !== 1) {
-      this.$message.warning("您未认证，请先申请入驻！");
-      setTimeout(() => {
-        this.$router.push('/applySettle');
-      }, 1000);
-      return;
-    }
-    // 已入驻则调用接口返回信息
+    // 调用接口返回信息
     this.getSchInfo(userInfo.user.userId, 'user_id');
-    this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
   },
   mounted(){
     //页面加载完成后,才执行
@@ -397,6 +404,7 @@ export default {
   },
   methods: {
     getSchInfo(id, tag) {
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
       this.$axios({
         method: 'post',
         url: '/scholar/info',
@@ -405,12 +413,15 @@ export default {
         })
       })
       .then(res => {
+        _loadingIns.close();
         switch (res.data.status) {
           case 200:
             this.info = res.data;
             const userInfo = user.getters.getUser(user.state());
             if (userInfo && userInfo.user.userId === this.info.people.user_id)
               this.isSelf = true;
+            this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
+            this.flag = (this.info.papers.length<=this.artNumInit);
             break;
           case 401:
             this.$message.error("参数错误！");
@@ -434,6 +445,9 @@ export default {
         console.log(err);
       })
     },
+    gotoHomePage(home_page) {
+      window.open(home_page);
+    },
     gotoArticle(paper_id) {
       let routeUrl = this.$router.resolve({
         path: '/article',
@@ -442,11 +456,11 @@ export default {
       window.open(routeUrl .href, "_blank");
     },
     AddArtNum(){
-      let x=parseInt(this.artNumInit);
-      this.flag=(this.info.papers.length-x);
+      let x = parseInt(this.artNumInit);
       x+=20;
       if(x>this.info.papers.length) x=this.info.papers.length;
       this.artNumInit=x;
+      this.flag = (this.info.papers.length<=this.artNumInit);
     },
     toHim(author_id){
       let routeUrl = this.$router.resolve({

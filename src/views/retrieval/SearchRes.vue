@@ -1,182 +1,65 @@
 <template>
   <div class="search-res">
-    <PageHeader :showSearch="showSearch" :tag="tag" :options="articleOptions" :select="header_select" :input="input"></PageHeader>
-    <div class="main-body">
-      <el-row class="header">
-        <span style="float:left; font-size: 22px; color: #A0A0A0">
-        为您查询到
-        <span style="color: #525455">&nbsp;{{ total_hits }}&nbsp;</span>
-        条结果
-        </span>
-      </el-row>
-      <div class="content-select-result">
-        <el-row :gutter="0" v-if="total_hits!==0">
-          <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
-            <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
-            <el-card class="box-card">
-
-              <div class="publish-year sub-block">
-                <div class="check-box-title">
-                  <span style="color: #303133">发表年份</span>
-                </div>
-                <div style="text-align: left; font-size: 13px">
-                  <span>范围：</span>
-                  <span style="color: #0274B3; margin-top:2px" class="year-input">
-                    <el-input size="mini" v-model="year[0]" @change="changeYear"></el-input>
-                    &nbsp;~&nbsp;
-                    <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
-                  </span>
-                </div>
-                <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider value="year" range :min=minYear :max=maxYear @change="selectSearch" @input="yearHandler"></el-slider>
-                </div>
-              </div>
-
-              <el-divider></el-divider>
-
-              <div class="publish-type sub-block">
-                <div class="check-box-title">
-                  <span>类型</span>
-                </div>
-                <el-checkbox-group v-for="(o,index) in aggregation.doctype"
-                                   :key="index"
-                                   style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkDoctypeList"
-                                   @change="selectSearch">
-                  <div v-for="(val, key) in o" :key="key">
-                    <el-checkbox :label=key>
-                      <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
-                    </el-checkbox>
-                  </div>
-                </el-checkbox-group>
-              </div>
-
-              <el-divider></el-divider>
-
-              <div class="publish-journal sub-block">
-                <div class="check-box-title">
-                  <span>期刊</span>
-                </div>
-                <el-checkbox-group v-for="(o,index) in aggregation.journal"
-                                   :key="index"
-                                   style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkJournalList"
-                                   @change="selectSearch">
-                  <el-checkbox :label=o.name>
-                    <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
-                      <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
-                    </el-tooltip>
-                  </el-checkbox>
-                </el-checkbox-group>
-              </div>
-
-              <el-divider></el-divider>
-
-              <div class="publish-journal sub-block">
-                <div class="check-box-title">
-                  <span>会议</span>
-                </div>
-                <el-checkbox-group v-for="(o,index) in aggregation.conference"
-                                   :key="index"
-                                   style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkConferenceList"
-                                   @change="selectSearch">
-                  <el-checkbox :label=o.name>
-                    <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
-                      <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
-                    </el-tooltip>
-                  </el-checkbox>
-                </el-checkbox-group>
-              </div>
-            </el-card>
-          </div>
-          </el-col>
-
-          <el-col :span="16"><div class="grid-content bg-purple">
-            <div>
-              <el-row>
-                <el-col span="17">
-                  <span style="display:flex; font-size:16px; margin-top:10px;color: #A0A0A0">论文 ({{total_hits}})</span>
-                </el-col>
-                <el-col span="2">
-                  <div style="margin-top:10px">
-                    <span style="font-size:16px;color: #A0A0A0">排序</span>
-                  </div>
-                </el-col>
-                <el-col span="5">
-                  <el-select v-model="value2" placeholder="请选择" style="float:right; height:30px; margin-bottom:5px">
-                    <el-option
-                        v-for="item in queue"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                    </el-option>
-                  </el-select>
-                </el-col>
-              </el-row>
-            </div>
-
-            <ArticleBlocks :articles="articles" flag="searchRes"></ArticleBlocks>
-
-          </div></el-col>
-        </el-row>
-        <el-empty :image-size="200" description="暂无相关文献数据" v-else></el-empty>
-      </div>
-    </div>
+    <PageHeader :showSearch="showSearch"
+                :tag="tag"
+                :options="articleOptions"
+                :select="header_select"
+                :input="input"></PageHeader>
+    <ArticleRes :header_select="header_select"
+                :input="input"
+                :aggregation="aggregation"
+                :articles="articles"
+                :total_hits_str="total_hits_str"
+                :total_hits="total_hits"
+                @changeCollect="changeCollect"
+                mode="normal"></ArticleRes>
   </div>
 </template>
 
 <script>
 
-import ArticleBlocks from "../../components/ArticleBlocks";
 import PageHeader from "../../components/PageHeader";
+import ArticleRes from "../../components/ArticleRes";
 import qs from "qs";
+import user from "../../store/user";
 
   export default {
-    components: {PageHeader, ArticleBlocks},
+    components: {ArticleRes, PageHeader},
     data() {
       return {
-        pageIdx: 1,
-        size: 10,
-
         showSearch: true,
         tag: 'searchRes',
         header_select: '1',
         input: "",
         articleOptions: [{
-          value: '1',
-          label: '篇关摘'
-        }, {
-          value: '2',
-          label: '文献来源'
-        }, {
-          value: '3',
-          label: '关键字'
-        }, {
-          value: 'title',
-          label: '篇名'
-        }, {
-          value: '5',
-          label: '摘要'
-        },{
-          value: '6',
-          label: '作者'
-        }, {
-          value: '7',
-          label: '作者单位'
-        }, {
-          value: '8',
-          label: 'DOI'
-        }],
+            value: 'title_abstract',
+            label: '篇关摘'
+          }, {
+            value: 'title',
+            label: '篇名'
+          }, {
+            value: 'abstract',
+            label: '摘要'
+          }, {
+            value: 'field',
+            label: '领域'
+          }, {
+            value: 'author_name',
+            label: '作者'
+          }, {
+            value: 'affiliation_name',
+            label: '作者单位'
+          }, {
+            value: 'publisher',
+            label: '文献来源'
+          }, {
+            value: 'doi',
+            label: 'DOI'
+          },
+        ],
 
         total_hits:45112,
-        select: '1',
-        queue:["匹配程度","发表时间","引用次数"],
-        value2:"匹配程度",
-        minYear: 1900,
-        maxYear: 2021,
-        year: [1900, 2021],
-
+        total_hits_str: '',
         aggregation: {
           conference: [
             {
@@ -245,13 +128,38 @@ import qs from "qs";
               rank: "10327",
               webpage: ""
             },
+          ],
+          publisher: [
+            {
+              "IEEE": 13
+            },
+            {
+              "Apress, Berkeley, CA": 8
+            },
+            {
+              "IOP Publishing": 7
+            },
+            {
+              "ACM": 5
+            },
+            {
+              "The Open Journal": 4
+            },
+            {
+              "Elsevier BV": 3
+            },
+            {
+              "Github": 3
+            },
+            {
+              "Packt Publishing": 3
+            },
+            {
+              "Apress": 2
+            }
           ]
         },
-
-        checkDoctypeList: [],
-        checkJournalList: [],
-        checkConferenceList: [],
-
+        //articles表示当前页面显示的文章块数组
         articles:[
           {
             authors: [
@@ -268,6 +176,25 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -293,6 +220,25 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -318,6 +264,25 @@ import qs from "qs";
                 ]
               },
             ],
+            fields:[
+              {
+                "citation_count": 3383974,
+                "field_id": "115903868",
+                "level": 1,
+                "main_type": "business.industry",
+                "name": "Software engineering",
+                "paper_count": 368585,
+                "rank": 8347
+              },
+              {
+                "citation_count": 3901149,
+                "field_id": "136197465",
+                "level": 2,
+                "main_type": "",
+                "name": "Variety (cybernetics)",
+                "paper_count": 243478,
+                "rank": 8507
+              }],
             paper_id: "4cd223df721b722b1c40689caa52932a41fcc223",
             paper_title: "Knowledge-rich, computer-assisted composition of Chinese couplets",
             abstract: "Recent research effort in poem composition has focused on the use of automatic language generation to produce a polished poem. A less explored question is how effectively a computer can serve as an interactive assistant to a poet. For this purpose, we built a web application that combines rich linguistic knowledge from classical Chinese philology with statistical natural language processing techniques. The application assists users in composing a ‘couplet’—a pair of lines in a traditional Chinese poem—by making suggestions for the next and corresponding characters. A couplet must meet a complicated set of requirements on phonology, syntax, and parallelism, which are challenging for an amateur poet to master. The application checks conformance to these requirements and makes suggestions for characters based on lexical, syntactic, and semantic properties. A distinguishing feature of the application is its extensive use of linguistic knowledge, enabling it to inform users of specific phonological principles in detail, and to explicitly model semantic parallelism, an essential characteristic of Chinese poetry. We evaluate the quality of poems composed solely with characters suggested by the application, and the coverage of its character suggestions.",
@@ -328,7 +293,7 @@ import qs from "qs";
             is_collect:true,
             // 是否收藏
           }
-        ]
+        ],
       }
     },
     created() {
@@ -338,23 +303,19 @@ import qs from "qs";
 
       this.header_select = _search_key;
       this.input = _search_value;
-
       this.getSearchRes(1);
     },
     methods:{
-      collectChange:function(item){
-        item.is_collect=!(item.is_collect);
-      },
       getSearchRes(pageIdx) {
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-        const _formData = new FormData();
-        _formData.append(this.header_select, this.input);
-        _formData.append("page", pageIdx);
-        console.log(_formData);
         this.$axios({
           method: 'post',
           url: '/es/query/paper/' + this.header_select,
-          data: _formData
+          data: qs.stringify({
+            [this.header_select]: this.input,
+            page: pageIdx,
+            is_precise: true,
+          })
         })
         .then(res => {
           _loadingIns.close();
@@ -362,12 +323,17 @@ import qs from "qs";
             case 200:
               this.articles = res.data.details;
               this.aggregation = res.data.aggregation;
-              this.total_hits = res.data.total_hits.toLocaleString();
+              this.total_hits = res.data.total_hits;
+              this.total_hits_str = res.data.total_hits.toLocaleString();
               if (res.data.total_hits === 10000)
-                this.total_hits = "10000+";
+                this.total_hits_str = "10000+";
+              // 获取 paper 是否收藏
+              this.getCollectStatus();
+              this.$forceUpdate();
               break;
             case 404:
               this.total_hits = 0;
+              this.total_hits_str = '0';
               break;
             case 500:
               this.$message.error("系统发生错误，请联系管理员！");
@@ -381,88 +347,95 @@ import qs from "qs";
           console.log(err);
         })
       },
-      yearHandler() {
+      changeCollect(data) {
+        let paper = data.paper;
+        let status = data.newStatus;
+        for (var i = 0; i < this.articles.length; i++)
+          if (this.articles[i].paper_id === paper.paper_id)
+            this.articles[i].is_collect = status;
       },
-      changeYear() {
-        this.selectSearch();
-      },
-      selectSearch() {
-        let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-
-        // 文献期刊数据提取
-        var journals = [];
-        for (var i = 0; i < this.checkJournalList.length; i++)
-          for (var j = 0; j < this.aggregation.journal.length; j++)
-            if (this.checkJournalList[i] === this.aggregation.journal[j].name)
-              journals.push(this.aggregation.journal[j].journal_id);
-
-        // 文献会议数据提取
-        var conferences = [];
-        for (var k = 0; k < this.checkConferenceList.length; k++)
-          for (var l = 0; l < this.aggregation.conference.length; l++)
-            if (this.checkConferenceList[k] === this.aggregation.conference[l].name)
-              conferences.push(this.aggregation.conference[l].conference_id);
+      getCollectStatus() {
+        const userInfo = user.getters.getUser(user.state());
+        if (!userInfo) return;
+        // 处理 paper_ids
+        let paper_ids = [];
+        let paper_collects = [];
+        for (let i = 0; i < this.articles.length; i++)
+          paper_ids.push(this.articles[i].paper_id);
 
         this.$axios({
           method: 'post',
-          url: '/es/select/paper/' + this.header_select,
+          url: '/social/get/paper',
           data: qs.stringify({
-            [this.header_select]: this.input,
-            page: this.pageIdx,
-            size: this.size,
-            min_year: this.year[0],
-            max_year: this.year[1],
-            doctypes: JSON.stringify(this.checkDoctypeList),
-            journals: JSON.stringify(journals),
-            conferences: JSON.stringify(conferences)
+            user_id: userInfo.user.userId,
+            paper_ids: JSON.stringify(paper_ids),
           })
         })
         .then(res => {
-          _loadingIns.close();
-          console.log(res.data.status);
           switch (res.data.status) {
             case 200:
-              this.articles = res.data.details;
-              console.log(this.articles);
-              this.total_hits = res.data.total_hits.toLocaleString();
+              paper_collects = res.data.papers_attribute;
+              for (let i = 0; i < this.articles.length; i++)
+                for (let j = 0; j < paper_collects.length; j++)
+                  if (this.articles[i].paper_id === paper_collects[j].paper_id)
+                    // TIP: 数组层次多，直接改变其值子组件不重新渲染
+                    this.$set(this.articles[i], 'is_collect', paper_collects[j].is_collected);
+                    // this.articles[i].is_collect = paper_collects[j].is_collected;
+              break;
+            case 401:
+              console.log("传参错误！");
+              break;
+            case 402:
+              this.$userInvalid();
               break;
             case 404:
-              this.total_hits = 0;
-              break;
-            case 500:
-              this.$message.error("系统发生错误，请联系管理员！");
-              setTimeout(() => {
-                this.$router.push("/");
-              }, 1500);
+              this.$userNotFound();
               break;
           }
         })
         .catch(err => {
           console.log(err);
         })
-      }
-    },
-    filters: {
-      //超过20位显示 ...
-      ellipsis: function(value) {
-        if (!value) return "";
-        if (value.length > 400) {
-          return value.slice(0,400) + "...";
-        }
-        return value;
       },
-      ellipsis_25: function(value) {
-        if (!value) return "";
-        if (value.length > 25) {
-          return value.slice(0,25) + "...";
-        }
-        return value;
-      }
-    }, 
+    },
   };
 </script>
 
 <style scoped>
+
+/* .search-res >>> .el-input-number.is-controls-right .el-input-number__decrease{
+  width:15px !important;
+  height: 14px;
+
+}
+
+.search-res >>> .el-input-number.is-controls-right .el-input-number__increase{
+  width:15px !important;
+  height: 14px;
+  margin-top: 3px;
+}
+
+.search-res >>> .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 10px;
+    padding-right: 20px;
+    height: 30px;
+} */
+
+.search-res >>> .el-pager li{
+  width:40px;
+  height:40px;
+  padding: 7px;
+}
+
+.search-res >>> .el-pagination .btn-prev .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
+
+.search-res >>> .el-pagination .btn-next .el-icon{
+  font-size: 15px;
+  margin: 15px;
+}
 
 .search-res .main-body {
   padding: 0 40px 20px 80px;
@@ -494,6 +467,14 @@ import qs from "qs";
 .search-res .year-input >>> .el-input--mini {
   width: 45px;
   text-align: center;
+}
+
+.search-res >>> .el-pagination__editor.el-input .el-input__inner {
+    height: 40px;
+}
+
+.search-res >>> .el-pagination__jump{
+  font-size: 15px;
 }
 
 .search-res .box-card .check-box-title {

@@ -127,7 +127,7 @@
                     <el-col :span="18" class="comment-author">
                       <span class="_link" @click="toAuthor(-1)">{{ comment.username }}</span>
                       <span class="comment-date _info">
-                        &nbsp;&nbsp;&nbsp;&nbsp;{{ comment.like }} 点赞&nbsp;&nbsp;·&nbsp;&nbsp;{{ comment.reply_count }} 回复&nbsp;&nbsp;·&nbsp;&nbsp;{{ dateFormat(comment.time, "yyyy/MM/dd") }}
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ comment.like }} 点赞&nbsp;&nbsp;·&nbsp;&nbsp;{{ comment.reply_count }} 回复&nbsp;&nbsp;·&nbsp;&nbsp;{{ $dateFormat(comment.time, "yyyy/MM/dd") }}
                       </span>
                     </el-col>
                     <el-col :span="5">
@@ -176,18 +176,18 @@
               <div class="digit-text" >被引量</div>
             </el-col>
             <el-col :span="6" class="digit-num _warning">
-              {{ toBigNum(17232) }}
+              {{ toBigNum(articleDetails.collect_count) }}
               <div class="digit-text">收藏数</div>
             </el-col>
             <el-col :span="6" class="digit-num _danger">
-              {{ toBigNum(1000) }}
+              {{ toBigNum(this.comments.length) }}
               <div class="digit-text">评论数</div>
             </el-col>
           </el-row>
           <el-row class="field _bd_bottom" v-if="articleDetails.fields">
             <div class="field-title">领域</div>
             <div class="field-content" v-for="(field, index) in articleDetails.fields" :key="index">
-              -&ensp;<span class="_link" @click="toField(field)">{{ field.name }}</span>
+              -&ensp;<span class="_link" @click="toField(field.name)">{{ field.name }}</span>
             </div>
           </el-row>
           <el-row class="relation" v-if="articleDetails.related_papers"> <!-- 假借 -->
@@ -211,13 +211,11 @@
 </template>
 
 <script>
-import common from "../../utils/common";
 import user from "../../store/user";
 import qs from "qs";
 
 export default {
   name: "Article",
-  mixins: [ common ],
   data() {
     return {
       // 点赞动画
@@ -232,9 +230,6 @@ export default {
       activeDetail: "first",
 
       myAnswer: '',
-
-      // 暂态评论
-      comment: "终于收到我需要的宝贝了，东西很好，价美物廉，谢谢掌柜的!说实在，这是我淘宝购物来让我最满意的一次购物。无论是掌柜的态度还是对物品，我都非常满意的。掌柜态度很专业热情，有问必答，回复也很快，我问了不少问题，他都不觉得烦，都会认真回答我，这点我向掌柜表示由衷的敬意，这样的好掌柜可不多。再说宝贝，正是我需要的，收到的时候包装完整，打开后让我惊喜的是，宝贝比我想象中的还要好!不得不得竖起大拇指。下次需要的时候我还会再来的，到时候麻烦掌柜给个优惠哦!",
 
       comments: [
         {
@@ -281,6 +276,7 @@ export default {
           }
         ],
         citation_count: 8,
+        collect_count: 16,
         doi: "10.1051/epjconf/202024507021",
         paper_id: "9782951d43920382d2f1229601d018ca87df4dcb",
         journal: "EPJ Web of Conferences",
@@ -454,7 +450,11 @@ export default {
       window.open(routeUrl .href, "_self");
     },
     toAuthor: function(id) {
-      alert("前往" + "id:" + id + "的学者门户")
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: id }
+      });
+      window.open(routeUrl .href, "_self");
     },
     toDOI: function(doi) {
       window.open("https://doi.org/" + doi);
@@ -466,8 +466,12 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
-    toField: function(field) {
-      alert("前往" + field + "领域")
+    toField: function(field_name) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: field_name }
+      });
+      window.open(routeUrl .href, "_self");
     },
     toBigNum: function(num) {
       if (num>=10000) {
@@ -483,61 +487,46 @@ export default {
       return num
     },
     likeClick: function(commentIns) {
-      if (!commentIns.is_like) {
-        const userInfo = user.getters.getUser(user.state());
-        if (!userInfo) {
-          this.$message.warning("请先登录！");
-          setTimeout(() => {
-            this.$router.push('/login');
-          }, 500);
-          return;
-        }
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$message.warning("请先登录！");
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 500);
+        return;
+      }
 
-        this.$axios({
-          url: '/social/like/comment',
-          method: 'post',
-          data: qs.stringify({
-            user_id: userInfo.user.userId,
-            comment_id: commentIns.id,
-            option: 0,
-            content: content
-          })
-        })
-        .then(res => {
-          switch (res.data.status) {
-            // TODO
-            case 200:
-              commentIns.is_animating = true;
-              setTimeout(() => {
-                commentIns.is_like = !commentIns.is_like;
-              }, 800);
-              break;
-            case 400:
-              this.$message.error("用户登录信息已失效，请重新登录！");
-              this.$store.dispatch('clear');
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 1000);
-              break;
-            case 403:
-              this.$message.error("评论创建失败，请稍后重试！");
-              break;
-            case 404:
-              this.$message.error("系统未获取到您的用户信息，请联系管理员！");
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
-      else {
-        this.likeHandler();
-        commentIns.is_animating = false;
-      }
+      if (!commentIns.is_like)
+        this.likeHandler(commentIns, 'comment');
+      else
+        this.likeHandler(commentIns, 'cancel');
     },
-    likeHandler: function() {
-      this.like = !this.like
+    likeHandler: function(commentIns, tag) {
+      const userInfo = user.getters.getUser(user.state());
+      this.$axios({
+        url: '/social/like/' + tag,
+        method: 'post',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          comment_id: commentIns.id,
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            commentIns.is_animating = tag === 'comment';
+            setTimeout(() => {
+              commentIns.is_like = !commentIns.is_like;
+            }, 800);
+            break;
+          case 403:
+            this.$message.error("评论不存在，请刷新重试！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     share(message) {
       let aux = document.createElement("input");
@@ -786,7 +775,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://cssanimation.rocks/images/posts/steps/heart.png');
+  background-image:url( 'https://img-1304418829.cos.ap-beijing.myqcloud.com/heart.png');
   background-position: left;
   background-repeat:no-repeat;
   background-size:2900%;
@@ -796,7 +785,7 @@ export default {
   cursor: pointer;
   height: 60px;
   width: 60px;
-  background-image:url( 'https://cssanimation.rocks/images/posts/steps/heart.png');
+  background-image:url( 'https://img-1304418829.cos.ap-beijing.myqcloud.com/heart.png');
   background-position: right;
   background-repeat:no-repeat;
   background-size:2900%;

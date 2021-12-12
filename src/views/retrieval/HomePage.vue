@@ -1,7 +1,7 @@
 <template>
 <div class="homepage">
   <div class="background">
-    <img src="../../assets/images/background3.jpg" class="background" alt="">
+    <img src="../../assets/images/background4.jpg" class="background" alt="">
   </div>
   <PageHeader mode="black"></PageHeader>
   <div>
@@ -112,42 +112,42 @@ export default {
       activeNameOut: "topArticle",
 
       searchValue: '',
-      select: '1',
+      select: 'title_abstract',
 
       statistic: {
-        affiliation_count: 0,
-        author_count: null,
+        affiliation_count: 27063,
+        author_count: 280050502,
         conference_count: 16479,
-        fields_count: 0,
+        fields_count: 714856,
         journal_count: 49063,
-        paper_count: 269396813,
+        paper_count: 269451039,
         topic_count: 0
       },
 
       options: [{
-          value: '1',
+          value: 'title_abstract',
           label: '篇关摘'
-        }, {
-          value: '2',
-          label: 'DOI'
-        }, {
-          value: '3',
-          label: '关键字'
         }, {
           value: 'title',
           label: '篇名'
         }, {
-          value: '5',
+          value: 'abstract',
           label: '摘要'
-        },{
-          value: '6',
+        }, {
+          value: 'field',
+          label: '领域'
+        }, {
+          value: 'author_name',
           label: '作者'
         }, {
-          value: '7',
+          value: 'affiliation_name',
           label: '作者单位'
         }, {
-          value: '8',
+          value: 'publisher',
           label: '文献来源'
+        }, {
+          value: 'doi',
+          label: 'DOI'
         },
       ],
       value: '',
@@ -358,7 +358,7 @@ export default {
 
         this.statistic.fields_count = this.statistic.fields_count.toLocaleString();
         this.statistic.affiliation_count = this.statistic.affiliation_count.toLocaleString();
-        // this.statistic.author_count = this.statistic.author_count.toLocaleString();
+        this.statistic.author_count = this.statistic.author_count.toLocaleString();
         this.statistic.journal_count = this.statistic.journal_count.toLocaleString();
         this.statistic.paper_count = this.statistic.paper_count.toLocaleString();
 
@@ -372,8 +372,10 @@ export default {
   },
   methods:{
     goSearch:function() {
-      if (this.searchValue === '')
+      if (this.searchValue === '') {
+        this.$message.warning("请输入检索词！");
         return;
+      }
       let routeUrl = this.$router.resolve({
         path: '/searchRes?' + this.select + "=" + this.searchValue,
       });
@@ -436,8 +438,8 @@ export default {
 }
 
 .homepage .logos {
-  margin-top: 147px;
-  padding-top: 20px;
+  margin-top: 230px;
+  padding-top: 0px;
   padding-left: 5%;
   background-color: rgba(0, 0, 0, 0.2);
 }
