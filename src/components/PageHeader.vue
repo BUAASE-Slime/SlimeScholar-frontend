@@ -1,30 +1,26 @@
 <template>
   <div class="header">
+
+    <div class="search-box">
+      <el-input v-if="showSearch" placeholder="请输入检索词" v-model="input" class="input-with-select" @keyup.enter.native="newSearch">
+        <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width: 120px">
+          <el-option
+              v-for="(item, index) in options"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search" @click="newSearch"></el-button>
+      </el-input >
+    </div>
+
     <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
       <el-menu-item index="1" style="font-size: 26px" @click="gotoHome">
         <img src="../assets/images/slime_logo.jpg" alt="logo" style="height: 40px">
       </el-menu-item>
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
       <el-menu-item index="3" @click="gotoScholar">搜索学者</el-menu-item>
-      <el-menu-item v-if="showSearch">
-        <div style="width:700px;" class="input-box">
-          <el-input placeholder="请输入内容"
-                    v-model="input"
-                    class="input-with-select"
-                    style="font-size:16px; "
-                    @keyup.enter.native="newSearch">
-            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:1px solid grey" class="pre">
-              <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-              </el-option>
-            </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="newSearch"></el-button>
-          </el-input>
-        </div>
-      </el-menu-item>
       <el-submenu index="5" style="float: right" v-if="isLogin">
         <template slot="title">{{ userName }}</template>
         <el-menu-item index="5-1" class="big-item" @click="gotoLib">个人图书馆</el-menu-item>
@@ -214,52 +210,14 @@ export default {
   cursor: pointer;
 }
 
-.header .input-box {
-  width: 100%;
-  margin: 0 auto;
+.header .search-box {
+  position: absolute;
+  top: 15px;
+  left: 35%;
+  z-index: 1;
 }
-.header .input-box >>> .el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-.header .input-box >>> .el-input__inner{
-  height: 45px !important;
-  border-right: none;
-}
-.header .input-box >>> .el-input-group__append {
-  /* border-radius: inherit; */
-  background-color: white;
-}
-.header .input-box >>> .el-input-group__prepend {
-  /* border-radius: inherit; */
-  background-color: white;
-  /* color: azure; */
-}
-.header .input-box >>> .el-row--flex {
-  display: flex;
-  margin-top: 100px !important;
-}
-.header .input-box .pre >>> .el-input__inner::placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/* 谷歌 */
-.header .input-box .pre >>> .el-input__inner::-webkit-input-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/* 火狐 */
-.header .input-box .pre >>> .el-input__inner:-moz-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/*ie*/
-.header .input-box .pre >>> .el-input__inner:-ms-input-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
+.header .input-with-select {
+  width: 500px;
 }
 
 </style>
