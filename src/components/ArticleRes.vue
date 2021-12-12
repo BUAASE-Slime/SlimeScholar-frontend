@@ -14,7 +14,7 @@
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
 
-              <div class="publish-year sub-block">
+              <div class="publish-year sub-block" v-if="mode!=='advance'">
                 <div class="check-box-title">
                   <span style="color: #303133">发表年份</span>
                 </div>
@@ -31,7 +31,7 @@
                 </div>
               </div>
 
-              <el-divider></el-divider>
+              <el-divider v-if="mode!=='advance'"></el-divider>
 
               <div class="publish-type sub-block">
                 <div class="check-box-title">
@@ -181,7 +181,7 @@ export default {
   name: "ArticleRes",
   components: { ArticleBlocks },
   props: [
-      "header_select", "input", "mode",
+      "header_select", "input", "mode", "conditions", "min_date", "max_date",
       "total_hits", "total_hits_str", "aggregation", "articles"
   ],
   data() {
@@ -227,12 +227,6 @@ export default {
       checkPublisherList: [],
     }
   },
-  created() {
-    switch (this.mode) {
-      case 'normal':
-        break;
-    }
-  },
   methods: {
     handleSizeChange(val) {
       this.size = val;
@@ -250,9 +244,7 @@ export default {
     changeYear() {
       this.selectSearch();
     },
-    selectSearch() {
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
-
+    getContactData() {
       // 文献期刊数据提取
       var journals = [];
       for (var i = 0; i < this.checkJournalList.length; i++)
@@ -266,24 +258,40 @@ export default {
         for (var l = 0; l < this.aggregation.conference.length; l++)
           if (this.checkConferenceList[k] === this.aggregation.conference[l].name)
             conferences.push(this.aggregation.conference[l].conference_id);
+      let data = {
+        page: this.pageIdx,
+        size: this.size,
+        doctypes: JSON.stringify(this.checkDoctypeList),
+        journals: JSON.stringify(journals),
+        conferences: JSON.stringify(conferences),
+        publishers: JSON.stringify(this.checkPublisherList),
+        sort_type: Math.ceil(this.sorter/2),
+        sort_ascending: this.sorter%2===0,
+      };
+      if (this.mode === 'normal') {
+        data[this.header_select] = this.input;
+        data["min_year"] = this.year[0];
+        data["max_year"] = this.year[1];
+      } else if (this.mode === 'advance') {
+        data["conditions"] = JSON.stringify(this.conditions);
+        data["min_date"] = this.min_date;
+        data["max_date"] = this.max_date;
+      }
+      return qs.stringify(data);
+    },
+    getContactUrl() {
+      if (this.mode === 'normal')
+        return '/es/select/paper/' + this.header_select;
+      else if (this.mode === 'advance')
+        return '/es/select/paper/advanced';
+    },
+    selectSearch() {
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
 
-      console.log(this.header_select, this.input);
       this.$axios({
         method: 'post',
-        url: '/es/select/paper/' + this.header_select,
-        data: qs.stringify({
-          [this.header_select]: this.input,
-          page: this.pageIdx,
-          size: this.size,
-          min_year: this.year[0],
-          max_year: this.year[1],
-          doctypes: JSON.stringify(this.checkDoctypeList),
-          journals: JSON.stringify(journals),
-          conferences: JSON.stringify(conferences),
-          publishers: JSON.stringify(this.checkPublisherList),
-          sort_type: Math.ceil(this.sorter/2),
-          sort_ascending: this.sorter%2===0,
-        })
+        url: this.getContactUrl(),
+        data: this.getContactData()
       })
       .then(res => {
         _loadingIns.close();
