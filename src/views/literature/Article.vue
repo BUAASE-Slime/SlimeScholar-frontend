@@ -7,8 +7,8 @@
         </div>
         <div class="sub-title">
           <span v-for="(author, index) in articleDetails.authors" :key="index">
-            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}&nbsp;&nbsp;</span>
-            <span v-if="articleDetails.authors.length > index + 1">/&nbsp;&nbsp;</span>
+            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}</span>
+            <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
           </span>
         </div>
         <div class="sub-title">
@@ -69,7 +69,7 @@
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
-                  <div @click="toArticle(article.id)">
+                  <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
@@ -78,8 +78,8 @@
                         </div>
                         <div class="reference-author _info">
                           <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}</span>
+                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
                       </span>
                         </div>
                       </el-col>
@@ -97,7 +97,7 @@
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
-                  <div @click="toArticle(article.id)">
+                  <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
@@ -106,8 +106,8 @@
                         </div>
                         <div class="reference-author _info">
                       <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}</span>
+                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
                       </span>
                         </div>
                       </el-col>
@@ -199,7 +199,7 @@
               <div class="relation-author _info">
                 <span v-for="(author, index2) in article.authors" :key="index2">
                   <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                  <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                  <span v-if="article.authors.length > index2 + 1">,&nbsp;&nbsp;</span>
                 </span>
               </div>
             </div>
@@ -616,7 +616,7 @@ export default {
     }
   },
   created() {
-    // this.getArticle();
+    this.getArticle();
   },
 }
 </script>
