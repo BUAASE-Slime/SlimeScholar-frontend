@@ -112,7 +112,7 @@ export default {
       activeNameOut: "topArticle",
 
       searchValue: '',
-      select: 'title_abstract',
+      select: 'main',
 
       statistic: {
         affiliation_count: 27063,
@@ -125,7 +125,7 @@ export default {
       },
 
       options: [{
-          value: 'title_abstract',
+          value: 'main',
           label: '篇关摘'
         }, {
           value: 'title',

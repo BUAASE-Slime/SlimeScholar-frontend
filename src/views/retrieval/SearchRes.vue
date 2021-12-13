@@ -29,10 +29,10 @@ import user from "../../store/user";
       return {
         showSearch: true,
         tag: 'searchRes',
-        header_select: '1',
+        header_select: 'main',
         input: "",
         articleOptions: [{
-            value: 'title_abstract',
+            value: 'main',
             label: '篇关摘'
           }, {
             value: 'title',
@@ -315,6 +315,7 @@ import user from "../../store/user";
             [this.header_select]: this.input,
             page: pageIdx,
             is_precise: true,
+            size: 10,
           })
         })
         .then(res => {

@@ -29,7 +29,7 @@
                 <el-button   :class="{'button_right': !index}" circle icon="el-icon-plus" @click="addCategory(index)" ></el-button>
               </el-col>
               <el-col :span="3" v-else>
-                <el-button type="success" icon="el-icon-search" style="margin-left: 20px">&nbsp;检&nbsp;索</el-button>
+                <el-button type="success" icon="el-icon-search" style="margin-left: 20px" @click="advanceSearch">&nbsp;检&nbsp;索</el-button>
               </el-col>
             </el-row>
             <el-row class="time">
@@ -61,6 +61,7 @@
                 :conditions="this.searchValue"
                 :min_date="timeRange[0]"
                 :max_date="timeRange[1]"
+                @changeCollect="changeCollect"
                 style="margin-top: 30px"></ArticleRes>
   </div>
 </template>
@@ -68,6 +69,7 @@
 <script>
 import ArticleRes from "../../components/ArticleRes";
 import qs from "qs";
+import user from "../../store/user";
 export default {
   name: "AdvSearch",
   components: {ArticleRes},
@@ -315,7 +317,7 @@ export default {
       isShowRes: false,
       searchValue: [
         {
-          category: 'title_key_abstract',
+          category: 'main',
           content: "",
           type: 1,
         },
@@ -333,7 +335,7 @@ export default {
       timeRange: ['0', '0'],
       options: [
         {
-          value: 'title_key_abstract',
+          value: 'main',
           label: '篇关摘'
         },
         {
@@ -426,6 +428,9 @@ export default {
               this.total_hits_str = "10000+";
             this.isShow = false;
             this.isShowRes = true;
+            // 获取 paper 是否收藏
+            this.getCollectStatus();
+            this.$forceUpdate();
             break;
           case 401:
             this.$message.error('参数错误！');
@@ -446,7 +451,57 @@ export default {
       .catch(err => {
         console.log(err);
       })
-    }
+    },
+    getCollectStatus() {
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) return;
+      // 处理 paper_ids
+      let paper_ids = [];
+      let paper_collects = [];
+      for (let i = 0; i < this.articles.length; i++)
+        paper_ids.push(this.articles[i].paper_id);
+
+      this.$axios({
+        method: 'post',
+        url: '/social/get/paper',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          paper_ids: JSON.stringify(paper_ids),
+        })
+      })
+          .then(res => {
+            switch (res.data.status) {
+              case 200:
+                paper_collects = res.data.papers_attribute;
+                for (let i = 0; i < this.articles.length; i++)
+                  for (let j = 0; j < paper_collects.length; j++)
+                    if (this.articles[i].paper_id === paper_collects[j].paper_id)
+                        // TIP: 数组层次多，直接改变其值子组件不重新渲染
+                      this.$set(this.articles[i], 'is_collect', paper_collects[j].is_collected);
+                // this.articles[i].is_collect = paper_collects[j].is_collected;
+                break;
+              case 401:
+                console.log("传参错误！");
+                break;
+              case 402:
+                this.$userInvalid();
+                break;
+              case 404:
+                this.$userNotFound();
+                break;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    changeCollect(data) {
+      let paper = data.paper;
+      let status = data.newStatus;
+      for (var i = 0; i < this.articles.length; i++)
+        if (this.articles[i].paper_id === paper.paper_id)
+          this.articles[i].is_collect = status;
+    },
   },
 }
 </script>
