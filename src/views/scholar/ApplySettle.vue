@@ -309,6 +309,7 @@ export default {
   methods: {
     submit_info() {
       if (this.isStep1Valid()) {
+        console.log("not valid");
         this.getArticlesByAuthor(this.applyInfo.author_name);
       } else {
         this.$message.error("请完善必填信息！");
@@ -361,9 +362,10 @@ export default {
     },
     isStep2Valid() {
       for (let i = 0; i < this.papers_group_state.length; i++) {
-        if (this.papers_group_state[i].selected === true)
+        if (this.papers_group_state[i].selected === true) {
           this.applyInfo.author_id = this.papers_group_state[i].author_id;
           return true;
+        }
       }
       return false;
     },
