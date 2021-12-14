@@ -4,10 +4,13 @@
       <div class="author-item" v-for="(item,index) in authors" :key="index">
         <el-row style="width: 100%; font-size: 14px">
           <el-col :span="3">
-            <el-image :src="item.avatar"></el-image>
+            <el-image v-if="item.avatar&&item.avatar!==''" :src="item.avatar"></el-image>
+            <el-image v-else
+                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
+            </el-image>
           </el-col>
           <el-col :span="16" style="padding-left: 10px; text-align: left">
-            <div class="author-name">{{ item.author_name }}</div>
+            <div class="author-name">{{ item.name }}</div>
             <div>{{ item.affiliation_name }}</div>
             <div style="margin-top: 3px; margin-bottom: 3px">
               <span v-for="(area, index) in item.fields" v-bind:key="index">

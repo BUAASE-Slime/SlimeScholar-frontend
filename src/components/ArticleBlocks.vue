@@ -38,8 +38,7 @@
           <div
             style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" 
             @click="searchField(item1.name, item1.field_id)">
-            <i class="el-icon-menu" style="display:inline-block"></i>
-            <div v-html="item1.name" style="display:inline-block"></div>
+            <i class="el-icon-menu" style="display:inline-block"></i>&nbsp;<div v-html="item1.name" style="display:inline-block"></div>
           </div>
           <!-- <span style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" @click="searchField(item1.name, item1.field_id)">
             <i class="el-icon-menu"></i>

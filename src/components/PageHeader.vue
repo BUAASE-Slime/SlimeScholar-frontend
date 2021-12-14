@@ -82,7 +82,7 @@ export default {
         return;
       }
       let routeUrl = this.$router.resolve({
-        path: '/searchRes?' + this.select + "=" + this.input,
+        path: '/' + this.tag + '?' + this.select + "=" + this.input,
       });
       window.open(routeUrl .href, "_self");
     },
