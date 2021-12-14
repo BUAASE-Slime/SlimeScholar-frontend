@@ -146,7 +146,7 @@ export default {
     register() {
       const _formData = new FormData();
       _formData.append("username", this.form.username);
-      _formData.append("confirm_countber", this.form.confirmCode);
+      _formData.append("confirm_number", this.form.confirmCode);
       this.$axios({
         method: 'post',
         url: '/user/confirm',
@@ -157,7 +157,7 @@ export default {
           case 200:
             this.$message.success("注册成功！");
             setTimeout(() => {
-              this.$router.push("/");
+              this.$router.push("/login");
             }, 1000);
             break;
           case 401:
