@@ -56,7 +56,7 @@
                   label="文献">
                 <template class="art-info" slot-scope="scope">
                   <el-row style="font-size: 16px;margin: 2px">
-                    <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(paper_id)">{{scope.row.paper_title}}</el-link>
+                    <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(scope.row.paper_id)">{{scope.row.paper_title}}</el-link>
                   </el-row>
                   <el-row style="color: #999999;font-size: small;padding-left: 2px;margin: 0;border: none">
                     <span v-bind:key="i" v-for="(p,i) in scope.row.authors" >

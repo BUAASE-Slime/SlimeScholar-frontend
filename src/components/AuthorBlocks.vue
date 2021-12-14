@@ -10,7 +10,7 @@
             </el-image>
           </el-col>
           <el-col :span="16" style="padding-left: 10px; text-align: left">
-            <div class="author-name">{{ item.name }}</div>
+            <div class="author-name" style="cursor:pointer;" @click="gotoSch(item.author_id)">{{ item.name }}</div>
             <div>{{ item.affiliation_name }}</div>
             <div style="margin-top: 3px; margin-bottom: 3px">
               <span v-for="(area, index) in item.fields" v-bind:key="index">
@@ -34,7 +34,15 @@
 export default {
   name: "AuthorBlocks",
   props: ['authors'],
-
+  methods: {
+    gotoSch(author_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    }
+  }
 }
 </script>
 
