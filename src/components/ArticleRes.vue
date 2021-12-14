@@ -196,10 +196,6 @@ export default {
           label: "按匹配程度递减",
         },
         {
-          value: 2,
-          label: "按匹配程度递增",
-        },
-        {
           value: 3,
           label: "按被引用量递减",
         },

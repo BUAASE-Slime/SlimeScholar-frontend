@@ -3,12 +3,17 @@
     <el-card v-for="item in articles" :key="item" class="article-item">
       <div style="text-align: left">
         <div style="margin-bottom: 10px">
-          <span class="paper-title" @click="openDetail(item.paper_id)">{{item.paper_title}}</span>
+          <div v-html="item.paper_title" class="paper-title" @click="openDetail(item.paper_id)"></div>
+          <!-- <span class="paper-title" @click="openDetail(item.paper_id)">{{item.paper_title}}</span> -->
         </div>
-        <span v-for="(j, index) in item.authors" :key="j" class="author-name">
+        <!-- <span v-for="(j, index) in item.authors" :key="j" class="author-name">
                   <span @click="gotoSch(j.author_id)">{{j.author_name}}</span>
                   <span v-if="index<item.authors.length-1"> / </span>
-                </span>
+                </span> -->
+        <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
+          <div v-html="j.author_name" @click="gotoSch(j.author_id)" style="display:inline-block"></div>
+          <span v-if="index<item.authors.length-1"> / </span>
+        </div>
         <span class="publish-year">
           <span class="publish-year"> · {{item.year}}</span>
 <!--            <span v-if="item.publisher"> · {{item.publisher}}</span>-->
@@ -24,15 +29,22 @@
       </div>
       
       <div style="text-align:left;margin-top:10px;">
-        <span class="abstract">{{item.abstract|ellipsis}}</span>
+        <div v-html="item.abstract" class="abstract" style="display:-webkit-box; text-overflow:ellipsis; -webkit-line-clamp:3; overflow: hidden; -webkit-box-orient: vertical;"></div>
+        <!-- <span class="abstract">{{item.abstract|ellipsis}}</span> -->
       </div>
       <div id="fields">
         <el-row>
         <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:15px; margin-right:10px; float:left;">
-          <span style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" @click="searchField(item1.name, item1.field_id)">
+          <div
+            style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" 
+            @click="searchField(item1.name, item1.field_id)">
+            <i class="el-icon-menu" style="display:inline-block"></i>
+            <div v-html="item1.name" style="display:inline-block"></div>
+          </div>
+          <!-- <span style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" @click="searchField(item1.name, item1.field_id)">
             <i class="el-icon-menu"></i>
             &nbsp;{{item1.name}}
-          </span>
+          </span> -->
         </div>
         </el-row>
       </div>
@@ -123,6 +135,8 @@ export default {
   props: ['articles', 'flag'],
   data() {
     return {
+      isShowTip: false,
+      input:'',
       dialogVisible: false,
 
       curPaper: '',

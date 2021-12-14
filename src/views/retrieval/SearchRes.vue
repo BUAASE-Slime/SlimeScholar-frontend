@@ -8,7 +8,7 @@
     <ArticleRes :header_select="header_select"
                 :input="input"
                 :aggregation="aggregation"
-                :articles="articles"
+                :articles="resultList"
                 :total_hits_str="total_hits_str"
                 :total_hits="total_hits"
                 @changeCollect="changeCollect"
@@ -31,6 +31,8 @@ import user from "../../store/user";
         tag: 'searchRes',
         header_select: 'main',
         input: "",
+        isShowTip: false,
+        resultList:[],
         articleOptions: [{
             value: 'main',
             label: '篇关摘'
@@ -306,6 +308,34 @@ import user from "../../store/user";
       this.getSearchRes(1);
     },
     methods:{
+      highlight() {
+        this.resultList = this.articles;
+        this.resultList.map((item) => {
+          if (this.header_select === "main" || this.header_select === "title")
+            item.paper_title = this.brightKeyword(item.paper_title)
+          if (this.header_select === "main" || this.header_select === "abstract")
+            item.abstract = this.brightKeyword(item.abstract)
+          if (this.header_select === "main" || this.header_select === "author_name") {
+            item.authors.forEach((item2) => {
+              item2.author_name = this.brightKeyword(item2.author_name)
+            })
+          }
+          if (this.header_select === "main" || this.header_select === "field"){
+            item.fields.forEach((item3) => {
+              item3.name=this.brightKeyword(item3.name)
+            })
+          }
+        })
+      },
+      brightKeyword (val) {
+        let keyword = this.input
+        let start=val.toLowerCase().indexOf(keyword.toLowerCase())
+        if (start !== -1) {
+          return val.replace(val.slice(start, start+keyword.length), `<font color='#f00'>${val.slice(start, start+keyword.length)}</font>`)
+        } else {
+          return val
+        }
+      },
       getSearchRes(pageIdx) {
         let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
         this.$axios({
@@ -331,6 +361,7 @@ import user from "../../store/user";
               // 获取 paper 是否收藏
               this.getCollectStatus();
               this.$forceUpdate();
+              this.highlight();
               break;
             case 404:
               this.total_hits = 0;
@@ -421,6 +452,10 @@ import user from "../../store/user";
     padding-right: 20px;
     height: 30px;
 } */
+
+.search-res >>> .search-text {
+  color: red;
+}
 
 .search-res >>> .el-pager li{
   width:40px;
