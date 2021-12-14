@@ -63,6 +63,8 @@ import user from "../../store/user";
         total_hits:45112,
         total_hits_str: '',
         aggregation: {
+          max_year: 2022,
+          min_year: 2009,
           conference: [
             {
               citation_count: 384,

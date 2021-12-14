@@ -12,7 +12,7 @@
                 </span> -->
         <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
           <div v-html="j.author_name" @click="gotoSch(j.author_id)" style="display:inline-block"></div>
-          <span v-if="index<item.authors.length-1"> / </span>
+          <span v-if="index<item.authors.length-1">&nbsp;/&nbsp;</span>
         </div>
         <span class="publish-year">
           <span class="publish-year"> · {{item.year}}</span>

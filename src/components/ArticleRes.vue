@@ -27,7 +27,7 @@
                   </span>
                 </div>
                 <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider value="year" range :min=minYear :max=maxYear @change="selectSearch" @input="yearHandler"></el-slider>
+                  <el-slider v-model="year" range :min=minYear :max=maxYear @change="changeYear" @input="yearHandler"></el-slider>
                 </div>
               </div>
 
@@ -291,7 +291,6 @@ export default {
       })
       .then(res => {
         _loadingIns.close();
-        console.log(res.data.status);
         switch (res.data.status) {
           case 200:
             this.articles = res.data.details;
@@ -316,6 +315,12 @@ export default {
         console.log(err);
       })
     }
+  },
+  created() {
+    this.minYear = this.aggregation.min_year;
+    this.maxYear = this.aggregation.max_year;
+    this.year[0] = this.minYear;
+    this.year[1] = this.maxYear;
   },
 
   filters: {
