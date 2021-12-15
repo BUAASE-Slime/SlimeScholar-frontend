@@ -293,11 +293,14 @@ export default {
         _loadingIns.close();
         switch (res.data.status) {
           case 200:
-            this.articles = res.data.details;
-            this.total_hits = res.data.total_hits;
-            this.total_hits_str = res.data.total_hits.toLocaleString();
+            let data = {
+              articles: res.data.details,
+              total_hits: res.data.total_hits,
+              total_hits_str: res.data.total_hits.toLocaleString()
+            }
             if (res.data.total_hits === 10000)
               this.total_hits_str = "10000+";
+            this.$emit('high', data);
             break;
           case 404:
             this.total_hits = 0;

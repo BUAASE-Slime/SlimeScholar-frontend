@@ -12,6 +12,7 @@
                 :total_hits_str="total_hits_str"
                 :total_hits="total_hits"
                 @changeCollect="changeCollect"
+                @high="highlight"
                 mode="normal"></ArticleRes>
   </div>
 </template>
@@ -310,8 +311,13 @@ import user from "../../store/user";
       this.getSearchRes(1);
     },
     methods:{
-      highlight() {
-        this.resultList = this.articles;
+      highlight(data) {
+        if (data) {
+          this.resultList = data.articles;
+          this.total_hits = data.total_hits;
+          this.total_hits_str = data.total_hits_str;
+        }
+        else this.resultList = this.articles;
         this.resultList.map((item) => {
           if (this.header_select === "main" || this.header_select === "title")
             item.paper_title = this.brightKeyword(item.paper_title)
