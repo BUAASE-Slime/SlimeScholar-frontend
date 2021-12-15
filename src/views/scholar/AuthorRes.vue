@@ -43,7 +43,7 @@
                                    v-model="checkAffiliationList">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
-                      <span>{{ o.name|ellipsis_30 }}&nbsp;({{ o.paper_count }})</span>
+                      <span>{{ o.name|ellipsis_30 }}&nbsp;({{ o.count }})</span>
                     </el-tooltip>
                   </el-checkbox>
                 </el-checkbox-group>

@@ -20,7 +20,9 @@
             </div>
           </el-col>
           <el-col :span="5">
-            <div class="article-count">文献数量：<span style="color: #2d94d4">{{ item.paper_count }}</span>
+            <div class="article-count">
+              文献数量：<span style="color: #2d94d4">{{ item.paper_count }}</span>
+              &emsp;被引用数：<span style="color: #2d94d4">{{ item.citation_count }}</span>
             </div>
           </el-col>
         </el-row>

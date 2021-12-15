@@ -60,7 +60,7 @@ import user from "../../store/user";
           },
         ],
 
-        total_hits:45112,
+        total_hits:0,
         total_hits_str: '',
         aggregation: {
           max_year: 2022,
