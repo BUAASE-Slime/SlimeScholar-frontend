@@ -62,6 +62,7 @@
                 :min_date="timeRange[0]"
                 :max_date="timeRange[1]"
                 @changeCollect="changeCollect"
+                @high="highlight"
                 style="margin-top: 30px"></ArticleRes>
   </div>
 </template>
@@ -70,9 +71,11 @@
 import ArticleRes from "../../components/ArticleRes";
 import qs from "qs";
 import user from "../../store/user";
+import highlightApi from "../../utils/highlightApi";
 export default {
   name: "AdvSearch",
   components: {ArticleRes},
+  mixins: [highlightApi],
   data(){
     return{
       //articles info
@@ -431,6 +434,7 @@ export default {
             // 获取 paper 是否收藏
             this.getCollectStatus();
             this.$forceUpdate();
+            this.highlight();
             break;
           case 401:
             this.$message.error('参数错误！');
