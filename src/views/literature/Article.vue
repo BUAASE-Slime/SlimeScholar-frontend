@@ -7,8 +7,8 @@
         </div>
         <div class="sub-title">
           <span v-for="(author, index) in articleDetails.authors" :key="index">
-            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}&nbsp;&nbsp;</span>
-            <span v-if="articleDetails.authors.length > index + 1">/&nbsp;&nbsp;</span>
+            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}</span>
+            <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
           </span>
         </div>
         <div class="sub-title">
@@ -69,7 +69,7 @@
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
-                  <div @click="toArticle(article.id)">
+                  <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
@@ -78,8 +78,8 @@
                         </div>
                         <div class="reference-author _info">
                           <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}</span>
+                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
                       </span>
                         </div>
                       </el-col>
@@ -97,7 +97,7 @@
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
-                  <div @click="toArticle(article.id)">
+                  <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
                       <el-col :span="22">
@@ -106,8 +106,8 @@
                         </div>
                         <div class="reference-author _info">
                       <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                        <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                        <span>{{ author.author_name }}</span>
+                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
                       </span>
                         </div>
                       </el-col>
@@ -199,7 +199,7 @@
               <div class="relation-author _info">
                 <span v-for="(author, index2) in article.authors" :key="index2">
                   <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                  <span v-if="articleDetails.authors.length > index2 + 1">/&nbsp;&nbsp;</span>
+                  <span v-if="article.authors.length > index2 + 1">,&nbsp;&nbsp;</span>
                 </span>
               </div>
             </div>
@@ -283,7 +283,16 @@ export default {
         publisher: "Elsevier BV",
         conference: "",
         abstract: "The Centralised Elasticsearch Service at CERN runs the infrastructure to provide Elasticsearch clusters for more than 100 different use cases.This contribution presents how the infrastructure is managed, covering the resource distribution, instance creation, cluster monitoring and user support. The contribution will present the components that have been identified as critical in order to share resources and minimise the amount of clusters and machines needed to run the service. In particular, all the automation for the instance configuration, including index template management, backups and visualisation settings, will be explained in detail.",
-        pdfUrls: [],
+        pdfs: [
+          "https://www.pap.es/files/1116-877-pdf/990.pdf"
+        ],
+        urls: [
+          "https://dialnet.unirioja.es/servlet/articulo?codigo=2946216",
+          "https://www.redalyc.org/articulo.oa?id=366638709014",
+          "https://medes.com/publication/46160",
+          "http://www.pap.es/files/1116-877-pdf/990.pdf",
+          "http://www.redalyc.org/pdf/3666/366638709014.pdf"
+        ],
         citation_msg: [
           {
             authors: [
@@ -389,6 +398,12 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
+
+      citeDetail: [
+        {
+          "GB/T 7714": "Yan Li,Yan Li,Dong Zhao,Miao Wang,Jia-yi Sun,Jun Liu,Yue Qi,Yong-chen Hao,Qiu-ju Deng,Jue Liu,Jing Liu,Min LiuAssociation between body mass index, waist circumference, and age at natural menopause: a population-based cohort study in Chinese women.[J].Women & Health,2021,:1-12.",
+        }
+      ]
     }
   },
   methods: {
@@ -543,7 +558,20 @@ export default {
     },
     download() {
       // TODO: 下载PDF文件
-      window.open(this.articleDetails.pdfUrls.at(0));
+      if (this.articleDetails.pdfs.length === 0) {
+        this.$message.error("未找到该文献原文PDF！");
+        return;
+      }
+      // window.open(this.articleDetails.pdfs.at(0));
+
+      var a = document.createElement('a');
+      //需要下载的数据内容,我这里放的就是BLOB，如果你有下载链接就不需要了
+      var url = window.URL.createObjectURL(content);
+      var filename = this.articleDetails.pdfs.at(0);
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
     },
 
     getArticleDetail() {
@@ -555,7 +583,6 @@ export default {
         data: _formData
       })
     },
-
     getComments() {
       let userId;
       const userInfo = user.getters.getUser(user.state());
@@ -571,7 +598,6 @@ export default {
         })
       })
     },
-
     getArticle() {
       let self = this;
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
@@ -610,6 +636,27 @@ export default {
             break;
         }
       }))
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    getCiteDetail() {
+      this.$axios({
+        method: 'post',
+        url: '/scholar/cite_paper',
+        data: qs.stringify({
+          paper_id: this.$route.query.v
+        })
+      })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            break;
+          default:
+            this.$message.error("系统发生错误！");
+            break;
+        }
+      })
       .catch(err => {
         console.log(err);
       })

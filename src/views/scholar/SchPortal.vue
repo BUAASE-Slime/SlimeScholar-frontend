@@ -33,11 +33,14 @@
             </el-row>
           </el-col>
           <el-col class="like-button" :span="2">
-            <el-button class="opera-button" icon="el-icon-message" v-if="isSelf===false">
-              关注
-            </el-button>
-            <el-button class="opera-button" v-else icon="el-icon-edit">
+            <el-button class="opera-button" v-if="isSelf===true" icon="el-icon-edit">
               编辑
+            </el-button>
+            <el-button class="opera-button" icon="el-icon-folder-checked" v-if="info.is_user===false" @click="apply">
+              认领
+            </el-button>
+            <el-button class="opera-button" v-else icon="el-icon-message">
+              关注
             </el-button>
           </el-col>
         </el-row>
@@ -45,64 +48,55 @@
       <el-col class="data-div" span="18">
         <el-tabs v-model="activeNameOut" >
           <el-tab-pane label="发表文献" name="article" style="text-align: left">
-            <el-row style="font-size: 16px ;font-weight: bold;color: #747474">
-              <el-col span="19" style="font-size: 16px">
-                &nbsp;文章
-              </el-col>
-              <el-col span="3">
-                引用次数
-              </el-col>
-              <el-col span="2">
-                年份
-              </el-col>
-            </el-row>
-            <div class="article-body" v-for="(item,index) in info.papers" v-bind:key="index">
-              <el-row  v-if="index < artNumInit">
-                <el-row class="art-div" >
-                  <el-col class="art-info" span="19">
-                    <el-row style="font-size: 16px;margin: 2px">
-                      <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(item.paper_id)">{{item.paper_title}}</el-link>
-                    </el-row>
-                    <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                      <span v-bind:key="i" v-for="(p,i) in item.authors" >
-                        {{p.author_name}}<span v-if="i !== item.authors.length-1">, </span>
-                      </span>
-                    </el-row>
-                    <el-row style="color: #999999;font-size: small;padding-left: 2px">
-                      <span v-if="item.journal && item.journal.name!== ''">{{item.journal.name}}</span>
-                      <span v-else-if="item.conference && item.conference.name !== ''">{{item.conference.name}}</span>
-                      <span v-else-if="item.publisher">{{item.publisher}}</span>
-                      <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">
-                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}
-                      </span>
-                      <span v-else-if="item.first_page!==''&&item.volume!==''">
-                        {{ item.volume }}, {{ item.first_page }}
-                      </span>
-                      <span v-else-if="item.volume!==''">
-                        {{ item.volume }}
-                      </span>
-                    </el-row>
-                  </el-col>
-                  <el-col class="art-citation" span="2" style="padding-top: 5px;text-align: center; font-size: 14px">
-                    <span>{{item.citation_count}}</span>
-                  </el-col>
-                  <el-col class="art-year" span="3" style="padding-top: 5px;text-align: center;padding-left: 4px;font-size: 14px">
-                    <span>{{item.year}}</span>
-                  </el-col>
-                </el-row>
-              </el-row>
-            </div>
-            <el-row style="text-align: center;color: #999999; font-size: small">
-              文章  <span style="padding-left: 3px"> 1 - {{ artNumInit }}</span>
-              <el-button
-                  icon="el-icon-arrow-down"
-                  type="text"
-                  style="margin-left: 50px;font-size: 13px"
-                  class="unfold"
-                  :disabled="flag"
-                  @click="AddArtNum"
-              >展开</el-button>
-            </el-row>
+            <el-table
+                :data="info.papers"
+                style="border: none"
+                height="520px"
+                :cell-style = "{borderStyle:'none',padding:'2px 0'}"
+                :default-sort = "{prop: 'date', order: 'descending'}"
+            >
+              <el-table-column
+                  label="文献">
+                <template class="art-info" slot-scope="scope">
+                  <el-row style="font-size: 16px;margin: 2px">
+                    <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(scope.row.paper_id)">{{scope.row.paper_title}}</el-link>
+                  </el-row>
+                  <el-row style="color: #999999;font-size: small;padding-left: 2px;margin: 0;border: none">
+                    <span v-bind:key="i" v-for="(p,i) in scope.row.authors" >
+                      {{p.author_name}}<span v-if="i !== scope.row.authors.length-1">, </span>
+                    </span>
+                  </el-row>
+                  <el-row style="color: #999999;font-size: small;padding-left: 2px;margin: 0;border: none">
+                    <span v-if="scope.row.journal && scope.row.journal.name!== ''">{{scope.row.journal.name}}</span>
+                    <span v-else-if="scope.row.conference && scope.row.conference.name !== ''">{{scope.row.conference.name}}</span>
+                    <span v-else-if="scope.row.publisher">{{scope.row.publisher}}</span>
+                    <span v-if="scope.row.last_page!==''&&scope.row.first_page!==''&&scope.row.volume!==''">
+                      {{ scope.row.volume }}, {{ scope.row.first_page }}-{{ scope.row.last_page }}
+                    </span>
+                    <span v-else-if="scope.row.first_page!==''&&scope.row.volume!==''">
+                      {{ scope.row.volume }}, {{ scope.row.first_page }}
+                    </span>
+                    <span v-else-if="scope.row.volume!==''">
+                      {{ scope.row.volume }}
+                    </span>
+                  </el-row>
+                </template>
+              </el-table-column>
+              <el-table-column
+                  prop="date"
+                  label="日期"
+                  sortable
+                  align="center"
+                  width="95">
+              </el-table-column>
+              <el-table-column
+                  prop="citation_count"
+                  label="引用次数"
+                  sortable
+                  align="center"
+                  width="100">
+              </el-table-column>
+            </el-table>
           </el-tab-pane>
           <el-tab-pane label="数据分析" name="analyse" class="dataChart">
             <el-tabs v-model="activeNameChart">
@@ -141,7 +135,7 @@
         <el-row style="font-size: 17px;font-weight: bold;margin-bottom: 20px;margin-top: 10px">
             合著作者
           </el-row>
-        <el-scrollbar style="height: 395px">
+        <el-scrollbar style="height: 520px">
             <el-row class="friends-item" v-for="(i,index) in info.friends" :key="index">
               <el-col :span="4">
                 <el-image :src="i.headImgUrl"></el-image>
@@ -175,8 +169,8 @@ export default {
   data(){
     return {
       isSelf: false,
-      artNumInit: 6,
       info: {
+        is_user: false,
         people: {
           user_id: 1,
           username: "liyu",
@@ -209,13 +203,13 @@ export default {
               }
             ],
             book_title: "",
-            citation_count: "0",
+            citation_count: "4",
             citation_msg: [],
             conference: {
               name: "",
             },
             conference_id: "",
-            date: "2021-11-01",
+            date: "2019-11-01",
             doctype: "",
             doi: "10.1016/J.SIMPA.2021.100115",
             doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
@@ -252,7 +246,180 @@ export default {
               }
             ],
             book_title: "",
-            citation_count: "0",
+            citation_count: "9",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-02",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "1",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "4",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2019-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "9",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-02",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "1",
             citation_msg: [],
             conference: {
               name: "",
@@ -295,7 +462,222 @@ export default {
               }
             ],
             book_title: "",
-            citation_count: "0",
+            citation_count: "4",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2019-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "9",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-02",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "1",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "4",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2019-11-01",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "9",
+            citation_msg: [],
+            conference: {
+              name: "",
+            },
+            conference_id: "",
+            date: "2021-11-02",
+            doctype: "",
+            doi: "10.1016/J.SIMPA.2021.100115",
+            doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+            fields: [],
+            first_page: "100115",
+            journal: {
+              citation_count: "451567",
+              issn: "",
+              journalid: "2597175965",
+              name: "arXiv: Computer Vision and Pattern Recognition",
+              paper_count: "49431",
+              publisher: "",
+              rank: "8182",
+              webpage: ""
+            },
+            journal_id: "",
+            last_page: "12312",
+            paper_id: "3191610454",
+            paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+            publisher: "Elsevier BV",
+            rank: "23112",
+            reference_count: "12",
+            volume: "10",
+            year: "2021"
+          },
+          {
+            authors: [
+              {
+                affiliation_id: "",
+                affiliation_name: "Independent Researcher",
+                author_id: "3323123",
+                author_name: "Sergei Belousov",
+                order: "1"
+              }
+            ],
+            book_title: "",
+            citation_count: "1",
             citation_msg: [],
             conference: {
               name: "",
@@ -353,6 +735,78 @@ export default {
             order: "1",
             headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
           },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
+          },
         ],
       },
 
@@ -363,10 +817,12 @@ export default {
       flag: false,
       activeNameOut: "article",
       activeNameChart:"citations",
+      author_id: 123,
     }
   },
   created() {
     // 查询的是别人的门户
+    this.author_id = this.$route.query.v;
     if (this.$route.query.v) {
       this.getSchInfo(this.$route.query.v, 'author_id');
       this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
@@ -511,12 +967,19 @@ export default {
     },
     showRelChart(){
     },
-},
+    apply() {
+      this.$router.push({
+        path: '/applySettle',
+        query: {
+          v: this.author_id
+        }
+      })
+    }
+  },
 }
 </script>
 
 <style scoped>
-
 .schPortal .info-div {
   background-color: white;
   padding-top: 25px;
@@ -534,6 +997,15 @@ export default {
   margin-left: 170px;
   margin-top: 22px;
 }
+
+.schPortal .el-table td.el-table__cell, .el-table th.el-table__cell.is-leaf {
+  border-bottom: 1px solid #ffffff00 !important;
+}
+
+.schPortal .art-table{
+  width: 100%;
+}
+
 
 .schPortal .headImg{
   border-radius: 50%;
@@ -556,7 +1028,7 @@ export default {
 .schPortal .friends-div{
   text-align: left;
   padding: 10px 10px 5px 15px;
-  min-height: 500px;
+  min-height: 608px;
   width: 23.3%;
   margin-left: 20px;
   background-color: white;
@@ -642,6 +1114,18 @@ export default {
 
 .schPortal >>> .el-scrollbar__wrap {
   overflow-x: hidden;
+}
+
+.schPortal .el-table--border::after, .el-table--group::after, .el-table::before{
+  background-color: rgba(41, 56, 69, 0);
+}
+
+/deep/ .el-table__body-wrapper::-webkit-scrollbar {
+  width: 7px;
+}
+/deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb  {
+  background-color: rgba(203, 202, 202, 0.66);
+  border-radius: 8px;
 }
 
 

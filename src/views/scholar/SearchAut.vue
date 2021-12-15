@@ -45,9 +45,6 @@ export default {
       }, {
         value: 'affiliation',
         label: '机构'
-      }, {
-        value: 'main_area',
-        label: '领域'
       }],
     }
   },
@@ -58,7 +55,7 @@ export default {
       let routeUrl = this.$router.resolve({
         path: '/authorRes?' + this.select + "=" + this.searchValue,
       });
-      window.open(routeUrl .href, "_blank");
+      window.open(routeUrl .href, "_self");
     }
   }
 }

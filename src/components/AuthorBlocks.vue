@@ -4,10 +4,13 @@
       <div class="author-item" v-for="(item,index) in authors" :key="index">
         <el-row style="width: 100%; font-size: 14px">
           <el-col :span="3">
-            <el-image :src="item.avatar"></el-image>
+            <el-image v-if="item.avatar&&item.avatar!==''" :src="item.avatar"></el-image>
+            <el-image v-else
+                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
+            </el-image>
           </el-col>
-          <el-col :span="16" style="padding-left: 10px; text-align: left">
-            <div class="author-name">{{ item.author_name }}</div>
+          <el-col :span="12" style="padding-left: 10px; text-align: left">
+            <div class="author-name" style="cursor:pointer;" @click="gotoSch(item.author_id)">{{ item.name }}</div>
             <div>{{ item.affiliation_name }}</div>
             <div style="margin-top: 3px; margin-bottom: 3px">
               <span v-for="(area, index) in item.fields" v-bind:key="index">
@@ -16,8 +19,10 @@
               </span>
             </div>
           </el-col>
-          <el-col :span="5">
-            <div class="article-count">文献数量：<span style="color: #2d94d4">{{ item.paper_count }}</span>
+          <el-col :span="9">
+            <div class="article-count" style="text-align: right">
+              文献数量：<span style="color: #2d94d4">{{ item.paper_count }}</span>
+              &emsp;被引用数：<span style="color: #2d94d4">{{ item.citation_count }}</span>
             </div>
           </el-col>
         </el-row>
@@ -31,7 +36,15 @@
 export default {
   name: "AuthorBlocks",
   props: ['authors'],
-
+  methods: {
+    gotoSch(author_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    }
+  }
 }
 </script>
 

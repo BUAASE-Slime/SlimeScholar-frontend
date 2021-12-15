@@ -309,7 +309,21 @@ export default {
   methods: {
     submit_info() {
       if (this.isStep1Valid()) {
-        this.getArticlesByAuthor(this.applyInfo.author_name);
+        if (this.$route.query.v && this.$route.query.v!=='') {
+          const userInfo = user.getters.getUser(user.state());
+          this.applyInfo['user_id'] = userInfo.user.userId;
+          this.applyInfo['author_id'] = this.$route.query.v;
+          this.$notify({
+            title: '成功',
+            message: '由于您通过点击学者门户页面的认领按钮进入此页面，因此已自动为您选择学术成果',
+            type: 'success'
+          });
+          setTimeout(() => {
+            this.apply();
+          }, 1000);
+        } else {
+          this.getArticlesByAuthor(this.applyInfo.author_name);
+        }
       } else {
         this.$message.error("请完善必填信息！");
       }
@@ -319,41 +333,38 @@ export default {
       let userId = userInfo.user.userId;
       if (this.isStep2Valid()) {
         this.applyInfo['user_id'] = userId;
-        this.$axios({
-          method: 'post',
-          url: '/submit/create',
-          data: qs.stringify(this.applyInfo)
-        })
-        .then(res => {
-          switch (res.data.status) {
-            case 200:
-              this.step = 3;
-              break;
-            case 402:
-              this.$message.error("用户信息错误，请重新登录！");
-              this.$store.dispatch('clear');
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 1000);
-              break;
-            case 404:
-              this.$message.error("没有找到您的用户信息，请重新登录！");
-              this.$store.dispatch('clear');
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 1000);
-              break;
-            case 406:
-              this.$message.warning("您已提交过认领申请！");
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
+        this.apply();
       } else {
         this.$message.error("至少选择一个文献组！");
       }
+    },
+    apply() {
+      let _loadingIns = this.$loading({fullscreen: true, text: '正在提交申请！'});
+      this.$axios({
+        method: 'post',
+        url: '/submit/create',
+        data: qs.stringify(this.applyInfo)
+      })
+      .then(res => {
+        _loadingIns.close();
+        switch (res.data.status) {
+          case 200:
+            this.step = 3;
+            break;
+          case 402:
+            this.$userInvalid();
+            break;
+          case 404:
+            this.$userNotFound();
+            break;
+          case 406:
+            this.$message.warning("您已提交过认领申请！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     isStep1Valid() {
       return !(this.applyInfo.author_name === '' || this.applyInfo.affiliation_name === ''
@@ -361,9 +372,10 @@ export default {
     },
     isStep2Valid() {
       for (let i = 0; i < this.papers_group_state.length; i++) {
-        if (this.papers_group_state[i].selected === true)
+        if (this.papers_group_state[i].selected === true) {
           this.applyInfo.author_id = this.papers_group_state[i].author_id;
           return true;
+        }
       }
       return false;
     },

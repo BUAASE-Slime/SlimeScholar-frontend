@@ -8,10 +8,11 @@
     <ArticleRes :header_select="header_select"
                 :input="input"
                 :aggregation="aggregation"
-                :articles="articles"
+                :articles="resultList"
                 :total_hits_str="total_hits_str"
                 :total_hits="total_hits"
                 @changeCollect="changeCollect"
+                @high="highlight"
                 mode="normal"></ArticleRes>
   </div>
 </template>
@@ -22,17 +23,21 @@ import PageHeader from "../../components/PageHeader";
 import ArticleRes from "../../components/ArticleRes";
 import qs from "qs";
 import user from "../../store/user";
+import highlightApi from "../../utils/highlightApi";
 
   export default {
     components: {ArticleRes, PageHeader},
+    mixins: [highlightApi],
     data() {
       return {
         showSearch: true,
         tag: 'searchRes',
-        header_select: '1',
+        header_select: 'main',
         input: "",
+        isShowTip: false,
+        resultList:[],
         articleOptions: [{
-            value: 'title_abstract',
+            value: 'main',
             label: '篇关摘'
           }, {
             value: 'title',
@@ -58,9 +63,11 @@ import user from "../../store/user";
           },
         ],
 
-        total_hits:45112,
+        total_hits:0,
         total_hits_str: '',
         aggregation: {
+          max_year: 2022,
+          min_year: 2009,
           conference: [
             {
               citation_count: 384,
@@ -315,6 +322,7 @@ import user from "../../store/user";
             [this.header_select]: this.input,
             page: pageIdx,
             is_precise: true,
+            size: 10,
           })
         })
         .then(res => {
@@ -330,6 +338,7 @@ import user from "../../store/user";
               // 获取 paper 是否收藏
               this.getCollectStatus();
               this.$forceUpdate();
+              this.highlight();
               break;
             case 404:
               this.total_hits = 0;
@@ -420,6 +429,10 @@ import user from "../../store/user";
     padding-right: 20px;
     height: 30px;
 } */
+
+.search-res >>> .search-text {
+  color: red;
+}
 
 .search-res >>> .el-pager li{
   width:40px;
