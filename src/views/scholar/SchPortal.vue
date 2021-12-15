@@ -33,11 +33,14 @@
             </el-row>
           </el-col>
           <el-col class="like-button" :span="2">
-            <el-button class="opera-button" icon="el-icon-message" v-if="isSelf===false">
-              关注
-            </el-button>
-            <el-button class="opera-button" v-else icon="el-icon-edit">
+            <el-button class="opera-button" v-if="isSelf===true" icon="el-icon-edit">
               编辑
+            </el-button>
+            <el-button class="opera-button" icon="el-icon-folder-checked" v-if="info.is_user===false" @click="apply">
+              认领
+            </el-button>
+            <el-button class="opera-button" v-else icon="el-icon-message">
+              关注
             </el-button>
           </el-col>
         </el-row>
@@ -167,6 +170,7 @@ export default {
     return {
       isSelf: false,
       info: {
+        is_user: false,
         people: {
           user_id: 1,
           username: "liyu",
@@ -813,10 +817,12 @@ export default {
       flag: false,
       activeNameOut: "article",
       activeNameChart:"citations",
+      author_id: 123,
     }
   },
   created() {
     // 查询的是别人的门户
+    this.author_id = this.$route.query.v;
     if (this.$route.query.v) {
       this.getSchInfo(this.$route.query.v, 'author_id');
       this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
@@ -961,7 +967,15 @@ export default {
     },
     showRelChart(){
     },
-},
+    apply() {
+      this.$router.push({
+        path: '/applySettle',
+        query: {
+          v: this.author_id
+        }
+      })
+    }
+  },
 }
 </script>
 
