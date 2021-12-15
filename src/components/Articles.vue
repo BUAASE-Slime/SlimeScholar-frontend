@@ -7,7 +7,7 @@
             <span class="paper-title">{{article.paper_title}}</span>
           </div>
           <span v-for="(j, index) in article.authors" :key="j" class="author-name">
-                  {{j.author_name}}
+                  <span @click="gotoSch(j.author_id)">{{j.author_name}}</span>
                   <span v-if="index<article.authors.length-1" style="color: #A0A0A0; font-size: 14px"> / </span>
                 </span>
           <span class="publish-year"> · {{article.year}}</span>
@@ -17,7 +17,10 @@
           <span class="abstract">{{article.abstract|ellipsis}}</span>
         </div>
 
-        <div class="citation-count">{{ article.citation_count }}&nbsp;被引用</div>
+        <div class="citation-count">
+          <span>{{ article.collect_num }}&nbsp;被收藏</span>
+          <span>&nbsp;·&nbsp;{{ article.citation_count }}&nbsp;被引用</span>
+        </div>
 
         <el-divider v-if="index<articles.length-1"></el-divider>
       </div>
@@ -29,6 +32,15 @@
 export default {
   name: "Articles",
   props: ["articles"],
+  methods: {
+    gotoSch(author_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_self");
+    }
+  },
   filters: {
     ellipsis: function(value) {
       if (!value) return "";

@@ -469,31 +469,31 @@ export default {
           paper_ids: JSON.stringify(paper_ids),
         })
       })
-          .then(res => {
-            switch (res.data.status) {
-              case 200:
-                paper_collects = res.data.papers_attribute;
-                for (let i = 0; i < this.articles.length; i++)
-                  for (let j = 0; j < paper_collects.length; j++)
-                    if (this.articles[i].paper_id === paper_collects[j].paper_id)
-                        // TIP: 数组层次多，直接改变其值子组件不重新渲染
-                      this.$set(this.articles[i], 'is_collect', paper_collects[j].is_collected);
-                // this.articles[i].is_collect = paper_collects[j].is_collected;
-                break;
-              case 401:
-                console.log("传参错误！");
-                break;
-              case 402:
-                this.$userInvalid();
-                break;
-              case 404:
-                this.$userNotFound();
-                break;
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      .then(res => {
+        switch (res.data.status) {
+          case 200:
+            paper_collects = res.data.papers_attribute;
+            for (let i = 0; i < this.articles.length; i++)
+              for (let j = 0; j < paper_collects.length; j++)
+                if (this.articles[i].paper_id === paper_collects[j].paper_id)
+                    // TIP: 数组层次多，直接改变其值子组件不重新渲染
+                  this.$set(this.articles[i], 'is_collect', paper_collects[j].is_collected);
+            // this.articles[i].is_collect = paper_collects[j].is_collected;
+            break;
+          case 401:
+            console.log("传参错误！");
+            break;
+          case 402:
+            this.$userInvalid();
+            break;
+          case 404:
+            this.$userNotFound();
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     changeCollect(data) {
       let paper = data.paper;

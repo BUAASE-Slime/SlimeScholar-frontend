@@ -9,7 +9,7 @@
                       src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
             </el-image>
           </el-col>
-          <el-col :span="16" style="padding-left: 10px; text-align: left">
+          <el-col :span="12" style="padding-left: 10px; text-align: left">
             <div class="author-name" style="cursor:pointer;" @click="gotoSch(item.author_id)">{{ item.name }}</div>
             <div>{{ item.affiliation_name }}</div>
             <div style="margin-top: 3px; margin-bottom: 3px">
@@ -19,8 +19,8 @@
               </span>
             </div>
           </el-col>
-          <el-col :span="5">
-            <div class="article-count">
+          <el-col :span="9">
+            <div class="article-count" style="text-align: right">
               文献数量：<span style="color: #2d94d4">{{ item.paper_count }}</span>
               &emsp;被引用数：<span style="color: #2d94d4">{{ item.citation_count }}</span>
             </div>

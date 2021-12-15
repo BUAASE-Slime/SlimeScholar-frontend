@@ -1,11 +1,11 @@
 <template>
-<div class="homepage">
+<div class="homepage" id="homepage">
   <div class="background">
     <img src="../../assets/images/background4.jpg" class="background" alt="">
   </div>
   <PageHeader mode="black"></PageHeader>
   <div>
-  <div class="main">
+  <div class="main" id="pageMain">
     <div class="input-box-body">
       <div class="title">Make Academia Visible</div>
       <div class="input-box">
@@ -87,8 +87,8 @@
       </el-row>
     </div>
 
-    <div class="top-recommend">
-      <el-tabs v-model="activeNameOut" >
+    <div class="topRecommend" id="topRecommend">
+      <el-tabs v-model="activeNameOut">
         <el-tab-pane label="热门文献" name="topArticle" style="text-align: left">
           <Articles :articles="top_articles"></Articles>
         </el-tab-pane>
@@ -104,6 +104,7 @@
 <script>
 import Articles from "../../components/Articles";
 import PageHeader from "../../components/PageHeader";
+import $ from 'jquery';
 export default {
   name: "HomePage",
   components: {PageHeader, Articles},
@@ -115,12 +116,12 @@ export default {
       select: 'main',
 
       statistic: {
-        affiliation_count: 27063,
-        author_count: 280050502,
-        conference_count: 16479,
-        fields_count: 714856,
-        journal_count: 49063,
-        paper_count: 269451039,
+        affiliation_count: '27,063',
+        author_count: '280,050,502',
+        conference_count: '16,479',
+        fields_count: '714,856',
+        journal_count: '49,063',
+        paper_count: '269,451,039',
         topic_count: 0
       },
 
@@ -183,6 +184,7 @@ export default {
           conference: {
             name: "",
           },
+          collect_num: 13,
           conference_id: "",
           date: "2021-11-01",
           doctype: "",
@@ -212,6 +214,7 @@ export default {
           abstract: "Importance In December 2019, novel coronavirus (2019-nCoV)–infected pneumonia (NCIP) occurred in Wuhan, China. The number of cases has increased rapidly but information on the clinical characteristics of affected patients is limited. Objective To describe the epidemiological and clinical characteristics of NCIP. Design, Setting, and Participants Retrospective, single-center case series of the 138 consecutive hospitalized patients with confirmed NCIP at Zhongnan Hospital of Wuhan University in Wuhan, China, from January 1 to January 28, 2020; final date of follow-up was February 3, 2020. Exposures Documented NCIP. Main Outcomes and Measures Epidemiological, demographic, clinical, laboratory, radiological, and treatment data were collected and analyzed. Outcomes of critically ill patients and noncritically ill patients were compared. Presumed hospital-related transmission was suspected if a cluster of health professionals or hospitalized patients in the same wards became infected and a possible source of infection could be tracked. Results Of 138 hospitalized patients with NCIP, the median age was 56 years (interquartile range, 42-68; range, 22-92 years) and 75 (54.3%) were men. Hospital-associated transmission was suspected as the presumed mechanism of infection for affected health professionals (40 [29%]) and hospitalized patients (17 [12.3%]). Common symptoms included fever (136 [98.6%]), fatigue (96 [69.6%]), and dry cough (82 [59.4%]). Lymphopenia (lymphocyte count, 0.8 × 109/L [interquartile range {IQR}, 0.6-1.1]) occurred in 97 patients (70.3%), prolonged prothrombin time (13.0 seconds [IQR, 12.3-13.7]) in 80 patients (58%), and elevated lactate dehydrogenase (261 U/L [IQR, 182-403]) in 55 patients (39.9%). Chest computed tomographic scans showed bilateral patchy shadows or ground glass opacity in the lungs of all patients. Most patients received antiviral therapy (oseltamivir, 124 [89.9%]), and many received antibacterial therapy (moxifloxacin, 89 [64.4%]; ceftriaxone, 34 [24.6%]; azithromycin, 25 [18.1%]) and glucocorticoid therapy (62 [44.9%]). Thirty-six patients (26.1%) were transferred to the intensive care unit (ICU) because of complications, including acute respiratory distress syndrome (22 [61.1%]), arrhythmia (16 [44.4%]), and shock (11 [30.6%]). The median time from first symptom to dyspnea was 5.0 days, to hospital admission was 7.0 days, and to ARDS was 8.0 days. Patients treated in the ICU (n = 36), compared with patients not treated in the ICU (n = 102), were older (median age, 66 years vs 51 years), were more likely to have underlying comorbidities (26 [72.2%] vs 38 [37.3%]), and were more likely to have dyspnea (23 [63.9%] vs 20 [19.6%]), and anorexia (24 [66.7%] vs 31 [30.4%]). Of the 36 cases in the ICU, 4 (11.1%) received high-flow oxygen therapy, 15 (41.7%) received noninvasive ventilation, and 17 (47.2%) received invasive ventilation (4 were switched to extracorporeal membrane oxygenation). As of February 3, 47 patients (34.1%) were discharged and 6 died (overall mortality, 4.3%), but the remaining patients are still hospitalized. Among those discharged alive (n = 47), the median hospital stay was 10 days (IQR, 7.0-14.0). Conclusions and Relevance In this single-center case series of 138 hospitalized patients with confirmed NCIP in Wuhan, China, presumed hospital-related transmission of 2019-nCoV was suspected in 41% of patients, 26% of patients received ICU care, and mortality was 4.3%."
         },
         {
+          collect_num: 13,
           authors: [
             {
               affiliation_id: "",
@@ -269,6 +272,7 @@ export default {
           year: "2021"
         },
         {
+          collect_num: 13,
           authors: [
             {
               affiliation_id: "",
@@ -348,29 +352,48 @@ export default {
     }
   },
   created() {
-    this.$axios({
-      method: 'post',
-      url: '/count/all',
-    })
-    .then(res => {
-      if (res.data.success) {
-        this.statistic = res.data;
-
-        this.statistic.fields_count = this.statistic.fields_count.toLocaleString();
-        this.statistic.affiliation_count = this.statistic.affiliation_count.toLocaleString();
-        this.statistic.author_count = this.statistic.author_count.toLocaleString();
-        this.statistic.journal_count = this.statistic.journal_count.toLocaleString();
-        this.statistic.paper_count = this.statistic.paper_count.toLocaleString();
-
-      } else {
-        this.$message.error("系统错误，请联系管理员解决");
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    })
+    this.getInfo();
   },
   methods:{
+    getInfo() {
+      let self = this;
+      this.$axios.all([this.getStat(), this.getRecommend()])
+      .then(this.$axios.spread(function (statDetail, recomDetail) {
+        if (statDetail.data.success) {
+          self.statistic = statDetail.data;
+
+          self.statistic.fields_count = self.statistic.fields_count.toLocaleString();
+          self.statistic.affiliation_count = self.statistic.affiliation_count.toLocaleString();
+          self.statistic.author_count = self.statistic.author_count.toLocaleString();
+          self.statistic.journal_count = self.statistic.journal_count.toLocaleString();
+          self.statistic.paper_count = self.statistic.paper_count.toLocaleString();
+
+        } else {
+          this.$message.error("系统错误，请联系管理员解决");
+        }
+
+        if (recomDetail.data.success) {
+          self.top_articles = recomDetail.data.data;
+        } else {
+          this.$message.error("系统错误，请联系管理员解决");
+        }
+      }))
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    getStat() {
+      return this.$axios({
+        method: 'post',
+        url: '/count/all',
+      });
+    },
+    getRecommend() {
+      return this.$axios({
+        method: 'post',
+        url: '/es/query/paper/hot'
+      })
+    },
     goSearch:function() {
       if (this.searchValue === '') {
         this.$message.warning("请输入检索词！");
@@ -444,10 +467,9 @@ export default {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-.homepage .top-recommend {
+.homepage .topRecommend {
   min-width: 900px;
   margin: 50px 12%;
-  min-height: 500px;
   padding: 20px 40px 60px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .04)
