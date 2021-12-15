@@ -56,7 +56,7 @@
                 mode="advance"
                 :total_hits="total_hits"
                 :total_hits_str="total_hits_str"
-                :articles="articles"
+                :articles="resultList"
                 :aggregation="aggregation"
                 :conditions="this.searchValue"
                 :min_date="timeRange[0]"
@@ -78,6 +78,7 @@ export default {
   mixins: [highlightApi],
   data(){
     return{
+      resultList: [],
       //articles info
       total_hits:45112,
       total_hits_str: '',
