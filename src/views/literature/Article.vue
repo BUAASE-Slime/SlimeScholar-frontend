@@ -37,7 +37,7 @@
             <el-button type="danger" icon="el-icon-download" circle @click="download"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="引用" placement="bottom">
-            <el-button type="info" icon="el-icon-paperclip" circle></el-button>
+            <el-button type="info" icon="el-icon-paperclip" circle @click="quote"></el-button>
           </el-tooltip>
         </div>
       </el-col>
@@ -207,17 +207,27 @@
         </div>
       </el-col>
     </el-row>
+
+    <CiteDialog
+        :paper_id="articleDetails.paper_id"
+        :showQuote="showQuote"
+        @closeChildDialog="closeChildDialog"></CiteDialog>
   </div>
 </template>
 
 <script>
 import user from "../../store/user";
 import qs from "qs";
+import CiteDialog from "../../components/CiteDialog";
 
 export default {
   name: "Article",
+  components: {CiteDialog},
   data() {
     return {
+      // 引用
+      showQuote: false,
+
       // 点赞动画
       like: false,
       isAnimating: false,
@@ -398,15 +408,12 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
-
-      citeDetail: [
-        {
-          "GB/T 7714": "Yan Li,Yan Li,Dong Zhao,Miao Wang,Jia-yi Sun,Jun Liu,Yue Qi,Yong-chen Hao,Qiu-ju Deng,Jue Liu,Jing Liu,Min LiuAssociation between body mass index, waist circumference, and age at natural menopause: a population-based cohort study in Chinese women.[J].Women & Health,2021,:1-12.",
-        }
-      ]
     }
   },
   methods: {
+    closeChildDialog() {
+      this.showQuote = false;
+    },
     createComment(paper_id, content) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
@@ -555,6 +562,9 @@ export default {
       } else {
         this.$message.error("链接复制失败");
       }
+    },
+    quote() {
+      this.showQuote = true;
     },
     download() {
       // TODO: 下载PDF文件

@@ -122,18 +122,29 @@
         </span>
       </el-dialog>
     </div>
+
+    <CiteDialog
+        :paper_id="quote_paperId"
+        :showQuote="showQuote"
+        @closeChildDialog="closeChildDialog"></CiteDialog>
   </div>
 </template>
 
 <script>
 import user from "../store/user";
 import qs from "qs";
+import CiteDialog from "./CiteDialog";
 
 export default {
   name: "ArticleBlocks",
+  components: {CiteDialog},
   props: ['articles', 'flag'],
   data() {
     return {
+      // 引用
+      quote_paperId: "1231",
+      showQuote: false,
+
       isShowTip: false,
       input:'',
       dialogVisible: false,
@@ -163,6 +174,9 @@ export default {
     }
   },
   methods: {
+    closeChildDialog() {
+      this.showQuote = false;
+    },
     collectChange(item) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
@@ -199,7 +213,8 @@ export default {
 
     // 引用
     quote(item) {
-      this.$message.success("引用" + item.paper_id + " " + item.paper_title);
+      this.quote_paperId = item.paper_id;
+      this.showQuote = true;
     },
     // 查看文献详情
     openDetail(paper_id) {
