@@ -24,20 +24,25 @@
           <span class="_info">DOI: <span class="_link" @click="toDOI(articleDetails.doi)">{{ articleDetails.doi }}</span></span>
         </div>
         <div class="title-button">
-          <el-tooltip class="item" effect="light" content="评论" placement="bottom">
-            <el-button type="primary" icon="el-icon-chat-dot-square" circle></el-button>
+          <el-tooltip class="item" effect="light" content="下载" placement="bottom">
+            <el-button type="primary" icon="el-icon-download" circle @click="download"></el-button>
           </el-tooltip>
+          <el-dropdown style="margin-left: 10px; margin-right: 10px" trigger="click" @command="goLink">
+            <el-tooltip class="item" effect="light" content="更多链接" placement="bottom">
+              <el-button type="success" icon="el-icon-paperclip" circle></el-button>
+            </el-tooltip>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(ins, index) in articleDetails.urls" v-bind:key="index" :command="ins">{{ ins }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-tooltip class="item" effect="light" content="收藏" placement="bottom">
             <el-button type="warning" icon="el-icon-star-off" circle></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="分享" placement="bottom">
-            <el-button type="success" icon="el-icon-share" circle @click="share"></el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="light" content="下载" placement="bottom">
-            <el-button type="danger" icon="el-icon-download" circle @click="download"></el-button>
+            <el-button type="danger" icon="el-icon-share" circle @click="share"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="引用" placement="bottom">
-            <el-button type="info" icon="el-icon-paperclip" circle @click="quote"></el-button>
+            <el-button type="info" icon="el-icon-s-promotion" circle @click="quote"></el-button>
           </el-tooltip>
         </div>
       </el-col>
@@ -411,6 +416,9 @@ export default {
     }
   },
   methods: {
+    goLink(url) {
+      window.open(url);
+    },
     closeChildDialog() {
       this.showQuote = false;
     },
