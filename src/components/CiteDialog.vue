@@ -44,6 +44,8 @@ export default {
   watch: {
     showQuote(newVal, oldVal) {
       this.dialogVisible = newVal;
+      if (this.dialogVisible === true)
+        this.getCita();
     }
   },
   methods: {
