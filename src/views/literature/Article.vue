@@ -36,7 +36,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-tooltip class="item" effect="light" content="收藏" placement="bottom">
-            <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+            <el-button type="warning" icon="el-icon-star-off" circle @click="openCollect"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="分享" placement="bottom">
             <el-button type="danger" icon="el-icon-share" circle @click="share"></el-button>
@@ -213,6 +213,11 @@
       </el-col>
     </el-row>
 
+    <CollectDialog
+        :curPaper="articleDetails.paper_id"
+        :showCollect="showCollect"
+        @closeChildDialog="closeChildDialog"></CollectDialog>
+
     <CiteDialog
         :paper_id="articleDetails.paper_id"
         :showQuote="showQuote"
@@ -224,14 +229,18 @@
 import user from "../../store/user";
 import qs from "qs";
 import CiteDialog from "../../components/CiteDialog";
+import CollectDialog from "../../components/CollectDialog";
 
 export default {
   name: "Article",
-  components: {CiteDialog},
+  components: {CiteDialog, CollectDialog},
   data() {
     return {
       // 引用
       showQuote: false,
+
+      // 收藏
+      showCollect: false,
 
       // 点赞动画
       like: false,
@@ -421,6 +430,7 @@ export default {
     },
     closeChildDialog() {
       this.showQuote = false;
+      this.showCollect = false;
     },
     createComment(paper_id, content) {
       const userInfo = user.getters.getUser(user.state());
@@ -573,6 +583,9 @@ export default {
     },
     quote() {
       this.showQuote = true;
+    },
+    openCollect() {
+      this.showCollect = true;
     },
     download() {
       // TODO: 下载PDF文件

@@ -31,7 +31,7 @@
         <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
           <el-button type="primary" @click="sureCollect">确 定</el-button>
         </span>
     </el-dialog>
@@ -196,8 +196,8 @@ export default {
           case 200:
             let data = { paper: item, newStatus: true };
             this.$emit('changeCollect', data);
+            this.closeDialog();
             this.$message.success("收藏成功！");
-            this.dialogVisible = false;
             break;
           case 400:
             this.$userNotFound();
