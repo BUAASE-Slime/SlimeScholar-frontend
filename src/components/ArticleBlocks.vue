@@ -10,31 +10,52 @@
                   <span @click="gotoSch(j.author_id)">{{j.author_name}}</span>
                   <span v-if="index<item.authors.length-1"> / </span>
                 </span> -->
-        <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
-          <div v-html="j.author_name" @click="gotoSch(j.author_id)" style="display:inline-block"></div>
-          <span v-if="index<item.authors.length-1">&nbsp;/&nbsp;</span>
+        <div style="display:inline-block" v-if="item.authors && item.authors.length <= 5">
+          <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
+            <div @click="gotoSch(j.author_id)" style="display:inline-block">
+              {{ j.author_name }}
+              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+            </div>
+            <span v-if="index<item.authors.length-1">,&nbsp;</span>
+          </div>
         </div>
-        <span class="publish-year">
+        <div style="display:inline-block" v-else>
+          <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
+            <div @click="gotoSch(j.author_id)" style="display:inline-block" v-if="index<5">
+              {{ j.author_name }}
+              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+            </div>
+            <span v-if="index<5">,&nbsp;</span>
+          </div>
+          <span style="color: grey; font-size: 14px;">&nbsp;etc.</span>
+        </div>
+        <span class="publish-year" v-if="item.publisher===''">
           <span class="publish-year"> · {{item.year}}</span>
-<!--            <span v-if="item.publisher"> · {{item.publisher}}</span>-->
-<!--            <span v-if="item.journal_id !== ''"> · {{item.journal_id}}</span>-->
-<!--            <span v-else-if="item.conference_id !== ''"> · {{item.conference_id}}</span>-->
-<!--            <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">-->
-<!--                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}-->
-<!--                      </span>-->
-<!--        <span v-else-if="item.first_page!==''&&item.volume!==''">-->
-<!--                        {{ item.volume }}, {{ item.first_page }}-->
-<!--                      </span>-->
         </span>
+
+        <div v-for="(j, index) in item.author_affiliation" :key="index" class="author-name" style="margin-top: 5px">
+          <div @click="gotoAff(j)" style="display:inline-block">
+            <sup v-if="item.author_affiliation">{{ index+1 }}</sup>
+            {{ j }}
+          </div>
+          <span v-if="index<item.author_affiliation.length-1">,&nbsp;</span>
+        </div>
+
+        <div style="margin-top: 5px" class="publish-year" v-if="item.publisher!==''">
+          <span class="date" v-if="item.year">{{ item.year }}</span>
+          <span class="journal" v-if="item.publisher!==''">
+            ·&nbsp;{{ item.publisher }}
+          </span>
+        </div>
       </div>
       
-      <div style="text-align:left;margin-top:10px;">
+      <div style="text-align:left;margin-top:5px;">
         <div v-html="item.abstract" class="abstract" style="display:-webkit-box; text-overflow:ellipsis; -webkit-line-clamp:3; overflow: hidden; -webkit-box-orient: vertical;"></div>
         <!-- <span class="abstract">{{item.abstract|ellipsis}}</span> -->
       </div>
       <div id="fields">
         <el-row>
-        <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:15px; margin-right:10px; float:left;">
+        <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:5px; margin-right:10px; float:left;">
           <div
             style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" 
             @click="searchField(item1.name, item1.field_id)">
@@ -86,54 +107,37 @@
         </span>
       </el-row>
     </el-card>
-    <div>
-      <el-dialog
-        title="收藏"
-        :visible.sync="dialogVisible"
-        width="30%">
-        <el-divider></el-divider>
-        <div style="text-align:left; padding-left: 10px; padding-right: 10px">
-          <el-tag
-            :key="tag"
-            v-for="tag in tagData"
-            closable
-            :disable-transitions="false"
-            @close="handleCloseTag(tag)"
-            @click.native="chooseTag(tag)"
-            :effect=tag.tagState
-            style="margin-top:10px; margin-bottom: 10px; cursor: pointer">
-            {{tag.tag_name}}
-          </el-tag>
-          <el-input
-            class="input-new-tag"
-            v-if="inputVisible"
-            v-model="inputValue"
-            ref="saveTagInput"
-            size="small"
-            @keyup.enter.native="handleInputConfirm"
-            @blur="handleInputConfirm"
-          >
-          </el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="sureCollect">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
+
+    <CollectDialog
+        :curPaper="curPaper"
+        :showCollect="showCollect"
+        @changeCollect="changeCollect"
+        @closeChildDialog="closeChildDialog"></CollectDialog>
+
+    <CiteDialog
+        :paper_id="quote_paperId"
+        :showQuote="showQuote"
+        @closeChildDialog="closeChildDialog"></CiteDialog>
   </div>
 </template>
 
 <script>
 import user from "../store/user";
 import qs from "qs";
+import CiteDialog from "./CiteDialog";
+import CollectDialog from "./CollectDialog";
 
 export default {
   name: "ArticleBlocks",
+  components: {CollectDialog, CiteDialog},
   props: ['articles', 'flag'],
   data() {
     return {
+      // 引用
+      quote_paperId: "1231",
+      showQuote: false,
+      showCollect: false,
+
       isShowTip: false,
       input:'',
       dialogVisible: false,
@@ -163,6 +167,10 @@ export default {
     }
   },
   methods: {
+    closeChildDialog() {
+      this.showQuote = false;
+      this.showCollect = false;
+    },
     collectChange(item) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
@@ -170,60 +178,15 @@ export default {
         return;
       }
       if (!item.is_collect) {
-        // 收藏 - 获取tags，打开dialog，供用户选择
-        this.getTags(userInfo.user.userId).then(() => {
-          this.curPaper = item;
-          this.dialogVisible = true;
-        });
+        this.curPaper = item;
+        this.showCollect = true;
       } else {
         // 取消收藏
         this.doDelCollect(item, userInfo.user.userId);
       }
     },
-    sureCollect() {
-      const userInfo = user.getters.getUser(user.state());
-      let tag_name = '';
-      for (let i = 0; i < this.tagData.length; i++)
-        if (this.tagData[i].tagState === 'dark')
-          tag_name += this.tagData[i].tag_name + '-<^_^>-';
-      if (tag_name === '') {
-        this.$message.warning("请选择收藏的标签！");
-        return;
-      }
-      this.doCollect(this.curPaper, userInfo.user.userId, tag_name);
-    },
-    // 从个人图书馆中删除
-    delFromTag(item) {
-      this.$emit('delArticle', item);
-    },
-
-    // 引用
-    quote(item) {
-      this.$message.success("引用" + item.paper_id + " " + item.paper_title);
-    },
-    // 查看文献详情
-    openDetail(paper_id) {
-      let routeUrl = this.$router.resolve({
-        path: '/article',
-        query: { v: paper_id }
-      });
-      window.open(routeUrl .href, "_blank");
-    },
-    // 查看领域下的文献
-    searchField(field_name, field_id) {
-      let routeUrl = this.$router.resolve({
-        path: '/searchRes',
-        query: { field: field_name }
-      });
-      window.open(routeUrl .href, "_self");
-    },
-    // 查看作者门户
-    gotoSch(author_id) {
-      let routeUrl = this.$router.resolve({
-        path: '/schPortal',
-        query: { v: author_id }
-      });
-      window.open(routeUrl .href, "_blank");
+    changeCollect(data) {
+      this.$emit('changeCollect', data);
     },
     // 取消收藏（与后端交互）
     doDelCollect(item, user_id) {
@@ -255,162 +218,47 @@ export default {
         console.log(err);
       })
     },
-    // 收藏（与后端交互）
-    doCollect(item, user_id, tag_name) {
-      this.$axios({
-        url: '/social/collect/paper',
-        method: 'post',
-        data: qs.stringify({
-          user_id: user_id,
-          paper_id: item.paper_id,
-          tag_name: tag_name
-        })
-      })
-      .then(res => {
-        switch (res.data.status) {
-          case 200:
-            let data = { paper: item, newStatus: true };
-            this.$emit('changeCollect', data);
-            this.$message.success("收藏成功！");
-            this.dialogVisible = false;
-            break;
-          case 400:
-            this.$userNotFound();
-            break;
-          case 403:
-            this.$message.error("文献已收藏！");
-            break;
-          case 404:
-            this.$userNotFound();
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    },
-    initTag() {
-      for (let i = 0; i < this.tagData.length; i++)
-        this.tagData[i]["tagState"] = "plain";
-    },
-    async getTags(userId) {
-      // 获取用户所有标签
-      this.$axios({
-        method: 'post',
-        url: '/social/get/tags',
-        data: qs.stringify({
-          user_id: userId
-        })
-      })
-      .then(res => {
-        switch (res.data.status) {
-          case 200:
-            this.tagData = res.data.data;
-            this.initTag(); // 在 tagData 中添加前端选中字段属性
-            break;
-          case 400:
-            this.$userNotFound();
-            break;
-          case 403:
-            this.$message.error("获取标签失败！");
-            break;
-          case 404:
-            this.$userNotFound();
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    },
-    //删除标签函数
-    handleCloseTag(tag) {
-      const userInfo = user.getters.getUser(user.state());
-      let tagName = tag.tag_name;
-      if (tagName === '默认') {
-        this.$message.error("无法删除默认收藏夹！");
-        return;
-      }
-      if (tagName) {
-        this.$axios({
-          method: 'post',
-          url: '/social/delete/tag',
-          data: qs.stringify({
-            user_id: userInfo.user.userId,
-            tag_name: tagName,
-          })
-        })
-        .then(res => {
-          switch (res.data.status) {
-            case 200:
-              this.tagData.splice(this.tagData.indexOf(tag), 1);
-              break;
-            case 400:
-              this.$userNotFound();
-              break;
-            case 403:
-              this.$message.error("标签不存在！");
-              break;
-            case 404:
-              this.$userNotFound();
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
+    // 从个人图书馆中删除
+    delFromTag(item) {
+      this.$emit('delArticle', item);
     },
 
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
+    // 引用
+    quote(item) {
+      this.quote_paperId = item.paper_id;
+      this.showQuote = true;
+    },
+    // 查看文献详情
+    openDetail(paper_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/article',
+        query: { v: paper_id }
       });
+      window.open(routeUrl .href, "_blank");
     },
-    //新建标签函数
-    handleInputConfirm() {
-      const userInfo = user.getters.getUser(user.state());
-      const user_id = userInfo.user.userId;
-      let newTagName = this.inputValue;
-      if (newTagName && newTagName !== '') {
-        this.$axios({
-          method: 'post',
-          url: '/social/create/tag',
-          data: qs.stringify({
-            user_id: user_id,
-            tag_name: newTagName,
-          })
-        })
-        .then(res => {
-          switch (res.data.status) {
-            case 200:
-              this.getTags(user_id);
-              break;
-            case 400:
-              this.$userNotFound();
-              break;
-            case 402:
-              this.$message.error("无法建立重复标签！");
-              break;
-            case 404:
-              this.$userNotFound();
-              break;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
+    // 查看领域下的文献
+    searchField(field_name, field_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: field_name }
+      });
+      window.open(routeUrl .href, "_self");
     },
-    chooseTag(tag) {
-      // TIP: 数据层次多导致没有触发 render 进行自动更新，需要手动调用
-      this.$forceUpdate();
-      if (tag.tagState === "plain")
-        tag.tagState = "dark";
-      else tag.tagState = "plain";
+    // 查看作者门户
+    gotoSch(author_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/schPortal',
+        query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    },
+    // 搜索机构
+    gotoAff(affiliation_name) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { affiliation_name: affiliation_name }
+      });
+      window.open(routeUrl .href, "_self");
     }
   },
   filters: {
@@ -443,27 +291,4 @@ export default {
   margin: 10px 0;
 }
 
-.article-blocks .el-tag {
-  margin-right: 10px;
-}
-.article-blocks .button-new-tag {
-  height: 32px;
-  line-height: 30px;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.article-blocks .input-new-tag {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 90px;
-  vertical-align: bottom;
-}
-.article-blocks >>> .el-dialog__body{
-  padding-top: 0 !important;
-}
-.article-blocks >>> .el-dialog__body .el-divider--horizontal{
-  margin-top:5px;
-}
 </style>

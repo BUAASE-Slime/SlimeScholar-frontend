@@ -7,8 +7,20 @@
         </div>
         <div class="sub-title">
           <span v-for="(author, index) in articleDetails.authors" :key="index">
-            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}</span>
+            <span class="_link" @click="toAuthor(author.author_id)">
+              {{ author.author_name }}
+              <sup v-if="articleDetails.author_affiliation">{{ author.affiliation_order }}</sup>
+            </span>
             <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
+          </span>
+        </div>
+        <div class="sub-title" v-if="articleDetails.author_affiliation">
+          <span v-for="(ins, index) in articleDetails.author_affiliation" :key="index">
+            <span>
+              <sup>{{ index+1 }}</sup>
+              {{ ins }}
+            </span>
+            <span v-if="articleDetails.author_affiliation.length > index + 1">,&nbsp;</span>
           </span>
         </div>
         <div class="sub-title">
@@ -24,20 +36,25 @@
           <span class="_info">DOI: <span class="_link" @click="toDOI(articleDetails.doi)">{{ articleDetails.doi }}</span></span>
         </div>
         <div class="title-button">
-          <el-tooltip class="item" effect="light" content="评论" placement="bottom">
-            <el-button type="primary" icon="el-icon-chat-dot-square" circle></el-button>
+          <el-tooltip class="item" effect="light" content="下载" placement="bottom">
+            <el-button type="primary" icon="el-icon-download" circle @click="download"></el-button>
           </el-tooltip>
+          <el-dropdown style="margin-left: 10px; margin-right: 10px" trigger="click" @command="goLink">
+            <el-tooltip class="item" effect="light" content="更多链接" placement="bottom">
+              <el-button type="success" icon="el-icon-paperclip" circle></el-button>
+            </el-tooltip>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(ins, index) in articleDetails.urls" v-bind:key="index" :command="ins">{{ ins }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-tooltip class="item" effect="light" content="收藏" placement="bottom">
-            <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+            <el-button type="warning" icon="el-icon-star-off" circle @click="openCollect"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="分享" placement="bottom">
-            <el-button type="success" icon="el-icon-share" circle @click="share"></el-button>
-          </el-tooltip>
-          <el-tooltip class="item" effect="light" content="下载" placement="bottom">
-            <el-button type="danger" icon="el-icon-download" circle @click="download"></el-button>
+            <el-button type="danger" icon="el-icon-share" circle @click="share"></el-button>
           </el-tooltip>
           <el-tooltip class="item" effect="light" content="引用" placement="bottom">
-            <el-button type="info" icon="el-icon-paperclip" circle></el-button>
+            <el-button type="info" icon="el-icon-s-promotion" circle @click="quote"></el-button>
           </el-tooltip>
         </div>
       </el-col>
@@ -48,13 +65,18 @@
       <el-col :span="15">
         <div class="abstract-div">
           <div class="abstract-title">摘要</div>
-          <div class="abstract-content _content" v-if="articleDetails.abstract.length<spanLength || isSpan">
-            {{ articleDetails.abstract }}
-            <span v-if="isSpan && articleDetails.abstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
+          <div v-if="articleDetails.abstract && articleDetails.abstract.length>0">
+            <div class="abstract-content _content" v-if="articleDetails.abstract.length<spanLength || isSpan">
+              {{ articleDetails.abstract }}
+              <span v-if="isSpan && articleDetails.abstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
+            </div>
+            <div class="abstract-content _content" v-else>
+              {{ articleDetails.abstract.substring(0, 570) }}...
+              <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
+            </div>
           </div>
-          <div class="abstract-content _content" v-else>
-            {{ articleDetails.abstract.substring(0, 570) }}...
-            <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
+          <div v-else>
+            <div class="abstract-content _content" style="color: #909eb4; font-size: 14px">暂无摘要信息</div>
           </div>
         </div>
 
@@ -207,17 +229,36 @@
         </div>
       </el-col>
     </el-row>
+
+    <CollectDialog
+        :curPaper="articleDetails"
+        :showCollect="showCollect"
+        @closeChildDialog="closeChildDialog"></CollectDialog>
+
+    <CiteDialog
+        :paper_id="articleDetails.paper_id"
+        :showQuote="showQuote"
+        @closeChildDialog="closeChildDialog"></CiteDialog>
   </div>
 </template>
 
 <script>
 import user from "../../store/user";
 import qs from "qs";
+import CiteDialog from "../../components/CiteDialog";
+import CollectDialog from "../../components/CollectDialog";
 
 export default {
   name: "Article",
+  components: {CiteDialog, CollectDialog},
   data() {
     return {
+      // 引用
+      showQuote: false,
+
+      // 收藏
+      showCollect: false,
+
       // 点赞动画
       like: false,
       isAnimating: false,
@@ -246,28 +287,44 @@ export default {
       ],
 
       articleDetails: {
+        author_affiliation: [
+          "University of Warsaw",
+          "Facebook",
+          "Salesforce.com",
+          "University of Washington",
+          "Nvidia",
+          "Mario Negri Institute for Pharmacological Research",
+          "University of Oxford",
+          "ETH Zurich",
+          "Stanford University",
+          "Twitter",
+          "Tsinghua University"
+        ],
         authors: [
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2772667878",
-            author_name: "田中章夫",
-            order: "1",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
+            order: "1"
           },
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2773365833",
-            author_name: "野口盛雄",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
             order: "2"
           },
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2771782143",
-            author_name: "渡边良幸",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
             order: "3"
-          }
+          },
         ],
         fields: [
           {
@@ -398,15 +455,16 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
-
-      citeDetail: [
-        {
-          "GB/T 7714": "Yan Li,Yan Li,Dong Zhao,Miao Wang,Jia-yi Sun,Jun Liu,Yue Qi,Yong-chen Hao,Qiu-ju Deng,Jue Liu,Jing Liu,Min LiuAssociation between body mass index, waist circumference, and age at natural menopause: a population-based cohort study in Chinese women.[J].Women & Health,2021,:1-12.",
-        }
-      ]
     }
   },
   methods: {
+    goLink(url) {
+      window.open(url);
+    },
+    closeChildDialog() {
+      this.showQuote = false;
+      this.showCollect = false;
+    },
     createComment(paper_id, content) {
       const userInfo = user.getters.getUser(user.state());
       if (!userInfo) {
@@ -556,6 +614,12 @@ export default {
         this.$message.error("链接复制失败");
       }
     },
+    quote() {
+      this.showQuote = true;
+    },
+    openCollect() {
+      this.showCollect = true;
+    },
     download() {
       // TODO: 下载PDF文件
       if (this.articleDetails.pdfs.length === 0) {
@@ -699,6 +763,7 @@ export default {
 }
 
 .article .title-text {
+  font-family: Tahoma,fantasy;
   text-align: left;
   padding-top: 50px;
   padding-left: 20px;

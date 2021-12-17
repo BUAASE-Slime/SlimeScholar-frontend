@@ -4,7 +4,7 @@
       <div v-for="(article, index) in articles" v-bind:key="index">
         <div style="text-align: left">
           <div style="margin-bottom: 10px">
-            <span class="paper-title">{{article.paper_title}}</span>
+            <span class="paper-title" @click="gotoPaper(article.paper_id)">{{article.paper_title}}</span>
           </div>
           <span v-for="(j, index) in article.authors" :key="j" class="author-name">
                   <span @click="gotoSch(j.author_id)">{{j.author_name}}</span>
@@ -37,6 +37,13 @@ export default {
       let routeUrl = this.$router.resolve({
         path: '/schPortal',
         query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_self");
+    },
+    gotoPaper(paper_id) {
+      let routeUrl = this.$router.resolve({
+        path: '/article',
+        query: { v: paper_id }
       });
       window.open(routeUrl .href, "_self");
     }
