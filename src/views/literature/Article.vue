@@ -214,7 +214,7 @@
     </el-row>
 
     <CollectDialog
-        :curPaper="articleDetails.paper_id"
+        :curPaper="articleDetails"
         :showCollect="showCollect"
         @closeChildDialog="closeChildDialog"></CollectDialog>
 

@@ -9,6 +9,7 @@ export default {
             else this.resultList = this.articles;
             this.resultList.map((item) => {
                 if (this.header_select) {
+                    // 普通检索
                     if (this.header_select === "main" || this.header_select === "title")
                         item.paper_title = this.brightKeyword(item.paper_title)
                     if (this.header_select === "main" || this.header_select === "abstract")
@@ -24,6 +25,7 @@ export default {
                         })
                     }
                 } else if (this.searchValue) {
+                    // 高级检索
 
                 }
             })
