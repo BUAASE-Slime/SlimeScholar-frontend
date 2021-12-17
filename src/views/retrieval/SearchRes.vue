@@ -169,18 +169,43 @@ import highlightApi from "../../utils/highlightApi";
         //articles表示当前页面显示的文章块数组
         articles:[
           {
+            author_affiliation: [
+              "University of Warsaw",
+              "Facebook",
+              "Salesforce.com",
+              "University of Washington",
+              "Nvidia",
+              "Mario Negri Institute for Pharmacological Research",
+              "University of Oxford",
+              "ETH Zurich",
+              "Stanford University",
+              "Twitter",
+              "Tsinghua University"
+            ],
             authors: [
               {
-                author_name: "John Lee",
-                ids: [
-                  "3362353",
-                ]
+                affiliation_id: "4654613",
+                affiliation_name: "",
+                affiliation_order: 1,
+                author_id: "2411226248",
+                author_name: "Adam Paszke",
+                order: "1"
               },
               {
-                author_name: "Zuo_zuo",
-                ids: [
-                  "19373260",
-                ]
+                affiliation_id: "4654613",
+                affiliation_name: "",
+                affiliation_order: 1,
+                author_id: "2411226248",
+                author_name: "Adam Paszke",
+                order: "2"
+              },
+              {
+                affiliation_id: "4654613",
+                affiliation_name: "",
+                affiliation_order: 1,
+                author_id: "2411226248",
+                author_name: "Adam Paszke",
+                order: "3"
               },
             ],
             fields:[

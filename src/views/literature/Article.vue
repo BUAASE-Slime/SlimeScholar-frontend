@@ -7,8 +7,20 @@
         </div>
         <div class="sub-title">
           <span v-for="(author, index) in articleDetails.authors" :key="index">
-            <span class="_link" @click="toAuthor(author.author_id)">{{ author.author_name }}</span>
+            <span class="_link" @click="toAuthor(author.author_id)">
+              {{ author.author_name }}
+              <sup v-if="articleDetails.author_affiliation">{{ author.affiliation_order }}</sup>
+            </span>
             <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
+          </span>
+        </div>
+        <div class="sub-title" v-if="articleDetails.author_affiliation">
+          <span v-for="(ins, index) in articleDetails.author_affiliation" :key="index">
+            <span>
+              <sup>{{ index+1 }}</sup>
+              {{ ins }}
+            </span>
+            <span v-if="articleDetails.author_affiliation.length > index + 1">,&nbsp;</span>
           </span>
         </div>
         <div class="sub-title">
@@ -53,13 +65,18 @@
       <el-col :span="15">
         <div class="abstract-div">
           <div class="abstract-title">摘要</div>
-          <div class="abstract-content _content" v-if="articleDetails.abstract.length<spanLength || isSpan">
-            {{ articleDetails.abstract }}
-            <span v-if="isSpan && articleDetails.abstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
+          <div v-if="articleDetails.abstract && articleDetails.abstract.length>0">
+            <div class="abstract-content _content" v-if="articleDetails.abstract.length<spanLength || isSpan">
+              {{ articleDetails.abstract }}
+              <span v-if="isSpan && articleDetails.abstract.length>=spanLength" class="_link" @click="isSpan=!isSpan"> 折叠</span>
+            </div>
+            <div class="abstract-content _content" v-else>
+              {{ articleDetails.abstract.substring(0, 570) }}...
+              <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
+            </div>
           </div>
-          <div class="abstract-content _content" v-else>
-            {{ articleDetails.abstract.substring(0, 570) }}...
-            <span v-if="!isSpan" class="_link" @click="isSpan=!isSpan"> 展开</span>
+          <div v-else>
+            <div class="abstract-content _content" style="color: #909eb4; font-size: 14px">暂无摘要信息</div>
           </div>
         </div>
 
@@ -270,28 +287,44 @@ export default {
       ],
 
       articleDetails: {
+        author_affiliation: [
+          "University of Warsaw",
+          "Facebook",
+          "Salesforce.com",
+          "University of Washington",
+          "Nvidia",
+          "Mario Negri Institute for Pharmacological Research",
+          "University of Oxford",
+          "ETH Zurich",
+          "Stanford University",
+          "Twitter",
+          "Tsinghua University"
+        ],
         authors: [
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2772667878",
-            author_name: "田中章夫",
-            order: "1",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
+            order: "1"
           },
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2773365833",
-            author_name: "野口盛雄",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
             order: "2"
           },
           {
-            affiliation_id: "",
+            affiliation_id: "4654613",
             affiliation_name: "",
-            author_id: "2771782143",
-            author_name: "渡边良幸",
+            affiliation_order: 1,
+            author_id: "2411226248",
+            author_name: "Adam Paszke",
             order: "3"
-          }
+          },
         ],
         fields: [
           {
@@ -730,6 +763,7 @@ export default {
 }
 
 .article .title-text {
+  font-family: Tahoma,fantasy;
   text-align: left;
   padding-top: 50px;
   padding-left: 20px;

@@ -10,31 +10,52 @@
                   <span @click="gotoSch(j.author_id)">{{j.author_name}}</span>
                   <span v-if="index<item.authors.length-1"> / </span>
                 </span> -->
-        <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
-          <div v-html="j.author_name" @click="gotoSch(j.author_id)" style="display:inline-block"></div>
-          <span v-if="index<item.authors.length-1">&nbsp;/&nbsp;</span>
+        <div style="display:inline-block" v-if="item.authors && item.authors.length <= 5">
+          <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
+            <div @click="gotoSch(j.author_id)" style="display:inline-block">
+              {{ j.author_name }}
+              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+            </div>
+            <span v-if="index<item.authors.length-1">,&nbsp;</span>
+          </div>
         </div>
-        <span class="publish-year">
+        <div style="display:inline-block" v-else>
+          <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
+            <div @click="gotoSch(j.author_id)" style="display:inline-block" v-if="index<5">
+              {{ j.author_name }}
+              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+            </div>
+            <span v-if="index<5">,&nbsp;</span>
+          </div>
+          <span style="color: grey; font-size: 14px;">&nbsp;etc.</span>
+        </div>
+        <span class="publish-year" v-if="item.publisher===''">
           <span class="publish-year"> · {{item.year}}</span>
-<!--            <span v-if="item.publisher"> · {{item.publisher}}</span>-->
-<!--            <span v-if="item.journal_id !== ''"> · {{item.journal_id}}</span>-->
-<!--            <span v-else-if="item.conference_id !== ''"> · {{item.conference_id}}</span>-->
-<!--            <span v-if="item.last_page!==''&&item.first_page!==''&&item.volume!==''">-->
-<!--                        {{ item.volume }}, {{ item.first_page }}-{{ item.last_page }}-->
-<!--                      </span>-->
-<!--        <span v-else-if="item.first_page!==''&&item.volume!==''">-->
-<!--                        {{ item.volume }}, {{ item.first_page }}-->
-<!--                      </span>-->
         </span>
+
+        <div v-for="(j, index) in item.author_affiliation" :key="index" class="author-name" style="margin-top: 5px">
+          <div @click="gotoAff(j)" style="display:inline-block">
+            <sup v-if="item.author_affiliation">{{ index+1 }}</sup>
+            {{ j }}
+          </div>
+          <span v-if="index<item.author_affiliation.length-1">,&nbsp;</span>
+        </div>
+
+        <div style="margin-top: 5px" class="publish-year" v-if="item.publisher!==''">
+          <span class="date" v-if="item.year">{{ item.year }}</span>
+          <span class="journal" v-if="item.publisher!==''">
+            ·&nbsp;{{ item.publisher }}
+          </span>
+        </div>
       </div>
       
-      <div style="text-align:left;margin-top:10px;">
+      <div style="text-align:left;margin-top:5px;">
         <div v-html="item.abstract" class="abstract" style="display:-webkit-box; text-overflow:ellipsis; -webkit-line-clamp:3; overflow: hidden; -webkit-box-orient: vertical;"></div>
         <!-- <span class="abstract">{{item.abstract|ellipsis}}</span> -->
       </div>
       <div id="fields">
         <el-row>
-        <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:15px; margin-right:10px; float:left;">
+        <div v-for="item1 in item.fields" :key="item1" style="display:inline-block;margin-top:5px; margin-right:10px; float:left;">
           <div
             style="border-style:solid; border-width:1px; border-radius:5px; padding: 3px 5px;font-size: 14px; cursor: pointer" 
             @click="searchField(item1.name, item1.field_id)">
@@ -231,6 +252,14 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
+    // 搜索机构
+    gotoAff(affiliation_name) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { affiliation_name: affiliation_name }
+      });
+      window.open(routeUrl .href, "_self");
+    }
   },
   filters: {
     ellipsis: function(value) {
