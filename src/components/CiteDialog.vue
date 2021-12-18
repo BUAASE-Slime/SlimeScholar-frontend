@@ -7,10 +7,12 @@
         width="40%">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane v-for="(ins, index) in citation_msg" v-bind:key="index" :label="ins.name" :name="ins.id">
-          <div>
-            {{ ins.content }}
+          <div class="cite-input">
+            <el-input @click.native="$event.target.select()" :value="ins.content"></el-input>
           </div>
-          <el-button plain icon="el-icon-document-copy" @click="copyVal(ins.content)">复制</el-button>
+          <div class="cite-button">
+            <el-button type="primary" style="padding: 8px 16px" icon="el-icon-document-copy" @click="copyVal(ins.content)">&nbsp;复制</el-button>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
@@ -60,7 +62,7 @@ export default {
       document.execCommand("copy");
       document.body.removeChild(aux);
       if (val !== null) {
-        this.$message.success("链接已复制至剪贴板");
+        this.$message.success("引用已复制至剪贴板");
       } else {
         this.$message.error("引用格式为空");
       }
@@ -100,7 +102,16 @@ export default {
 
 .cite-dialog >>> .el-dialog__body {
   padding-top: 0;
+  padding-bottom: 24px;
 }
 
+.cite-input {
+  margin-top: 8px;
+}
+
+.cite-button {
+  margin-top: 18px;
+  /*text-align: center;*/
+}
 
 </style>
