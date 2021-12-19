@@ -17,7 +17,8 @@
 
     <el-menu :default-active="activeIndex" mode="horizontal" @select="handleSelect">
       <el-menu-item index="1" style="font-size: 26px" @click="gotoHome">
-        <img src="../assets/images/slime_logo.jpg" alt="logo" style="height: 40px">
+        <img v-if="mode==='black'" src="../assets/images/slime_logo_home.png" alt="logo" style="height: 40px">
+        <img v-else src="../assets/images/slime_logo.jpg" alt="logo" style="height: 40px">
       </el-menu-item>
       <el-menu-item index="2" @click="advanceSearch">高级检索</el-menu-item>
       <el-menu-item index="3" @click="gotoScholar">搜索学者</el-menu-item>
@@ -30,7 +31,7 @@
       </el-submenu>
       <i v-if="isLogin" class="el-icon-user icon"></i>
       <div class="login-button">
-        <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登录</el-button>
+        <el-button index="5" style="float: right" v-if="!isLogin" type="primary" @click="login">登 录</el-button>
       </div>
     </el-menu>
   </div>
@@ -62,16 +63,19 @@ export default {
         document.documentElement.style.setProperty('--item-font-color', 'black');
         document.documentElement.style.setProperty('--background-color', 'transparent');
         document.documentElement.style.setProperty('--border-bottom', 'none');
+        document.documentElement.style.setProperty('--hover-color', 'black');
         break;
       case 'black':
         document.documentElement.style.setProperty('--item-font-color', 'white');
         document.documentElement.style.setProperty('--background-color', 'transparent');
         document.documentElement.style.setProperty('--border-bottom', 'none');
+        document.documentElement.style.setProperty('--hover-color', '#cbcbcb');
         break;
       case 'default':
         document.documentElement.style.setProperty('--item-font-color', 'black');
         document.documentElement.style.setProperty('--background-color', 'white');
         document.documentElement.style.setProperty('--border-bottom', '2px solid transparent');
+        document.documentElement.style.setProperty('--hover-color', 'black');
         break;
     }
   },
@@ -132,6 +136,7 @@ export default {
   --item-font-color: white;
   --background-color: transparent;
   --border-bottom: 2px solid transparent;
+  --hover-color: black;
 }
 
 .header {
@@ -203,7 +208,6 @@ export default {
 
 .login-button button {
   width: 100px;
-  background-color: #1687fd;
 }
 
 .news-link {
@@ -218,6 +222,16 @@ export default {
 }
 .header .input-with-select {
   width: 500px;
+}
+
+.header .el-menu-item:hover {
+  background: transparent !important;
+  color: var(--hover-color) !important;
+}
+
+.header .el-menu--horizontal .el-menu-item.is-active {
+  background: transparent !important;
+  border-bottom: 2px solid transparent;
 }
 
 </style>
