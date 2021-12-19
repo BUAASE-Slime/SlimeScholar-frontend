@@ -13,16 +13,16 @@
         <div style="display:inline-block" v-if="item.authors && item.authors.length <= 5">
           <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
             <div @click="gotoSch(j.author_id)" style="display:inline-block">
-              {{ j.author_name }}
-              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+              <div v-html="j.author_name"></div>
             </div>
+            <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
             <span v-if="index<item.authors.length-1">,&nbsp;</span>
           </div>
         </div>
         <div style="display:inline-block" v-else>
           <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
             <div @click="gotoSch(j.author_id)" style="display:inline-block" v-if="index<5">
-              {{ j.author_name }}
+              <div v-html="j.author_name"></div>
               <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
             </div>
             <span v-if="index<5">,&nbsp;</span>
