@@ -215,17 +215,18 @@
               -&ensp;<span class="_link" @click="toField(field.name)">{{ field.name }}</span>
             </div>
           </el-row>
-          <el-row class="relation" v-if="articleDetails.related_papers"> <!-- 假借 -->
+          <el-row class="relation" v-if="related_papers.length>0"> <!-- 假借 -->
             <div class="field-title">相关文献</div>
-            <div class="relation-article" v-for="(article, index) in articleDetails.related_papers" :key="index">
+            <div class="relation-article" v-for="(article, index) in related_papers" :key="index">
               <div class="relation-title">
-                <span class="_link" @click="toArticle(article.id)">{{ article.paper_title }}</span>
+                <span class="_link" @click="toArticle(article.paper_id)">{{ article.paper_title }}</span>
               </div>
               <div class="relation-author _info">
                 <span v-for="(author, index2) in article.authors" :key="index2">
-                  <span>{{ author.author_name }}&nbsp;&nbsp;</span>
-                  <span v-if="article.authors.length > index2 + 1">,&nbsp;&nbsp;</span>
+                  <span v-if="index2<2">{{ author.author_name }}</span>
+                  <span v-if="index2<2 && article.authors.length > index2 + 1">,&nbsp;</span>
                 </span>
+                <span v-if="article.authors.length > 2">etc.</span>
               </div>
             </div>
           </el-row>
@@ -459,6 +460,7 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
+      related_papers: [],
 
       citation_msg: [],
       cita_page_idx: 1,
@@ -654,6 +656,23 @@ export default {
       window.URL.revokeObjectURL(url);
     },
 
+    getRelatedPapers() {
+      this.$axios({
+        method: 'post',
+        url: '/es/get/related/paper',
+        data: qs.stringify({
+          id: this.$route.query.v
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.related_papers = res.data.related;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     getArticleDetail() {
       const _formData = new FormData();
       _formData.append("id", this.$route.query.v);
@@ -753,6 +772,7 @@ export default {
   created() {
     this.getArticle();
     this.getCitationMsg();
+    this.getRelatedPapers();
   },
 }
 </script>
