@@ -168,7 +168,7 @@
               </el-table>
             </el-dialog>
           </el-tab-pane>
-          <el-tab-pane label="数据分析" name="analyse" class="dataChart">
+          <el-tab-pane label="数据分析" name="analyse" class="dataChart" style="height: 510px">
             <el-tabs v-model="activeNameChart">
               <el-tab-pane label="被引用量" name="citations">
                 <span slot="label">
@@ -1117,12 +1117,15 @@ export default {
     this.author_id = this.$route.query.v;
     if (this.$route.query.v) {
       this.getSchInfo(this.$route.query.v, 'author_id');
+      this.getCitationCount(this.author_id);
       this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
       return;
     }
 
     // 自己的门户
     const userInfo = user.getters.getUser(user.state());
+    this.author_id = userInfo.user.authorId;
+    console.log(this.author_id);
     // 未登录则先登录
     if (!userInfo) {
       this.$message.warning("请先登录！");
@@ -1131,13 +1134,14 @@ export default {
       }, 1000);
       return;
     }
-    // 调用接口返回信息
+    // 调用接口返回学者信息
     this.getSchInfo(userInfo.user.userId, 'user_id');
+    // 请求被引用量随年份的变化信息
+    this.getCitationCount(this.author_id);
   },
   mounted(){
     //页面加载完成后,才执行
     setTimeout(() => {
-      this.showCiaChart();
       this.showRelChart();
     }, 1000);
   },
@@ -1303,6 +1307,29 @@ export default {
               this.$router.push("/login");
             }, 1000);
             break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    getCitationCount(author_id) {
+      this.$axios({
+        method: 'post',
+        url: '/scholar/get/citation/author',
+        data: qs.stringify({
+          id: author_id
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.ciaChart.cia = res.data.citations;
+          this.ciaChart.years = res.data.years;
+          setTimeout(() => {
+            this.showCiaChart();
+          }, 300);
+        } else {
+          this.$message.error("图表信息获取失败！");
         }
       })
       .catch(err => {
