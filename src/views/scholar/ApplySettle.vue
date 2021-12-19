@@ -74,7 +74,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-collapse v-model="opened_collapse" class="papers-collapse">
+              <el-collapse v-model="opened_collapse" class="papers-collapse" accordion>
                 <el-collapse-item v-for="(papers, index) in authors" :key="index"
                                   :name="papers.author_id">
                   <template slot="title">
@@ -87,7 +87,7 @@
                     </el-checkbox>
                   </template>
                   <div v-for="(item, index) in papers.papers" v-bind:key="index" class="article-item" style="margin-left: 60px; margin-top: 10px; color: grey;">
-                    <div style="text-align: left">
+                    <div v-if="index<6" style="text-align: left">
                       <div style="margin-bottom: 5px">
                         <span class="paper-title"
                               style="font-size: 16px; font-family:'Times Roman',sans-serif ;color: rgba(53,53,53,0.94)"
@@ -102,8 +102,15 @@
                       <span> · {{ item.publisher }} </span>
                     </div>
                   </div>
+                  <div
+                      v-if="papers.papers.length>6"
+                      style="margin-left: 60px; margin-top: 10px; color: grey; text-align: left; color: rgba(53,53,53,0.94)"
+                      class="paper-title">
+                    ···
+                  </div>
                 </el-collapse-item>
               </el-collapse>
+              <scroll-loader :loader-method="getArticlesByAuthor" :loader-disable="loadMoreDisable"></scroll-loader>
             </el-row>
           </el-row>
           <!--      第二部结束-->
@@ -161,134 +168,101 @@ export default {
           author_id: "a12acd3"
         }
       ],
-      author_count: 21,
+      author_count: 10,
       authors: [
-        {
-          author_id: "a123",
-          name: "Li Yu",
-          papers: [
-            {
-              "authors": [
-                {
-                  "affiliation_id": "",
-                  "affiliation_name": "Independent Researcher",
-                  "author_id": "3192512793",
-                  "author_name": "Sergei Belousov",
-                  "order": "1"
-                },
-                {
-                  "affiliation_id": "",
-                  "affiliation_name": "Independent Researcher",
-                  "author_id": "3192512793",
-                  "author_name": "Sergei Belousov",
-                  "order": "1"
-                }
-              ],
-              "book_title": "",
-              "citation_count": "0",
-              "citation_msg": [],
-              "conference": "",
-              "conference_id": "",
-              "date": "2021-11-01",
-              "doctype": "",
-              "doi": "10.1016/J.SIMPA.2021.100115",
-              "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-              "fields": [],
-              "first_page": "100115",
-              "journal": "",
-              "journal_id": "",
-              "last_page": "",
-              "paper_id": "3191610454",
-              "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-              "publisher": "Elsevier BV",
-              "rank": "23112",
-              "reference_count": "12",
-              "volume": "10",
-              "year": "2021"
-            },
-            {
-              "authors": [
-                {
-                  "affiliation_id": "",
-                  "affiliation_name": "Independent Researcher",
-                  "author_id": "3192512793",
-                  "author_name": "Sergei Belousov",
-                  "order": "1"
-                },
-                {
-                  "affiliation_id": "",
-                  "affiliation_name": "Independent Researcher",
-                  "author_id": "3192512793",
-                  "author_name": "Sergei Belousov",
-                  "order": "1"
-                }
-              ],
-              "book_title": "",
-              "citation_count": "0",
-              "citation_msg": [],
-              "conference": "",
-              "conference_id": "",
-              "date": "2021-11-01",
-              "doctype": "",
-              "doi": "10.1016/J.SIMPA.2021.100115",
-              "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-              "fields": [],
-              "first_page": "100115",
-              "journal": "",
-              "journal_id": "",
-              "last_page": "",
-              "paper_id": "3191610454",
-              "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-              "publisher": "Elsevier BV",
-              "rank": "23112",
-              "reference_count": "12",
-              "volume": "10",
-              "year": "2021"
-            }
-          ]
-        },
-        {
-          author_id: "a12acd3",
-          name: "Li Yu",
-          papers: [
-            {
-              "authors": [
-                {
-                  "affiliation_id": "",
-                  "affiliation_name": "Independent Researcher",
-                  "author_id": "3192512793",
-                  "author_name": "Sergei Belousov",
-                  "order": "1"
-                }
-              ],
-              "book_title": "",
-              "citation_count": "0",
-              "citation_msg": [],
-              "conference": "",
-              "conference_id": "",
-              "date": "2021-11-01",
-              "doctype": "",
-              "doi": "10.1016/J.SIMPA.2021.100115",
-              "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-              "fields": [],
-              "first_page": "100115",
-              "journal": "",
-              "journal_id": "",
-              "last_page": "",
-              "paper_id": "3191610454",
-              "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-              "publisher": "Elsevier BV",
-              "rank": "23112",
-              "reference_count": "12",
-              "volume": "10",
-              "year": "2021"
-            }
-          ]
-        }
+        // {
+        //   author_id: "a123",
+        //   name: "Li Yu",
+        //   papers: [
+        //     {
+        //       "authors": [
+        //         {
+        //           "affiliation_id": "",
+        //           "affiliation_name": "Independent Researcher",
+        //           "author_id": "3192512793",
+        //           "author_name": "Sergei Belousov",
+        //           "order": "1"
+        //         },
+        //         {
+        //           "affiliation_id": "",
+        //           "affiliation_name": "Independent Researcher",
+        //           "author_id": "3192512793",
+        //           "author_name": "Sergei Belousov",
+        //           "order": "1"
+        //         }
+        //       ],
+        //       "book_title": "",
+        //       "citation_count": "0",
+        //       "citation_msg": [],
+        //       "conference": "",
+        //       "conference_id": "",
+        //       "date": "2021-11-01",
+        //       "doctype": "",
+        //       "doi": "10.1016/J.SIMPA.2021.100115",
+        //       "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //       "fields": [],
+        //       "first_page": "100115",
+        //       "journal": "",
+        //       "journal_id": "",
+        //       "last_page": "",
+        //       "paper_id": "3191610454",
+        //       "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //       "publisher": "Elsevier BV",
+        //       "rank": "23112",
+        //       "reference_count": "12",
+        //       "volume": "10",
+        //       "year": "2021"
+        //     },
+        //     {
+        //       "authors": [
+        //         {
+        //           "affiliation_id": "",
+        //           "affiliation_name": "Independent Researcher",
+        //           "author_id": "3192512793",
+        //           "author_name": "Sergei Belousov",
+        //           "order": "1"
+        //         },
+        //         {
+        //           "affiliation_id": "",
+        //           "affiliation_name": "Independent Researcher",
+        //           "author_id": "3192512793",
+        //           "author_name": "Sergei Belousov",
+        //           "order": "1"
+        //         }
+        //       ],
+        //       "book_title": "",
+        //       "citation_count": "0",
+        //       "citation_msg": [],
+        //       "conference": "",
+        //       "conference_id": "",
+        //       "date": "2021-11-01",
+        //       "doctype": "",
+        //       "doi": "10.1016/J.SIMPA.2021.100115",
+        //       "doi_url": "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //       "fields": [],
+        //       "first_page": "100115",
+        //       "journal": "",
+        //       "journal_id": "",
+        //       "last_page": "",
+        //       "paper_id": "3191610454",
+        //       "paper_title": "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //       "publisher": "Elsevier BV",
+        //       "rank": "23112",
+        //       "reference_count": "12",
+        //       "volume": "10",
+        //       "year": "2021"
+        //     }
+        //   ]
+        // },
       ],
-      page: 1,
-      size: 10,
+      author_page_idx: 1,
+      loadMoreDisable: true,
     }
+  },
+  watch: {
+    authors(val) {
+      this.loadMoreDisable = val.length >= this.author_count;
+    },
   },
   computed: {
     opened_collapse: function () {
@@ -322,7 +296,7 @@ export default {
             this.apply();
           }, 1000);
         } else {
-          this.getArticlesByAuthor(this.applyInfo.author_name);
+          this.getArticlesByAuthor();
         }
       } else {
         this.$message.error("请完善必填信息！");
@@ -389,33 +363,46 @@ export default {
       });
       window.open(routeUrl .href, "_blank");
     },
-    getArticlesByAuthor(author_name) {
-      let _loadingIns = this.$loading({fullscreen: true, text: '正在根据您的姓名获取文献组'});
+    getArticlesByAuthor() {
+      if (this.authors.length >= this.author_count) {
+        this.loadMoreDisable = true;
+        return;
+      }
+
+      let author_name = this.applyInfo.author_name;
+
+      let _loadingIns;
+      if (this.step === 1)
+        _loadingIns = this.$loading({fullscreen: true, text: '正在根据您的姓名获取文献组'});
       this.$axios({
         method: 'post',
         url: '/submit/get/papers',
         data: qs.stringify({
           author_name: author_name,
-          page: this.page,
-          size: this.size
+          page: this.author_page_idx,
+          size: 6
         })
       })
       .then(res => {
-        _loadingIns.close();
+        if (this.step === 1) _loadingIns.close();
         switch (res.data.status) {
           case 200:
-            this.authors = res.data.authors;
+            this.authors = this.authors.concat(res.data.authors);
+            this.author_page_idx += 1;
             this.author_count = res.data.author_count;
+            if (this.authors.length >= this.author_count)
+              this.loadMoreDisable = true;
             this.step = 2;
             // Init Selected
             this.papers_group_state = [];
             for (var i = 0; i < this.authors.length; i++) {
               this.papers_group_state.push({
-                open: true,
+                open: false,
                 selected: false,
                 author_id: this.authors[i].author_id
               })
             }
+            this.papers_group_state[0].open = true;
             break;
         }
       })
