@@ -466,9 +466,9 @@ export default {
     }
   },
   watch: {
-    cita_page_idx(val) {
-      this.loadMoreDisable = val*20 >= this.articleDetails.citation_count;
-    }
+    citation_msg(val) {
+      this.loadMoreDisable = val.length >= this.articleDetails.citation_count;
+    },
   },
   methods: {
     goLink(url) {
