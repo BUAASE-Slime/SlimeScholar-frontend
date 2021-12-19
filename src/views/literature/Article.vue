@@ -9,7 +9,7 @@
           <span v-for="(author, index) in articleDetails.authors" :key="index">
             <span class="_link" @click="toAuthor(author.author_id)">
               {{ author.author_name }}
-              <sup v-if="articleDetails.author_affiliation">{{ author.affiliation_order }}</sup>
+              <sup v-if="articleDetails.author_affiliation && author.affiliation_order !== 0">{{ author.affiliation_order }}</sup>
             </span>
             <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
           </span>

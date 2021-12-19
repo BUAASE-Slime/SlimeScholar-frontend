@@ -63,7 +63,7 @@ export default {
             else keyword = this.input;
             let start=val.toLowerCase().indexOf(keyword.toLowerCase())
             if (start !== -1) {
-                return val.replace(val.slice(start, start+keyword.length), `<font color='#f00'>${val.slice(start, start+keyword.length)}</font>`)
+                return val.replace(val.slice(start, start+keyword.length), `<font color='#ea4335'>${val.slice(start, start+keyword.length)}</font>`)
             } else {
                 return val
             }
