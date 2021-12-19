@@ -100,9 +100,10 @@
                         </div>
                         <div class="reference-author _info">
                           <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}</span>
-                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
-                      </span>
+                            <span v-if="index2<5">{{ author.author_name }}</span>
+                            <span v-if="index2<5 && article.authors.length > index2 + 1">,&nbsp;</span>
+                          </span>
+                          <span v-if="article.authors.length>5">.etc</span>
                         </div>
                       </el-col>
                     </el-row>
@@ -127,10 +128,11 @@
                           <span>{{ article.paper_title }}</span>
                         </div>
                         <div class="reference-author _info">
-                      <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}</span>
-                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
-                      </span>
+                          <span v-for="(author, index2) in article.authors" :key="index2">
+                            <span v-if="index2<5">{{ author.author_name }}</span>
+                            <span v-if="index2<5 && article.authors.length > index2 + 1">,&nbsp;</span>
+                          </span>
+                          <span v-if="article.authors.length>5">.etc</span>
                         </div>
                       </el-col>
                     </el-row>
@@ -233,6 +235,7 @@
     <CollectDialog
         :curPaper="articleDetails"
         :showCollect="showCollect"
+        @collectSuccess="collectSuccess"
         @closeChildDialog="closeChildDialog"></CollectDialog>
 
     <CiteDialog
@@ -460,6 +463,9 @@ export default {
   methods: {
     goLink(url) {
       window.open(url);
+    },
+    collectSuccess() {
+      this.articleDetails.collect_count += 1;
     },
     closeChildDialog() {
       this.showQuote = false;

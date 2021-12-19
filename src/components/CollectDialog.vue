@@ -103,25 +103,25 @@ export default {
             tag_name: tagName,
           })
         })
-            .then(res => {
-              switch (res.data.status) {
-                case 200:
-                  this.tagData.splice(this.tagData.indexOf(tag), 1);
-                  break;
-                case 400:
-                  this.$userNotFound();
-                  break;
-                case 403:
-                  this.$message.error("标签不存在！");
-                  break;
-                case 404:
-                  this.$userNotFound();
-                  break;
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            })
+        .then(res => {
+          switch (res.data.status) {
+            case 200:
+              this.tagData.splice(this.tagData.indexOf(tag), 1);
+              break;
+            case 400:
+              this.$userNotFound();
+              break;
+            case 403:
+              this.$message.error("标签不存在！");
+              break;
+            case 404:
+              this.$userNotFound();
+              break;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
       }
     },
     chooseTag(tag) {
@@ -198,6 +198,7 @@ export default {
             this.$emit('changeCollect', data);
             this.closeDialog();
             this.$message.success("收藏成功！");
+            this.$emit("collectSuccess");
             break;
           case 400:
             this.$userNotFound();
