@@ -19,6 +19,9 @@ Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 
 import $ from 'jquery'
+import ScrollLoader from 'vue-scroll-loader'
+
+Vue.use(ScrollLoader);
 
 // TIP: mount utils javascript methods
 import userApi from "./utils/userApi";

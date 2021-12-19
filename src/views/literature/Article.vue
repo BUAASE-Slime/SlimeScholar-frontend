@@ -119,7 +119,7 @@
                 <span>由于版权限制，此处只展示部分相关论文</span>
               </div>
               <div class="reference-article">
-                <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
+                <div class="reference-article-block" v-for="(article, index) in citation_msg" :key="index">
                   <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
@@ -139,6 +139,7 @@
                   </div>
                 </div>
               </div>
+              <scroll-loader :loader-method="getCitationMsg" :loader-disable="loadMoreDisable"></scroll-loader>
             </el-tab-pane>
             <el-tab-pane label="文章评论" name="third">
               <div class="reference-info" v-if="comments===null||comments.length===0">
@@ -458,6 +459,15 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
+
+      citation_msg: [],
+      cita_page_idx: 1,
+      loadMoreDisable: true,
+    }
+  },
+  watch: {
+    cita_page_idx(val) {
+      this.loadMoreDisable = val*20 >= this.articleDetails.citation_count;
     }
   },
   methods: {
@@ -653,6 +663,35 @@ export default {
         data: _formData
       })
     },
+    getCitationMsg() {
+      if (this.citation_msg.length >= this.articleDetails.citation_count) {
+        this.loadMoreDisable = true;
+        return;
+      }
+
+      this.$axios({
+        method: 'post',
+        url: '/es/get/citation/paper',
+        data: qs.stringify({
+          id: this.$route.query.v,
+          page: this.cita_page_idx,
+          size: 20
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.citation_msg = this.citation_msg.concat(res.data.citations);
+          this.cita_page_idx += 1;
+          if (this.citation_msg.length >= this.articleDetails.citation_count)
+            this.loadMoreDisable = true;
+        } else {
+          this.$message.error("获取引证文献失败！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     getComments() {
       let userId;
       const userInfo = user.getters.getUser(user.state());
@@ -734,6 +773,7 @@ export default {
   },
   created() {
     this.getArticle();
+    this.getCitationMsg();
   },
 }
 </script>

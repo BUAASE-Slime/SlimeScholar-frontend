@@ -8,7 +8,11 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane v-for="(ins, index) in citation_msg" v-bind:key="index" :label="ins.name" :name="ins.id">
           <div class="cite-input">
-            <el-input @click.native="$event.target.select()" :value="ins.content"></el-input>
+            <el-input
+                type="textarea"
+                autosize
+                @click.native="$event.target.select()"
+                :value="ins.content"></el-input>
           </div>
           <div class="cite-button">
             <el-button type="primary" style="padding: 8px 16px" icon="el-icon-document-copy" @click="copyVal(ins.content)">&nbsp;复制</el-button>
@@ -112,6 +116,10 @@ export default {
 .cite-button {
   margin-top: 18px;
   /*text-align: center;*/
+}
+
+.cite-dialog >>> .el-textarea__inner {
+  font-family: Arial, sans-serif;
 }
 
 </style>
