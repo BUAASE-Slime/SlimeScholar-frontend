@@ -113,7 +113,7 @@ export default {
       this.$router.push('/schLib');
     },
     gotoMySch() {
-      this.$router.push('/schPortal');
+      window.open('/schPortal', '_self');
     },
     settings() {
       this.$router.push('/settings');
