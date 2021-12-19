@@ -909,7 +909,7 @@ export default {
   created() {
     // 查询的是别人的门户
     this.author_id = this.$route.query.v;
-    if (this.$route.query.v) {
+    if (this.$route.query.v && this.$route.query.v !== '') {
       this.getSchInfo(this.$route.query.v, 'author_id');
       this.getCitationCount(this.author_id);
       this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
@@ -918,8 +918,6 @@ export default {
 
     // 自己的门户
     const userInfo = user.getters.getUser(user.state());
-    this.author_id = userInfo.user.authorId;
-    console.log(this.author_id);
     // 未登录则先登录
     if (!userInfo) {
       this.$message.warning("请先登录！");
@@ -928,6 +926,7 @@ export default {
       }, 1000);
       return;
     }
+    this.author_id = userInfo.user.authorId;
     // 调用接口返回学者信息
     this.getSchInfo(userInfo.user.userId, 'user_id');
     // 请求被引用量随年份的变化信息
