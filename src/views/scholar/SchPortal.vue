@@ -122,6 +122,7 @@
               <el-input
                   style="width: 75%;margin-left: 100px;margin-right: 10px"
                   v-model="searchInput"
+                  @keyup.enter.native="searchArt"
                   placeholder="请输入要添加的文献...">
               </el-input>
               <el-button type="primary" class="el-icon-search" @click="searchArt"></el-button>
@@ -165,6 +166,7 @@
                     </el-row>
                   </template>
                 </el-table-column>
+                <scroll-loader slot="append" :loader-method="searchArt" :loader-disable="loadMoreDisable"></scroll-loader>
               </el-table>
             </el-dialog>
           </el-tab-pane>
@@ -236,228 +238,20 @@ import qs from "qs";
 
 export default {
   name: "schPortal.vue",
+  watch: {
+    result(val) {
+      this.loadMoreDisable = val.length >= this.resultTotalHits;
+    },
+  },
   data(){
     return {
       isEdit: false,
       dialogVisible: false,
       searchInput:"",
-      result: [
-        // {
-        //   authors: [
-        //     {
-        //       affiliation_id: "",
-        //       affiliation_name: "Independent Researcher",
-        //       author_id: "3323123",
-        //       author_name: "Sergei Belousov",
-        //       order: "1"
-        //     }
-        //   ],
-        //   book_title: "",
-        //   citation_count: "4",
-        //   citation_msg: [],
-        //   conference: {
-        //     name: "",
-        //   },
-        //   conference_id: "",
-        //   date: "2019-11-01",
-        //   doctype: "",
-        //   doi: "10.1016/J.SIMPA.2021.100115",
-        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-        //   fields: [],
-        //   first_page: "100115",
-        //   journal: {
-        //     citation_count: "451567",
-        //     issn: "",
-        //     journalid: "2597175965",
-        //     name: "arXiv: Computer Vision and Pattern Recognition",
-        //     paper_count: "49431",
-        //     publisher: "",
-        //     rank: "8182",
-        //     webpage: ""
-        //   },
-        //   journal_id: "",
-        //   last_page: "12312",
-        //   paper_id: "3191610454",
-        //   paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-        //   publisher: "Elsevier BV",
-        //   rank: "23112",
-        //   reference_count: "12",
-        //   volume: "10",
-        //   year: "2021"
-        // },
-        // {
-        //   authors: [
-        //     {
-        //       affiliation_id: "",
-        //       affiliation_name: "Independent Researcher",
-        //       author_id: "3323123",
-        //       author_name: "Sergei Belousov",
-        //       order: "1"
-        //     }
-        //   ],
-        //   book_title: "",
-        //   citation_count: "9",
-        //   citation_msg: [],
-        //   conference: {
-        //     name: "",
-        //   },
-        //   conference_id: "",
-        //   date: "2021-11-02",
-        //   doctype: "",
-        //   doi: "10.1016/J.SIMPA.2021.100115",
-        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-        //   fields: [],
-        //   first_page: "100115",
-        //   journal: {
-        //     citation_count: "451567",
-        //     issn: "",
-        //     journalid: "2597175965",
-        //     name: "arXiv: Computer Vision and Pattern Recognition",
-        //     paper_count: "49431",
-        //     publisher: "",
-        //     rank: "8182",
-        //     webpage: ""
-        //   },
-        //   journal_id: "",
-        //   last_page: "12312",
-        //   paper_id: "3191610454",
-        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-        //   publisher: "Elsevier BV",
-        //   rank: "23112",
-        //   reference_count: "12",
-        //   volume: "10",
-        //   year: "2021"
-        // },
-        // {
-        //   authors: [
-        //     {
-        //       affiliation_id: "",
-        //       affiliation_name: "Independent Researcher",
-        //       author_id: "3323123",
-        //       author_name: "Sergei Belousov",
-        //       order: "1"
-        //     }
-        //   ],
-        //   book_title: "",
-        //   citation_count: "1",
-        //   citation_msg: [],
-        //   conference: {
-        //     name: "",
-        //   },
-        //   conference_id: "",
-        //   date: "2021-11-01",
-        //   doctype: "",
-        //   doi: "10.1016/J.SIMPA.2021.100115",
-        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-        //   fields: [],
-        //   first_page: "100115",
-        //   journal: {
-        //     citation_count: "451567",
-        //     issn: "",
-        //     journalid: "2597175965",
-        //     name: "arXiv: Computer Vision and Pattern Recognition",
-        //     paper_count: "49431",
-        //     publisher: "",
-        //     rank: "8182",
-        //     webpage: ""
-        //   },
-        //   journal_id: "",
-        //   last_page: "12312",
-        //   paper_id: "3191610454",
-        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-        //   publisher: "Elsevier BV",
-        //   rank: "23112",
-        //   reference_count: "12",
-        //   volume: "10",
-        //   year: "2021"
-        // },
-        // {
-        //   authors: [
-        //     {
-        //       affiliation_id: "",
-        //       affiliation_name: "Independent Researcher",
-        //       author_id: "3323123",
-        //       author_name: "Sergei Belousov",
-        //       order: "1"
-        //     }
-        //   ],
-        //   book_title: "",
-        //   citation_count: "4",
-        //   citation_msg: [],
-        //   conference: {
-        //     name: "",
-        //   },
-        //   conference_id: "",
-        //   date: "2019-11-01",
-        //   doctype: "",
-        //   doi: "10.1016/J.SIMPA.2021.100115",
-        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-        //   fields: [],
-        //   first_page: "100115",
-        //   journal: {
-        //     citation_count: "451567",
-        //     issn: "",
-        //     journalid: "2597175965",
-        //     name: "arXiv: Computer Vision and Pattern Recognition",
-        //     paper_count: "49431",
-        //     publisher: "",
-        //     rank: "8182",
-        //     webpage: ""
-        //   },
-        //   journal_id: "",
-        //   last_page: "12312",
-        //   paper_id: "3191610454",
-        //   paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-        //   publisher: "Elsevier BV",
-        //   rank: "23112",
-        //   reference_count: "12",
-        //   volume: "10",
-        //   year: "2021"
-        // },
-        // {
-        //   authors: [
-        //     {
-        //       affiliation_id: "",
-        //       affiliation_name: "Independent Researcher",
-        //       author_id: "3323123",
-        //       author_name: "Sergei Belousov",
-        //       order: "1"
-        //     }
-        //   ],
-        //   book_title: "",
-        //   citation_count: "9",
-        //   citation_msg: [],
-        //   conference: {
-        //     name: "",
-        //   },
-        //   conference_id: "",
-        //   date: "2021-11-02",
-        //   doctype: "",
-        //   doi: "10.1016/J.SIMPA.2021.100115",
-        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
-        //   fields: [],
-        //   first_page: "100115",
-        //   journal: {
-        //     citation_count: "451567",
-        //     issn: "",
-        //     journalid: "2597175965",
-        //     name: "arXiv: Computer Vision and Pattern Recognition",
-        //     paper_count: "49431",
-        //     publisher: "",
-        //     rank: "8182",
-        //     webpage: ""
-        //   },
-        //   journal_id: "",
-        //   last_page: "12312",
-        //   paper_id: "3191610454",
-        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
-        //   publisher: "Elsevier BV",
-        //   rank: "23112",
-        //   reference_count: "12",
-        //   volume: "10",
-        //   year: "2021"
-        // },
-      ],
+      result: [],
+      result_page_idx: 1,
+      loadMoreDisable: true,
+      resultTotalHits: 10,
       isSelf: false,
       tableTitle:"文献",
       tableTitleEdit:"已有文献",
@@ -1158,6 +952,9 @@ export default {
     save(){
       this.isEdit = false;
       this.$message.success("保存成功");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     },
     renderHead1(h, { column, $index }) {
       return (
@@ -1178,21 +975,29 @@ export default {
       this.dialogVisible=true;
     },
     searchArt(){
-      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      if (this.result.length >= this.resultTotalHits) {
+        this.loadMoreDisable = true;
+        return;
+      }
+
       this.$axios({
         method: 'post',
         url: 'es/query/paper/title',
         data: qs.stringify({
           title: this.searchInput,
-          page: 1,
+          page: this.result_page_idx,
           is_precise: true,
         })
       })
       .then(res => {
-        _loadingIns.close();
+        console.log(res.data);
         switch (res.data.status) {
           case 200:
-            this.result = res.data.details;
+            this.result = this.result.concat(res.data.details);
+            this.result_page_idx += 1;
+            this.resultTotalHits = res.data.total_hits;
+            if (this.result.length >= this.resultTotalHits)
+              this.loadMoreDisable = true;
             break;
           case 404:
             this.result = [];

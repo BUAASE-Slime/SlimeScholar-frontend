@@ -749,27 +749,6 @@ export default {
         console.log(err);
       })
     },
-    getCiteDetail() {
-      this.$axios({
-        method: 'post',
-        url: '/scholar/cite_paper',
-        data: qs.stringify({
-          paper_id: this.$route.query.v
-        })
-      })
-      .then(res => {
-        switch (res.data.status) {
-          case 200:
-            break;
-          default:
-            this.$message.error("系统发生错误！");
-            break;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    }
   },
   created() {
     this.getArticle();
