@@ -14,6 +14,10 @@ export default {
                         item.paper_title = this.brightKeyword(item.paper_title)
                     if (this.header_select === "main" || this.header_select === "abstract")
                         item.abstract = this.brightKeyword(item.abstract)
+                    if (this.header_select === "affiliation_name")
+                        item.author_affiliation.forEach((item1, index, arr) => {
+                            arr[index] = this.brightKeyword(arr[index])
+                        })
                     if (this.header_select === "main" || this.header_select === "author_name") {
                         item.authors.forEach((item2) => {
                             item2.author_name = this.brightKeyword(item2.author_name)

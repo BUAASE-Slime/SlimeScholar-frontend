@@ -36,7 +36,7 @@
             <el-button class="opera-button" v-if="isSelf===true" icon="el-icon-edit">
               编辑
             </el-button>
-            <el-button class="opera-button" icon="el-icon-folder-checked" v-if="info.is_user===false" @click="apply">
+            <el-button class="opera-button" icon="el-icon-folder-checked" v-else-if="info.is_user===false" @click="apply">
               认领
             </el-button>
             <el-button class="opera-button" v-else icon="el-icon-message">

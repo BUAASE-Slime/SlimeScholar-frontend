@@ -13,19 +13,21 @@
         <div style="display:inline-block" v-if="item.authors && item.authors.length <= 5">
           <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
             <div @click="gotoSch(j.author_id)" style="display:inline-block">
-              {{ j.author_name }}
-              <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+              <div v-html="j.author_name"></div>
             </div>
+            <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
             <span v-if="index<item.authors.length-1">,&nbsp;</span>
           </div>
         </div>
         <div style="display:inline-block" v-else>
           <div v-for="(j, index) in item.authors" :key="j" class="author-name" style="display:inline-block">
-            <div @click="gotoSch(j.author_id)" style="display:inline-block" v-if="index<5">
-              {{ j.author_name }}
+            <div v-if="index<5">
+              <div @click="gotoSch(j.author_id)" style="display:inline-block">
+                <div v-html="j.author_name"></div>
+              </div>
               <sup v-if="item.author_affiliation && j.affiliation_order !== 0">{{ j.affiliation_order }}</sup>
+              <span>,&nbsp;</span>
             </div>
-            <span v-if="index<5">,&nbsp;</span>
           </div>
           <span style="color: grey; font-size: 14px;">&nbsp;etc.</span>
         </div>
@@ -33,12 +35,14 @@
           <span class="publish-year"> · {{item.year}}</span>
         </span>
 
-        <div v-for="(j, index) in item.author_affiliation" :key="index" class="author-name" style="margin-top: 5px">
-          <div @click="gotoAff(j)" style="display:inline-block">
-            <sup v-if="item.author_affiliation">{{ index+1 }}</sup>
-            {{ j }}
+        <div>
+          <div v-for="(j, index) in item.author_affiliation" :key="index" class="author-name" style="margin-top: 5px; display:inline-block">
+            <div @click="gotoAff(j)" style="display:inline-block">
+              <sup v-if="item.author_affiliation">{{ index+1 }}</sup>
+              <div v-html="j" style="display:inline-block"></div>
+            </div>
+            <span v-if="index<item.author_affiliation.length-1">,&nbsp;</span>
           </div>
-          <span v-if="index<item.author_affiliation.length-1">,&nbsp;</span>
         </div>
 
         <div style="margin-top: 5px" class="publish-year" v-if="item.publisher!==''">
@@ -238,9 +242,11 @@ export default {
     },
     // 查看领域下的文献
     searchField(field_name, field_id) {
+      let _field_name = field_name.replace("<font color='#f00'>", "");
+      _field_name = _field_name.replace("</font>", "");
       let routeUrl = this.$router.resolve({
         path: '/searchRes',
-        query: { field: field_name }
+        query: { field: _field_name }
       });
       window.open(routeUrl .href, "_self");
     },
