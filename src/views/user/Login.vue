@@ -63,6 +63,7 @@ export default {
               'username': res.data.detail.username,
               'Authorization': res.data.Authorization,
               'userId': res.data.detail.user_id,
+              'authorId': res.data.detail.author_id,
             }
           });
           const history_pth = localStorage.getItem('preRoute');
