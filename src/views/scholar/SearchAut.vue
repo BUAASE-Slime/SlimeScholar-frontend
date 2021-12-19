@@ -12,8 +12,8 @@
                     v-model="searchValue"
                     class="input-with-select"
                     @keyup.enter.native="goSearch"
-                    style="font-size:20px; ">
-            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width:170px; border-right:2px solid grey" class="pre">
+                    style="width: 750px; font-size: 17px">
+            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width: 130px">
               <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -82,75 +82,44 @@ export default {
   object-fit: cover;
 }
 
-.search-author .input-box-body .input-box {
-  margin-top: 70px;
+.search-author .input-box {
+  margin-top: 60px;
 }
-
+.search-author .input-box >>> .el-input.is-active .el-input__inner, .el-input__inner:focus {
+  border: 5px solid #409EFF;
+}
+.search-author .input-box >>> .el-input__inner {
+  height: 50px;
+}
+.search-author .input-box >>> .el-input-group__append {
+  background-color: #409EFF;
+  color: white;
+  vertical-align: middle;
+  display: table-cell;
+  position: relative;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  padding: 0 20px;
+  width: 1px;
+  white-space: nowrap;
+}
+.search-author .input-box >>> .el-input-group__append:hover {
+  background-color: #52a9ff;
+}
+.search-author .input-box >>> .el-input-group--prepend {
+  border-radius: 6px 0 0 6px;
+}
 .search-author .input-box-body .input-box button {
   color: white;
-}
-
-.search-author .input-with-select{
-  height: 60px;
-  width: 800px;
 }
 
 .search-author .title {
   font-family: "Asap SemiBold",tahoma,arial,"Hiragino Sans GB",\5b8b\4f53, sans-serif;
   font-size: 60px;
-  margin-top: 160px;
+  margin-top: 200px;
   color: #2f2e2e;
   font-weight: 600;
 }
 
-.search-author >>> .el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-
-.search-author >>> .el-input__inner{
-  height: 60px !important;
-  border: 1px solid transparent;
-  border-left: none;
-}
-
-.search-author >>> .el-input-group__append {
-  border: 1px solid;
-}
-
-.search-author >>> .el-input-group__append {
-  /* border-radius: inherit; */
-  background-color: rgb(43, 124, 245);
-}
-.search-author >>> .el-input-group__prepend {
-  /* border-radius: inherit; */
-  background-color: white;
-}
-.search-author >>> .el-row--flex {
-  display: flex;
-  /* margin-top: 100px !important; */
-}
-.search-author .pre >>> .el-input__inner::placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/* 谷歌 */
-.search-author .pre >>> .el-input__inner::-webkit-input-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/* 火狐 */
-.search-author .pre >>> .el-input__inner:-moz-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
-/*ie*/
-.search-author .pre >>> .el-input__inner:-ms-input-placeholder {
-  color: black;
-  font-size: 18px;
-  text-align: center;
-}
 
 </style>

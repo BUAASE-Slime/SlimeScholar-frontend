@@ -9,7 +9,7 @@
           <span v-for="(author, index) in articleDetails.authors" :key="index">
             <span class="_link" @click="toAuthor(author.author_id)">
               {{ author.author_name }}
-              <sup v-if="articleDetails.author_affiliation">{{ author.affiliation_order }}</sup>
+              <sup v-if="articleDetails.author_affiliation && author.affiliation_order !== 0">{{ author.affiliation_order }}</sup>
             </span>
             <span v-if="articleDetails.authors.length > index + 1">,&nbsp;</span>
           </span>
@@ -100,9 +100,10 @@
                         </div>
                         <div class="reference-author _info">
                           <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}</span>
-                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
-                      </span>
+                            <span v-if="index2<5">{{ author.author_name }}</span>
+                            <span v-if="index2<5 && article.authors.length > index2 + 1">,&nbsp;</span>
+                          </span>
+                          <span v-if="article.authors.length>5">.etc</span>
                         </div>
                       </el-col>
                     </el-row>
@@ -118,7 +119,7 @@
                 <span>由于版权限制，此处只展示部分相关论文</span>
               </div>
               <div class="reference-article">
-                <div class="reference-article-block" v-for="(article, index) in articleDetails.citation_msg" :key="index">
+                <div class="reference-article-block" v-for="(article, index) in citation_msg" :key="index">
                   <div @click="toArticle(article.paper_id)">
                     <el-row>
                       <el-col :span="2" style="text-align: right; font-size: 15px">[{{ index+1 }}]&nbsp;&nbsp;&nbsp;</el-col>
@@ -127,16 +128,18 @@
                           <span>{{ article.paper_title }}</span>
                         </div>
                         <div class="reference-author _info">
-                      <span v-for="(author, index2) in article.authors" :key="index2">
-                        <span>{{ author.author_name }}</span>
-                        <span v-if="article.authors.length > index2 + 1">,&nbsp;</span>
-                      </span>
+                          <span v-for="(author, index2) in article.authors" :key="index2">
+                            <span v-if="index2<5">{{ author.author_name }}</span>
+                            <span v-if="index2<5 && article.authors.length > index2 + 1">,&nbsp;</span>
+                          </span>
+                          <span v-if="article.authors.length>5">.etc</span>
                         </div>
                       </el-col>
                     </el-row>
                   </div>
                 </div>
               </div>
+              <scroll-loader :loader-method="getCitationMsg" :loader-disable="loadMoreDisable"></scroll-loader>
             </el-tab-pane>
             <el-tab-pane label="文章评论" name="third">
               <div class="reference-info" v-if="comments===null||comments.length===0">
@@ -233,6 +236,7 @@
     <CollectDialog
         :curPaper="articleDetails"
         :showCollect="showCollect"
+        @collectSuccess="collectSuccess"
         @closeChildDialog="closeChildDialog"></CollectDialog>
 
     <CiteDialog
@@ -455,11 +459,23 @@ export default {
         paper_title: "Large Elasticsearch cluster management",
         year: 2020,
       },
+
+      citation_msg: [],
+      cita_page_idx: 1,
+      loadMoreDisable: true,
+    }
+  },
+  watch: {
+    cita_page_idx(val) {
+      this.loadMoreDisable = val*20 >= this.articleDetails.citation_count;
     }
   },
   methods: {
     goLink(url) {
       window.open(url);
+    },
+    collectSuccess() {
+      this.articleDetails.collect_count += 1;
     },
     closeChildDialog() {
       this.showQuote = false;
@@ -647,6 +663,35 @@ export default {
         data: _formData
       })
     },
+    getCitationMsg() {
+      if (this.citation_msg.length >= this.articleDetails.citation_count) {
+        this.loadMoreDisable = true;
+        return;
+      }
+
+      this.$axios({
+        method: 'post',
+        url: '/es/get/citation/paper',
+        data: qs.stringify({
+          id: this.$route.query.v,
+          page: this.cita_page_idx,
+          size: 20
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.citation_msg = this.citation_msg.concat(res.data.citations);
+          this.cita_page_idx += 1;
+          if (this.citation_msg.length >= this.articleDetails.citation_count)
+            this.loadMoreDisable = true;
+        } else {
+          this.$message.error("获取引证文献失败！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     getComments() {
       let userId;
       const userInfo = user.getters.getUser(user.state());
@@ -728,6 +773,7 @@ export default {
   },
   created() {
     this.getArticle();
+    this.getCitationMsg();
   },
 }
 </script>

@@ -33,8 +33,11 @@
             </el-row>
           </el-col>
           <el-col class="like-button" :span="2">
-            <el-button class="opera-button" v-if="isSelf===true" icon="el-icon-edit">
+            <el-button class="opera-button" v-if="isSelf===true && isEdit===false" icon="el-icon-edit" @click="isEdit=true">
               编辑
+            </el-button>
+            <el-button class="opera-button" v-else-if="isSelf===true && isEdit===true " type="success" @click="save" icon="el-icon-circle-check">
+              保存
             </el-button>
             <el-button class="opera-button" icon="el-icon-folder-checked" v-else-if="info.is_user===false" @click="apply">
               认领
@@ -49,6 +52,7 @@
         <el-tabs v-model="activeNameOut" >
           <el-tab-pane label="发表文献" name="article" style="text-align: left">
             <el-table
+                :key="isEdit"
                 :data="info.papers"
                 style="border: none"
                 height="520px"
@@ -56,7 +60,8 @@
                 :default-sort = "{prop: 'date', order: 'descending'}"
             >
               <el-table-column
-                  label="文献">
+                  :render-header="isEdit?renderHead1:renderHead2"
+              >
                 <template class="art-info" slot-scope="scope">
                   <el-row style="font-size: 16px;margin: 2px">
                     <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(scope.row.paper_id)">{{scope.row.paper_title}}</el-link>
@@ -96,7 +101,72 @@
                   align="center"
                   width="100">
               </el-table-column>
+              <el-table-column
+                  align="center"
+                  width="50"
+                  label="管理"
+                  v-if="isEdit">
+                <template slot-scope="scope">
+                  <div class="deleteIcon">
+                    <icon style="font-size: medium;cursor: pointer" class="el-icon-remove" @click="deleteArt(scope.row.paper_id)"></icon>
+                  </div>
+                </template>
+              </el-table-column>
             </el-table>
+            <el-dialog
+                title="添加文献"
+              :visible.sync="dialogVisible"
+              width="60%"
+              min-height="700px"
+            >
+              <el-input
+                  style="width: 75%;margin-left: 100px;margin-right: 10px"
+                  v-model="searchInput"
+                  placeholder="请输入要添加的文献...">
+              </el-input>
+              <el-button type="primary" class="el-icon-search" @click="searchArt"></el-button>
+              <el-table
+                  :data="result"
+                  style="border: none"
+                  height="400px"
+                  :cell-style = "{borderStyle:'none',padding:'2px 0'}"
+              >
+                <el-table-column
+                    width="50px"
+                    align="center"
+                    >
+                  <template slot-scope="scope">
+                    <i class="el-icon-circle-plus-outline" style="color:#e6a33e;font-size: large;font-weight: bold;cursor: pointer" @click="addArt(scope.row.paper_id)"></i>
+                  </template>
+                </el-table-column>
+                <el-table-column>
+                  <template class="art-info" slot-scope="scope">
+                    <el-row style="font-size: 16px;margin: 2px">
+                      <el-link style="color: #217ad9; font-size: 16px;" @click="gotoArticle(scope.row.paper_id)">{{scope.row.paper_title}}</el-link>
+                    </el-row>
+                    <el-row style="color: #999999;font-size: small;padding-left: 2px;margin: 0;border: none">
+                    <span v-bind:key="i" v-for="(p,i) in scope.row.authors" >
+                      {{p.author_name}}<span v-if="i !== scope.row.authors.length-1">, </span>
+                    </span>
+                    </el-row>
+                    <el-row style="color: #999999;font-size: small;padding-left: 2px;margin: 0;border: none">
+                      <span v-if="scope.row.journal && scope.row.journal.name!== ''">{{scope.row.journal.name}}</span>
+                      <span v-else-if="scope.row.conference && scope.row.conference.name !== ''">{{scope.row.conference.name}}</span>
+                      <span v-else-if="scope.row.publisher">{{scope.row.publisher}}</span>
+                      <span v-if="scope.row.last_page!==''&&scope.row.first_page!==''&&scope.row.volume!==''">
+                      {{ scope.row.volume }}, {{ scope.row.first_page }}-{{ scope.row.last_page }}
+                    </span>
+                      <span v-else-if="scope.row.first_page!==''&&scope.row.volume!==''">
+                      {{ scope.row.volume }}, {{ scope.row.first_page }}
+                    </span>
+                      <span v-else-if="scope.row.volume!==''">
+                      {{ scope.row.volume }}
+                    </span>
+                    </el-row>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-dialog>
           </el-tab-pane>
           <el-tab-pane label="数据分析" name="analyse" class="dataChart">
             <el-tabs v-model="activeNameChart">
@@ -168,7 +238,229 @@ export default {
   name: "schPortal.vue",
   data(){
     return {
+      isEdit: false,
+      dialogVisible: false,
+      searchInput:"",
+      result: [
+        // {
+        //   authors: [
+        //     {
+        //       affiliation_id: "",
+        //       affiliation_name: "Independent Researcher",
+        //       author_id: "3323123",
+        //       author_name: "Sergei Belousov",
+        //       order: "1"
+        //     }
+        //   ],
+        //   book_title: "",
+        //   citation_count: "4",
+        //   citation_msg: [],
+        //   conference: {
+        //     name: "",
+        //   },
+        //   conference_id: "",
+        //   date: "2019-11-01",
+        //   doctype: "",
+        //   doi: "10.1016/J.SIMPA.2021.100115",
+        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //   fields: [],
+        //   first_page: "100115",
+        //   journal: {
+        //     citation_count: "451567",
+        //     issn: "",
+        //     journalid: "2597175965",
+        //     name: "arXiv: Computer Vision and Pattern Recognition",
+        //     paper_count: "49431",
+        //     publisher: "",
+        //     rank: "8182",
+        //     webpage: ""
+        //   },
+        //   journal_id: "",
+        //   last_page: "12312",
+        //   paper_id: "3191610454",
+        //   paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //   publisher: "Elsevier BV",
+        //   rank: "23112",
+        //   reference_count: "12",
+        //   volume: "10",
+        //   year: "2021"
+        // },
+        // {
+        //   authors: [
+        //     {
+        //       affiliation_id: "",
+        //       affiliation_name: "Independent Researcher",
+        //       author_id: "3323123",
+        //       author_name: "Sergei Belousov",
+        //       order: "1"
+        //     }
+        //   ],
+        //   book_title: "",
+        //   citation_count: "9",
+        //   citation_msg: [],
+        //   conference: {
+        //     name: "",
+        //   },
+        //   conference_id: "",
+        //   date: "2021-11-02",
+        //   doctype: "",
+        //   doi: "10.1016/J.SIMPA.2021.100115",
+        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //   fields: [],
+        //   first_page: "100115",
+        //   journal: {
+        //     citation_count: "451567",
+        //     issn: "",
+        //     journalid: "2597175965",
+        //     name: "arXiv: Computer Vision and Pattern Recognition",
+        //     paper_count: "49431",
+        //     publisher: "",
+        //     rank: "8182",
+        //     webpage: ""
+        //   },
+        //   journal_id: "",
+        //   last_page: "12312",
+        //   paper_id: "3191610454",
+        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //   publisher: "Elsevier BV",
+        //   rank: "23112",
+        //   reference_count: "12",
+        //   volume: "10",
+        //   year: "2021"
+        // },
+        // {
+        //   authors: [
+        //     {
+        //       affiliation_id: "",
+        //       affiliation_name: "Independent Researcher",
+        //       author_id: "3323123",
+        //       author_name: "Sergei Belousov",
+        //       order: "1"
+        //     }
+        //   ],
+        //   book_title: "",
+        //   citation_count: "1",
+        //   citation_msg: [],
+        //   conference: {
+        //     name: "",
+        //   },
+        //   conference_id: "",
+        //   date: "2021-11-01",
+        //   doctype: "",
+        //   doi: "10.1016/J.SIMPA.2021.100115",
+        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //   fields: [],
+        //   first_page: "100115",
+        //   journal: {
+        //     citation_count: "451567",
+        //     issn: "",
+        //     journalid: "2597175965",
+        //     name: "arXiv: Computer Vision and Pattern Recognition",
+        //     paper_count: "49431",
+        //     publisher: "",
+        //     rank: "8182",
+        //     webpage: ""
+        //   },
+        //   journal_id: "",
+        //   last_page: "12312",
+        //   paper_id: "3191610454",
+        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //   publisher: "Elsevier BV",
+        //   rank: "23112",
+        //   reference_count: "12",
+        //   volume: "10",
+        //   year: "2021"
+        // },
+        // {
+        //   authors: [
+        //     {
+        //       affiliation_id: "",
+        //       affiliation_name: "Independent Researcher",
+        //       author_id: "3323123",
+        //       author_name: "Sergei Belousov",
+        //       order: "1"
+        //     }
+        //   ],
+        //   book_title: "",
+        //   citation_count: "4",
+        //   citation_msg: [],
+        //   conference: {
+        //     name: "",
+        //   },
+        //   conference_id: "",
+        //   date: "2019-11-01",
+        //   doctype: "",
+        //   doi: "10.1016/J.SIMPA.2021.100115",
+        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //   fields: [],
+        //   first_page: "100115",
+        //   journal: {
+        //     citation_count: "451567",
+        //     issn: "",
+        //     journalid: "2597175965",
+        //     name: "arXiv: Computer Vision and Pattern Recognition",
+        //     paper_count: "49431",
+        //     publisher: "",
+        //     rank: "8182",
+        //     webpage: ""
+        //   },
+        //   journal_id: "",
+        //   last_page: "12312",
+        //   paper_id: "3191610454",
+        //   paper_title: "mobilestyle model mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //   publisher: "Elsevier BV",
+        //   rank: "23112",
+        //   reference_count: "12",
+        //   volume: "10",
+        //   year: "2021"
+        // },
+        // {
+        //   authors: [
+        //     {
+        //       affiliation_id: "",
+        //       affiliation_name: "Independent Researcher",
+        //       author_id: "3323123",
+        //       author_name: "Sergei Belousov",
+        //       order: "1"
+        //     }
+        //   ],
+        //   book_title: "",
+        //   citation_count: "9",
+        //   citation_msg: [],
+        //   conference: {
+        //     name: "",
+        //   },
+        //   conference_id: "",
+        //   date: "2021-11-02",
+        //   doctype: "",
+        //   doi: "10.1016/J.SIMPA.2021.100115",
+        //   doi_url: "https://dx.doi.org/10.1016/J.SIMPA.2021.100115 Add to Citavi project by DOI",
+        //   fields: [],
+        //   first_page: "100115",
+        //   journal: {
+        //     citation_count: "451567",
+        //     issn: "",
+        //     journalid: "2597175965",
+        //     name: "arXiv: Computer Vision and Pattern Recognition",
+        //     paper_count: "49431",
+        //     publisher: "",
+        //     rank: "8182",
+        //     webpage: ""
+        //   },
+        //   journal_id: "",
+        //   last_page: "12312",
+        //   paper_id: "3191610454",
+        //   paper_title: "mobilestylegan pytorch pytorch based toolkit to compress stylegan2 model",
+        //   publisher: "Elsevier BV",
+        //   rank: "23112",
+        //   reference_count: "12",
+        //   volume: "10",
+        //   year: "2021"
+        // },
+      ],
       isSelf: false,
+      tableTitle:"文献",
+      tableTitleEdit:"已有文献",
       info: {
         is_user: false,
         people: {
@@ -859,6 +1151,122 @@ export default {
     },
   },
   methods: {
+    save(){
+      this.isEdit = false;
+      this.$message.success("保存成功");
+    },
+    renderHead1(h, { column, $index }) {
+      return (
+            <div>
+              <span>已有文献</span>
+              <span style="color:#7ABCFFFF;cursor:pointer" on-click={()=>this.showAddArtDia()}> （ <span style="text-decoration:underline;">添加文献</span> ）</span>
+            </div>
+        )
+    },
+    renderHead2(h, { column, $index }) {
+      return (
+          <div>
+            <span>文献</span>
+          </div>
+      )
+    },
+    showAddArtDia(){
+      this.dialogVisible=true;
+    },
+    searchArt(){
+      let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
+      this.$axios({
+        method: 'post',
+        url: 'es/query/paper/title',
+        data: qs.stringify({
+          title: this.searchInput,
+          page: 1,
+          is_precise: true,
+        })
+      })
+      .then(res => {
+        _loadingIns.close();
+        switch (res.data.status) {
+          case 200:
+            this.result = res.data.details;
+            break;
+          case 404:
+            this.result = [];
+            break;
+          default:
+            this.$message.error("搜索失败！");
+            break;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    addArt(paper_id) {
+      let alHave = false;
+      for (let i = 0; i < this.info.papers.length; i++)
+        if (this.info.papers[i].paper_id === paper_id)
+          alHave = true;
+      if (alHave) {
+        this.$message.warning("已认领此文献，请勿重复认领！");
+        return;
+      }
+
+      const userInfo = user.getters.getUser(user.state());
+      this.$axios({
+        method: 'post',
+        url: '/scholar/transfer',
+        data: qs.stringify({
+          user_id: userInfo.user.userId,
+          paper_id: paper_id,
+          kind: 0
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$message.success("添加成功");
+          let idx;
+          for (idx = 0; idx < this.result.length; idx++)
+            if (this.result[idx].paper_id === paper_id)
+              break;
+          this.info.papers.push(this.result[idx]);
+        } else {
+          this.$message.error("添加失败！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+    deleteArt(paper_id){
+      this.$confirm('确认删除？')
+      .then(_ => {
+        const userInfo = user.getters.getUser(user.state());
+        this.$axios({
+          method: 'post',
+          url: '/scholar/transfer',
+          data: qs.stringify({
+            user_id: userInfo.user.userId,
+            paper_id: paper_id,
+            kind: 1
+          })
+        })
+        .then(res => {
+          if (res.data.success) {
+            this.$message.success("删除成功");
+            let idx;
+            for (idx = 0; idx < this.info.papers.length; idx++)
+              if (this.info.papers[idx].paper_id === paper_id)
+                break;
+            this.info.papers.splice(idx,0);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      })
+      .catch(_ => {});
+    },
     getSchInfo(id, tag) {
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
       this.$axios({
@@ -1126,6 +1534,14 @@ export default {
 /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb  {
   background-color: rgba(203, 202, 202, 0.66);
   border-radius: 8px;
+}
+
+.schPortal .deleteIcon{
+  color: #F56C6C;
+}
+
+.schPortal .deleteIcon :hover{
+  color: #ff7b7b;
 }
 
 
