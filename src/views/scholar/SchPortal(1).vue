@@ -106,9 +106,9 @@
                   width="50"
                   label="管理"
                   v-if="isEdit">
-                <template slot-scope="scope">
+                <template>
                   <div class="deleteIcon">
-                    <icon style="font-size: medium;cursor: pointer" class="el-icon-remove" @click="deleteArt(scope.row.paper_id)"></icon>
+                    <icon style="font-size: medium;cursor: pointer" class="el-icon-remove" @click="deleteArt()"></icon>
                   </div>
                 </template>
               </el-table-column>
@@ -119,11 +119,7 @@
               width="60%"
               min-height="700px"
             >
-              <el-input
-                  style="width: 75%;margin-left: 100px;margin-right: 10px"
-                  v-model="searchInput"
-                  @keyup.enter.native="searchArt"
-                  placeholder="请输入要添加的文献...">
+              <el-input style="width: 75%;margin-left: 100px;margin-right: 10px" v-model="searchInput" placeholder="请输入要添加的文献...">
               </el-input>
               <el-button type="primary" class="el-icon-search" @click="searchArt"></el-button>
               <el-table
@@ -136,8 +132,8 @@
                     width="50px"
                     align="center"
                     >
-                  <template slot-scope="scope">
-                    <i class="el-icon-circle-plus-outline" style="color:#e6a33e;font-size: large;font-weight: bold;cursor: pointer" @click="addArt(scope.row.paper_id)"></i>
+                  <template>
+                    <i class="el-icon-circle-plus-outline" style="color:#e6a33e;font-size: large;font-weight: bold;cursor: pointer" @click="addArt"></i>
                   </template>
                 </el-table-column>
                 <el-table-column>
@@ -166,12 +162,12 @@
                     </el-row>
                   </template>
                 </el-table-column>
-                <scroll-loader slot="append" :loader-method="searchArt" :loader-disable="loadMoreDisable"></scroll-loader>
               </el-table>
             </el-dialog>
           </el-tab-pane>
-          <el-tab-pane label="数据分析" name="analyse" class="dataChart" style="height: 510px">
-            <el-tabs v-model="activeNameChart">
+          <el-tab-pane label="数据分析" name="analyse" class="dataChart">
+            <el-tabs
+                v-model="activeNameChart">
               <el-tab-pane label="被引用量" name="citations">
                 <span slot="label">
                   <span class="span-box" style="font-size: 15px">
@@ -208,7 +204,7 @@
             合著作者
           </el-row>
         <el-scrollbar style="height: 520px">
-            <el-row class="friends-item" v-for="(i,index) in infoForChart.friends" :key="index">
+            <el-row class="friends-item" v-for="(i,index) in info.friends" :key="index">
               <el-col :span="4">
                 <el-image :src="i.headImgUrl"></el-image>
               </el-col>
@@ -238,11 +234,6 @@ import qs from "qs";
 
 export default {
   name: "schPortal.vue",
-  watch: {
-    result(val) {
-      this.loadMoreDisable = val.length >= this.resultTotalHits;
-    },
-  },
   data(){
     return {
       isEdit: false,
@@ -796,8 +787,105 @@ export default {
             year: "2021"
           }
         ],
+        friends:[
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher Tsing University",
+            author_id: "332123123423",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "33234567653",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+          {
+            affiliation_id: "",
+            affiliation_name: "Independent Researcher",
+            author_id: "3323123",
+            author_name: "Sergei Belousov",
+            order: "1",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+          },
+        ],
       },
-
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
         cia:["198","268","98","200","1","6","198","268","398","200"]
@@ -809,13 +897,13 @@ export default {
       infoForChart: {
         affiliation_name: "Slime",
         author_id: "999",
-        author_name: "AAAAAAAAAA",
+        author_name: "A",
         headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
         friends: [
           {
             affiliation_name: "Independent Researcher",
             author_id: "1",
-            author_name: "Slime Scholar",
+            author_name: "A.A",
             headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[
               {
@@ -886,35 +974,12 @@ export default {
     }
   },
   created() {
-    // 查询的是别人的门户
-    this.author_id = this.$route.query.v;
-    if (this.$route.query.v && this.$route.query.v !== '') {
-      this.getSchInfo(this.$route.query.v, 'author_id');
-      this.getCitationCount(this.author_id);
-      this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
-    } else {
-      // 自己的门户
-      const userInfo = user.getters.getUser(user.state());
-      // 未登录则先登录
-      if (!userInfo) {
-        this.$message.warning("请先登录！");
-        setTimeout(() => {
-          this.$router.push('/login');
-        }, 1000);
-        return;
-      }
-      this.author_id = userInfo.user.authorId;
-      // 调用接口返回学者信息
-      this.getSchInfo(userInfo.user.userId, 'user_id');
-    }
-
-    // 请求被引用量随年份的变化信息
-    this.getCitationCount(this.author_id);
-    // 请求学者的学者关系信息
+    this.isSelf=true;
   },
   mounted(){
     //页面加载完成后,才执行
     setTimeout(() => {
+      this.showCiaChart();
       this.showRelChart();
     }, 1000);
   },
@@ -1111,7 +1176,7 @@ export default {
           this.ciaChart.years = res.data.years;
           setTimeout(() => {
             this.showCiaChart();
-          }, 500);
+          }, 300);
         } else {
           this.$message.error("图表信息获取失败！");
         }
@@ -1429,7 +1494,6 @@ export default {
       });
       function toThisOne(id){
         //这里跳转
-        this.$message(id);
       }
     },
   }
