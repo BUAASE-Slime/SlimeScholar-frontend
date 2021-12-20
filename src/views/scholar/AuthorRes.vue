@@ -326,9 +326,6 @@ export default {
       for (let i = 0; i < this.authors.length; i++)
         author_ids.push(this.authors[i].author_id);
       this.getAvatars(author_ids, this.author_avatars);
-      setTimeout(() => {
-        console.log(this.author_avatars);
-      }, 3000);
     }
   },
 
