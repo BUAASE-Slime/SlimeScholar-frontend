@@ -15,24 +15,6 @@
           <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
-<!--              <div class="author-area sub-block">-->
-<!--                <div class="check-box-title">-->
-<!--                  <span>领域</span>-->
-<!--                </div>-->
-<!--                <el-checkbox-group v-for="(o,index) in aggregation.areas"-->
-<!--                                   :key="o"-->
-<!--                                   style="margin-bottom: 15px; text-align: left"-->
-<!--                                   v-model="checkAreaList" @change="getAuthorRes">-->
-<!--                  <el-checkbox :label=o.name>-->
-<!--                    <el-tooltip class="item" effect="dark" :content="o.name" placement="right">-->
-<!--                      <span>{{ o.name|ellipsis_30 }}&nbsp;({{ o.paper_count }})</span>-->
-<!--                    </el-tooltip>-->
-<!--                  </el-checkbox>-->
-<!--                </el-checkbox-group>-->
-<!--              </div>-->
-
-<!--              <el-divider></el-divider>-->
-
               <div class="author-affiliation sub-block">
                 <div class="check-box-title">
                   <span>机构</span>
