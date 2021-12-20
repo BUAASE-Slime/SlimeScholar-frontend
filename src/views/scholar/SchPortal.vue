@@ -2,14 +2,17 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image v-if="info.people.headImgUrl&&info.people.headImgUrl!==''"
-                      class="headImg"
-                      :src="info.people.headImgUrl">
-            </el-image>
-            <el-image v-else
-                      class="headImg"
-                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
-            </el-image>
+            <el-upload
+                v-if="isSelf"
+                :action="uploadAvatarUrl"
+                :http-request="upLoadAvatar"
+                :before-upload="beforeUpload"
+                :show-file-list="false">
+              <el-image class="headImg" v-if="avatarUrls.length>0" :src="avatarUrls[0]"></el-image>
+            </el-upload>
+            <div v-else>
+              <el-image v-if="avatarUrls.length>0" :src="avatarUrls[0]" class="headImg"></el-image>
+            </div>
           </el-col>
           <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
@@ -184,7 +187,7 @@
                     总被引用 {{ info.people.citation_count }} 次，被关注 {{ info.people.follow_count }} 人
                   </el-row>
                   <el-row>
-                    <div id="citation-chart" style="width:500px;height: 400px;margin-left: 150px"></div>
+                    <div id="citation-chart" style="width:500px;height: 435px;margin-left: 150px"></div>
                   </el-row>
                 </el-row>
               </el-tab-pane>
@@ -196,7 +199,7 @@
                   </span>
                 </span>
                 <el-row>
-                  <div id="relation-chart" style="width: 500px;height: 300px;margin-left: 190px"></div>
+                  <div id="relation-chart" style="width: 800px;height: 455px;margin-right: 10px"></div>
                 </el-row>
               </el-tab-pane>
             </el-tabs>
@@ -208,7 +211,7 @@
             合著作者
           </el-row>
         <el-scrollbar style="height: 520px">
-            <el-row class="friends-item" v-for="(i,index) in info.friends" :key="index">
+            <el-row class="friends-item" v-for="(i,index) in infoForChart.friends" :key="index">
               <el-col :span="4">
                 <el-image :src="i.headImgUrl"></el-image>
               </el-col>
@@ -235,9 +238,11 @@
 <script>
 import user from "../../store/user";
 import qs from "qs";
+import avatarApi from "../../utils/avatarApi";
 
 export default {
   name: "schPortal.vue",
+  mixins: [ avatarApi ],
   watch: {
     result(val) {
       this.loadMoreDisable = val.length >= this.resultTotalHits;
@@ -255,6 +260,8 @@ export default {
       isSelf: false,
       tableTitle:"文献",
       tableTitleEdit:"已有文献",
+
+      // 个人信息
       info: {
         is_user: false,
         people: {
@@ -796,114 +803,98 @@ export default {
             year: "2021"
           }
         ],
-        friends:[
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher Tsing University",
-            author_id: "332123123423",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "33234567653",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "3323123",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher Tsing University",
-            author_id: "332123123423",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "33234567653",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "3323123",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher Tsing University",
-            author_id: "332123123423",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "33234567653",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "3323123",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher Tsing University",
-            author_id: "332123123423",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "33234567653",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-          {
-            affiliation_id: "",
-            affiliation_name: "Independent Researcher",
-            author_id: "3323123",
-            author_name: "Sergei Belousov",
-            order: "1",
-            headImgUrl: "https://i.loli.net/2021/11/14/eO5qSUM3yvQxfkp.jpg",
-          },
-        ],
       },
-
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
         cia:["198","268","98","200","1","6","198","268","398","200"]
       },
+
       flag: false,
       activeNameOut: "article",
       activeNameChart:"citations",
       author_id: 123,
+      infoForChart: {
+        affiliation_name: "Slime",
+        author_id: "999",
+        author_name: "AAAAAAAAAA",
+        headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+        friends: [
+          {
+            affiliation_name: "Independent Researcher",
+            author_id: "1",
+            author_name: "Slime Scholar",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+            friends:[
+              {
+                affiliation_name: "BUAA",
+                author_id: "12",
+                author_name: "A.A.A",
+                headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+                friends:[]
+              },
+              {
+                affiliation_name: "TES",
+                author_id: "18",
+                author_name: "A.A.B",
+                headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+                friends:[
+                  {
+                    affiliation_name: "TES",
+                    author_id: "66",
+                    author_name: "A.A.B.A",
+                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+                    friends:[]
+                  },
+                  {
+                    affiliation_name: "TES",
+                    author_id: "456",
+                    author_name: "A.A.B.B",
+                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+                    friends:[]
+                  },
+                  {
+                    affiliation_name: "TES",
+                    author_id: "789",
+                    author_name: "A.A.B.C",
+                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+                    friends:[]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            affiliation_name: "BUAA",
+            author_id: "12",
+            author_name: "A.B",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+            friends:[]
+          },{
+            affiliation_name: "Independent Researcher",
+            author_id: "8",
+            author_name: "A.C",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+            friends:[]
+          },{
+            affiliation_name: "BUAA",
+            author_id: "7",
+            author_name: "A.D",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+            friends:[]
+          },{
+            affiliation_name: "Independent Researcher",
+            author_id: "5",
+            author_name: "A.E",
+            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
+            friends:[]
+          },
+        ]
+      },
+
+      // 头像
+      avatarUrls: ["https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg"],
+      avatarUrl: '',
+      uploadAvatarUrl: this.GLOBAL.backUrl + '/user/export/avatar',
     }
   },
   created() {
@@ -913,24 +904,24 @@ export default {
       this.getSchInfo(this.$route.query.v, 'author_id');
       this.getCitationCount(this.author_id);
       this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
-      return;
+    } else {
+      // 自己的门户
+      const userInfo = user.getters.getUser(user.state());
+      // 未登录则先登录
+      if (!userInfo) {
+        this.$userNotLogin(true);
+      }
+      this.author_id = userInfo.user.authorId;
+      // 调用接口返回学者信息
+      this.getSchInfo(userInfo.user.userId, 'user_id');
     }
 
-    // 自己的门户
-    const userInfo = user.getters.getUser(user.state());
-    // 未登录则先登录
-    if (!userInfo) {
-      this.$message.warning("请先登录！");
-      setTimeout(() => {
-        this.$router.push('/login');
-      }, 1000);
-      return;
-    }
-    this.author_id = userInfo.user.authorId;
-    // 调用接口返回学者信息
-    this.getSchInfo(userInfo.user.userId, 'user_id');
     // 请求被引用量随年份的变化信息
     this.getCitationCount(this.author_id);
+    // 请求学者的学者关系信息
+
+    // 获取学者头像
+    this.getAvatars(this.author_id, this.avatarUrls);
   },
   mounted(){
     //页面加载完成后,才执行
@@ -948,6 +939,47 @@ export default {
     },
   },
   methods: {
+    // 头像上传
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+      }
+      if (!isLt5M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return (isJPG || isPNG) && isLt5M;
+    },
+    upLoadAvatar(file) {
+      // 未登录则先登录
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$userNotLogin(true);
+      }
+
+      const formData = new FormData();
+      formData.append('avatar', file.file);
+      formData.append('user_id', userInfo.user.userId);
+      this.$axios({
+        method: 'post',
+        url: this.uploadAvatarUrl,
+        data: formData,
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$message.success('上传头像成功！');
+          this.avatarUrls = [this.getAvatarFullPath(res.data.data)];
+        } else {
+          this.$message.error("发生错误！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
     save(){
       this.isEdit = false;
       this.$message.success("保存成功");
@@ -1131,7 +1163,7 @@ export default {
           this.ciaChart.years = res.data.years;
           setTimeout(() => {
             this.showCiaChart();
-          }, 300);
+          }, 500);
         } else {
           this.$message.error("图表信息获取失败！");
         }
@@ -1204,8 +1236,6 @@ export default {
         }]
       });
     },
-    showRelChart(){
-    },
     apply() {
       this.$router.push({
         path: '/applySettle',
@@ -1213,8 +1243,248 @@ export default {
           v: this.author_id
         }
       })
-    }
-  },
+    },
+    showRelChart(){
+      let nodeList=[]
+      let linkList=[]
+      let node = {
+        id:this.infoForChart.author_id,
+        name:this.infoForChart.author_name,
+        affiliation_name:this.infoForChart.affiliation_name,
+        headImgUrl:this.infoForChart.headImgUrl,
+        symbol:"circle",
+        layer:0
+      }
+      nodeList.push(node)
+      //处理f
+      for (let i=0;i<this.infoForChart.friends.length;i++) {
+        let fItem = this.infoForChart.friends[i]
+        let f = {
+          id: fItem.author_id,
+          name: fItem.author_name,
+          affiliation_name: fItem.affiliation_name,
+          symbol: "circle",
+          headImgUrl:fItem.headImgUrl,
+          layer:1,
+        }
+        //检查是否已生成该f
+        let flag = 0;
+        for (let w = 0; w < nodeList.length; w++) {
+          if (nodeList[w].id === fItem.author_id) {
+            nodeList[w].layer = 1;
+            nodeList[w].name = fItem.author_name;
+            flag = 1;
+            break
+          }
+        }
+        if (flag === 0) {
+          nodeList.push(f);
+        }
+        linkList.push({
+          source: node.id,
+          target: f.id
+        })
+        //处理ff  fItem:f的结构 node:源节点
+        for (let q = 0; q < fItem.friends.length; q++) {
+          //获取朋友的朋友
+          let ffItem = fItem.friends[q]
+          let ff = {
+            id: ffItem.author_id,
+            name: ffItem.author_name,
+            affiliation_name: ffItem.affiliation_name,
+            symbol: "circle",
+            headImgUrl:ffItem.headImgUrl,
+            layer: 2
+          }
+
+          //判断是否为已出现结点
+          let flag = 0;
+          for (let w = 0; w < nodeList.length; w++) {
+            if (nodeList[w].id === ffItem.author_id) {
+              flag = 1;
+              if (nodeList[w].layer > 2) {
+                nodeList[w].symbolSize = 2
+              }
+              break
+            }
+          }
+          if (flag === 0) {
+            nodeList.push(ff)
+          }
+          linkList.push({
+            source: f.id,
+            target: ff.id
+          })
+          //处理fff
+          for (let r = 0; r < ffItem.friends.length; r++) {
+            //获取朋友的朋友
+            let fffItem = ffItem.friends[r]
+            let fff = {
+              id: fffItem.author_id,
+              name: fffItem.author_name,
+              affiliation_name: fffItem.affiliation_name,
+              symbol: "circle",
+              headImgUrl:fffItem.headImgUrl,
+              layer:3
+            }
+
+            //判断是否为已出现结点
+            let flag = 0;
+            for (let t = 0; t < nodeList.length; t++) {
+              if (nodeList[t].id === fffItem.author_id) {
+                flag = 1;
+                if (nodeList[t].symbolSize > 3) {
+                  nodeList[t].symbolSize = 3
+                }
+                break
+              }
+            }
+            if (flag === 0) {
+              nodeList.push(fff)
+            }
+            linkList.push({
+              source: ff.id,
+              target: fff.id
+            })
+          }
+        }
+      }
+
+      var myChart = this.$echarts.init(document.getElementById('relation-chart'), 'macaroons');
+      // 指定图表的配置项和数据
+      var option = {
+        tooltip : {
+          show : true,   //默认显示
+          showContent:true, //是否显示提示框浮层
+          trigger:'item',//触发类型，默认数据项触发
+          triggerOn:'mousemove',//提示触发条件，mousemove鼠标移至触发，还有click点击触发
+          alwaysShowContent:false, //默认离开提示框区域隐藏，true为一直显示
+          showDelay:0,//浮层显示的延迟，单位为 ms，默认没有延迟，也不建议设置。在 triggerOn 为 'mousemove' 时有效。
+          hideDelay:200,//浮层隐藏的延迟，单位为 ms，在 alwaysShowContent 为 true 的时候无效。
+          enterable:false,//鼠标是否可进入提示框浮层中，默认为false，如需详情内交互，如添加链接，按钮，可设置为 true。
+          position:'right',//提示框浮层的位置，默认不设置时位置会跟随鼠标的位置。只在 trigger 为'item'的时候有效。
+          confine:true,//是否将 tooltip 框限制在图表的区域内。外层的 dom 被设置为 'overflow: hidden'，或者移动端窄屏，导致 tooltip 超出外界被截断时，此配置比较有用。
+          transitionDuration:0.4,//提示框浮层的移动动画过渡时间，单位是 s，设置为 0 的时候会紧跟着鼠标移动。
+          formatter:function(params){
+            if(params.dataType==='node'){
+              let ans = "<el-row>";
+              //头像
+              // ans+="<el-col>" +
+              //     "<img style='width:55px;height:55px;border-radius: 50%;margin-right:5px' src='"+params.data.headImgUrl+"'/>" +
+              //     "</el-col><br>";
+              //简介
+              ans+="<el-col>" +
+                  "<span style='margin-right: 3px'>"+params.name+"，</span>" +
+                  "<span>"+params.data.affiliation_name+"</span>" +
+                  "</el-col>"
+              ans+="</el-row>"
+              return ans;
+            }
+            return null;
+          }
+        },
+        series : [ {
+          type : 'graph', //关系图
+          name : "学者人际关系图", //系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
+          layout : 'force', //图的布局，类型为力导图，'circular' 采用环形布局，见示例 Les Miserables
+          legendHoverLink : true,//是否启用图例 hover(悬停) 时的联动高亮。
+          hoverAnimation : true,//是否开启鼠标悬停节点的显示动画
+          coordinateSystem : null,//坐标系可选
+          xAxisIndex : 0, //x轴坐标 有多种坐标系轴坐标选项
+          yAxisIndex : 0, //y轴坐标
+          force : {
+            //力引导图基本配置
+            //initLayout: ,//力引导的初始化布局，默认使用xy轴的标点
+            repulsion : 100,//节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+            gravity : 0.03,//节点受到的向中心的引力因子。该值越大节点越往中心点靠拢。
+            edgeLength :150,//边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+            layoutAnimation : true
+            //因为力引导布局会在多次迭代后才会稳定，这个参数决定是否显示布局的迭代动画，在浏览器端节点数据较多（>100）的时候不建议关闭，布局过程会造成浏览器假死。
+          },
+          roam : true,//是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+          nodeScaleRatio : 0.6,//鼠标漫游缩放时节点的相应缩放比例，当设为0时节点不随着鼠标的缩放而缩放
+          draggable : true,//节点是否可拖拽，只在使用力引导布局的时候有用。
+          focusNodeAdjacency : true,//是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。
+          //symbol:'roundRect',//关系图节点标记的图形。ECharts 提供的标记类型包括 'circle'(圆形), 'rect'（矩形）, 'roundRect'（圆角矩形）, 'triangle'（三角形）, 'diamond'（菱形）, 'pin'（大头针）, 'arrow'（箭头）  也可以通过 'image://url' 设置为图片，其中 url 为图片的链接。'path:// 这种方式可以任意改变颜色并且抗锯齿
+          //symbolSize:10 ,//也可以用数组分开表示宽和高，例如 [20, 10] 如果需要每个数据的图形大小不一样，可以设置为如下格式的回调函数：(value: Array|number, params: Object) => number|Array
+          //symbolRotate:,//关系图节点标记的旋转角度。注意在 markLine 中当 symbol 为 'arrow' 时会忽略 symbolRotate 强制设置为切线的角度。
+          //symbolOffset:[0,0],//关系图节点标记相对于原本位置的偏移。[0, '50%']
+          symbolSize: function (value,params) {//改变节点大小
+            var SizeList = [100,80, 60, 40, 20];
+            return SizeList[params.data.layer]
+          },
+          edgeSymbol : [ 'none', 'none' ],//边两端的标记类型，可以是一个数组分别指定两端，也可以是单个统一指定。默认不显示标记，常见的可以设置为箭头，如下：edgeSymbol: ['circle', 'arrow']
+          edgeSymbolSize : 10,//边两端的标记大小，可以是一个数组分别指定两端，也可以是单个统一指定。
+          itemStyle : {//===============图形样式，有 normal 和 emphasis 两个状态。normal 是图形在默认状态下的样式；emphasis 是图形在高亮状态下的样式，比如在鼠标悬浮或者图例联动高亮时。
+            normal : { //默认样式
+              label : {
+                show : true
+              },
+              color: function (params) {
+                var colorList = ['rgb(255,225,106)','rgb(97,133,185)', 'rgb(133,166,206)', 'rgb(158,192,238)', 'rgb(205,236,248)', 'rgb(216,233,243)'];
+                return colorList[params.data.layer]
+              },
+              borderType : 'solid', //图形描边类型，默认为实线，支持 'solid'（实线）, 'dashed'(虚线), 'dotted'（点线）。
+              borderColor : 'rgba(255,106,106,0)', //设置图形边框为淡金色,透明度为0.4
+              borderWidth : 1, //图形的描边线宽。为 0 时无描边。
+              opacity : 1
+              // 图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形。默认0.5
+            },
+            emphasis : {//高亮状态
+            }
+          },
+          lineStyle : { //公用线条样式。
+            normal : {
+              color : 'rgba(0,0,0,0.4)',
+              width : '1',
+              type : 'solid', //线的类型 'solid'（实线）'dashed'（虚线）'dotted'（点线）
+              curveness : 0.25, //线条的曲线程度，从0到1
+              opacity : 0.5 // 图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形。默认0.5
+            },
+            emphasis : {//高亮状态
+            }
+          },
+          label : { //文本标签
+            normal : {
+              show : true,//是否显示标签。
+              position : 'inside',//标签的位置。['50%', '50%'] [x,y]
+              textStyle : { //标签的字体样式
+                color : '#000000', //字体颜色
+                fontStyle : 'normal',//文字字体的风格 'normal'标准 'italic'斜体 'oblique' 倾斜
+                fontWeight : '400',//'normal'标准'bold'粗的'bolder'更粗的'lighter'更细的或100 | 200 | 300 | 400...
+                fontFamily : 'sans-serif', //文字的字体系列
+                fontSize : 12, //字体大小
+              }
+            },
+            emphasis : {//高亮状态
+
+            }
+          },
+          edgeLabel : {//线条的边缘标签
+            normal : {
+              show : false
+            },
+            emphasis : {//高亮状态
+
+            }
+          },
+          nodes:nodeList,
+          links:linkList
+        } ]
+      };
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+      myChart.on('click',function (params){
+        if (params.dataType === 'node') {
+          toThisOne(params.data.id)
+        }
+      });
+      function toThisOne(id){
+        //这里跳转
+        this.$message(id);
+      }
+    },
+  }
 }
 </script>
 

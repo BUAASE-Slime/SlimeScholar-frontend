@@ -22,5 +22,8 @@ export default {
                 }
             })
         }
+        Vue.prototype.$isArray = function (object){
+            return Object.prototype.toString.call(object) === '[object Array]';
+        }
     }
 }
