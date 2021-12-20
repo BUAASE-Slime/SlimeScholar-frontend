@@ -211,9 +211,10 @@
             合著作者
           </el-row>
         <el-scrollbar style="height: 520px">
-            <el-row class="friends-item" v-for="(i,index) in infoForChart.friends" :key="index">
+            <el-row class="friends-item" v-for="(i,index) in info.coauthors" :key="index">
               <el-col :span="4">
-                <el-image :src="i.headImgUrl"></el-image>
+                <el-image v-if="coauthor_avatars[index]&&coauthor_avatars[index]!==''" :src="coauthor_avatars[index]"></el-image>
+<!--                <el-image v-else src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg"></el-image>-->
               </el-col>
               <el-col :span="17" style="padding-left: 10px">
                 <el-row style="color: black ;font-weight: bold;font-size:small">
@@ -803,6 +804,16 @@ export default {
             year: "2021"
           }
         ],
+        coauthors: [
+          {
+            affiliation_id: "141649914",
+            author_id: "2554276614",
+            citation_count: 1059,
+            name: "Zengqi Huang",
+            paper_count: 40,
+            rank: 16859
+          },
+        ],
       },
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
@@ -895,6 +906,7 @@ export default {
       avatarUrls: ["https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg"],
       avatarUrl: '',
       uploadAvatarUrl: this.GLOBAL.backUrl + '/user/export/avatar',
+      coauthor_avatars: ["https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg"],
     }
   },
   created() {
@@ -1107,6 +1119,7 @@ export default {
       })
       .catch(_ => {});
     },
+
     getSchInfo(id, tag) {
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
       this.$axios({
@@ -1126,6 +1139,7 @@ export default {
               this.isSelf = true;
             this.artNumInit = this.info.papers.length > 6? 6 : this.info.papers.length;
             this.flag = (this.info.papers.length<=this.artNumInit);
+            this.getCoauthorAvatars();
             break;
           case 401:
             this.$message.error("参数错误！");
@@ -1172,6 +1186,13 @@ export default {
         console.log(err);
       })
     },
+    getCoauthorAvatars() {
+      let author_ids = [];
+      for (let i = 0; i < this.info.coauthors.length; i++)
+        author_ids.push(this.info.coauthors[i].author_id);
+      this.getAvatars(author_ids, this.coauthor_avatars);
+    },
+
     gotoHomePage(home_page) {
       window.open(home_page);
     },
