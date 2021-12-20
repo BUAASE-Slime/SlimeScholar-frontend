@@ -38,10 +38,15 @@
         <div>
           <div v-for="(j, index) in item.author_affiliation" :key="index" class="author-name" style="margin-top: 5px; display:inline-block">
             <div @click="gotoAff(j)" style="display:inline-block">
-              <sup v-if="item.author_affiliation">{{ index+1 }}</sup>
-              <div v-html="j" style="display:inline-block"></div>
+              <sup v-if="item.author_affiliation && index<5">{{ index+1 }}</sup>
+              <div v-html="j" style="display:inline-block" v-if="index<5"></div>
             </div>
-            <span v-if="index<item.author_affiliation.length-1">,&nbsp;</span>
+            <span v-if="index<item.author_affiliation.length-1 && index<5">,&nbsp;</span>
+          </div>
+          <div
+              v-if="item.author_affiliation && item.author_affiliation.length>5"
+              style="display: inline-block; color: grey; font-size: 14px;">
+            etc.
           </div>
         </div>
 

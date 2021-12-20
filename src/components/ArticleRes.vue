@@ -101,7 +101,9 @@
                                    @change="selectSearch">
                   <div v-for="(val, key) in o" :key="key">
                     <el-checkbox :label=key>
-                      <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
+                      <el-tooltip class="item" effect="dark" :content="key" placement="right">
+                        <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
+                      </el-tooltip>
                     </el-checkbox>
                   </div>
                 </el-checkbox-group>
