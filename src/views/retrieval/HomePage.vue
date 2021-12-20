@@ -9,22 +9,27 @@
     <div class="input-box-body">
       <div class="title">Make Academia Visible</div>
       <div class="input-box">
-        <el-input placeholder="请输入内容"
-                  v-model="searchValue"
-                  class="input-with-select"
-                  @keyup.enter.native="goSearch"
-                  style="width: 750px; font-size: 17px"
-                  >
-          <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width: 130px" >
-            <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
-          </el-select>
-          <el-button slot="append" icon="el-icon-search" @click="goSearch"></el-button>
-        </el-input>
+        <el-dropdown @command="handleCommand" trigger="click" placement="bottom">
+          <el-input placeholder="请输入内容"
+                    v-model="searchValue"
+                    class="input-with-select"
+                    @keyup.enter.native="goSearch"
+                    style="width: 750px; font-size: 17px"
+          >
+            <el-select v-model="select" slot="prepend" placeholder="检索依据" style="width: 130px" >
+              <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search" @click="goSearch"></el-button>
+          </el-input>
+          <el-dropdown-menu slot="dropdown" style="width: 750px" v-if="showPrefix">
+            <el-dropdown-item v-for="item in results" :key="item" :command="item">{{ item }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
 
@@ -106,6 +111,7 @@
 import Articles from "../../components/Articles";
 import PageHeader from "../../components/PageHeader";
 import $ from 'jquery';
+import qs from "qs";
 export default {
   name: "HomePage",
   components: {PageHeader, Articles},
@@ -126,7 +132,8 @@ export default {
         topic_count: 0
       },
 
-      options: [{
+      options: [
+        {
           value: 'main',
           label: '篇关摘'
         }, {
@@ -350,10 +357,27 @@ export default {
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
       ],
+
+      results: [],
+      showPrefix: true,
     }
   },
   created() {
     this.getInfo();
+  },
+  watch: {
+    searchValue(newVal, oldVal) {
+      if (newVal !== '' && newVal !== oldVal)
+        this.getPrefix();
+    },
+    select(newVal, oldVal) {
+      if (newVal !== '' && newVal !== oldVal)
+        this.getPrefix();
+    },
+    results(newVal) {
+      if (newVal.length > 0)
+        this.showPrefix = true;
+    }
   },
   methods:{
     getInfo() {
@@ -395,6 +419,12 @@ export default {
         url: '/es/query/paper/hot'
       })
     },
+    handleCommand(value) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes?' + this.select + "=" + value,
+      });
+      window.open(routeUrl .href, "_self");
+    },
     goSearch:function() {
       if (this.searchValue === '') {
         this.$message.warning("请输入检索词！");
@@ -404,6 +434,26 @@ export default {
         path: '/searchRes?' + this.select + "=" + this.searchValue,
       });
       window.open(routeUrl .href, "_self");
+    },
+    getPrefix() {
+      if (['title', 'main', 'publisher', 'author_name', 'affiliation_name', 'field'].includes(this.select)) {
+        this.$axios({
+          method: 'post',
+          url: '/es/get/prefix',
+          data: qs.stringify({
+            name: this.select,
+            content: this.searchValue
+          })
+        })
+        .then(res => {
+          if (res.data.success) {
+            this.results = res.data.results;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
     }
   },
 }
