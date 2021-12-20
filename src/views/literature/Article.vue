@@ -643,14 +643,25 @@ export default {
         this.$message.error("未找到该文献原文PDF！");
         return;
       }
-      // TIP: 这种方式下载文件会出现跨域问题
-      var a = document.createElement('a');
-      // //需要下载的数据内容,我这里放的就是BLOB，如果你有下载链接就不需要了
-      var filename = this.articleDetails.paper_title + ".jpg";
-      a.href = this.articleDetails.pdfs.at(0);
-      a.download = filename;
-      a.click();
-      a.remove();
+      this.$message.success("正在下载原文PDF，请耐心等待！");
+      // TIP: 下载跨域文件出问题，让后端下载到服务器再同域下载
+      this.$axios({
+        method: 'post',
+        url: '/es/get/pdf',
+        data: qs.stringify({
+          pdf_url: this.articleDetails.pdfs[0]
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$downloadSameArea(this.GLOBAL.backUrl + res.data.data, this.articleDetails.paper_title + ".pdf");
+          this.$message.success("下载成功！");
+        }
+      })
+      .catch(err => {
+        this.$message.error("下载失败！");
+        console.log(err);
+      })
     },
 
     getRelatedPapers() {
