@@ -20,8 +20,12 @@ export default {
             })
             .then(res => {
                 if (res.data.success) {
-                    for (let i = 0; i < res.data.data.length; i++)
-                        avatars[i] = this.getAvatarFullPath(res.data.data[i]);
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        if (res.data.data[i] === "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg")
+                            avatars[i] = res.data.data[i];
+                        else
+                            avatars[i] = this.getAvatarFullPath(res.data.data[i]);
+                    }
                 }
                 else this.$message.error("头像获取失败！");
             })
