@@ -27,7 +27,12 @@
             <el-button slot="append" icon="el-icon-search" @click="goSearch"></el-button>
           </el-input>
           <el-dropdown-menu slot="dropdown" style="width: 750px" v-if="showPrefix">
-            <el-dropdown-item v-for="item in results" :key="item" :command="item">{{ item }}</el-dropdown-item>
+            <el-dropdown-item
+                v-for="item in results"
+                :key="item"
+                :command="item"
+                v-html="highlight(item)">
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -453,6 +458,20 @@ export default {
         .catch(err => {
           console.log(err);
         })
+      }
+    },
+    highlight(src) {
+      let value = src;
+      let key = this.searchValue;
+      if (!value || !key) return "";
+      if (value.length > 100) {
+        return value.slice(0,100) + "...";
+      }
+      let start = value.toLowerCase().indexOf(key.toLowerCase());
+      if (start !== -1) {
+        return value.replace(value.slice(start, start+key.length), `<font color='#1e90ff' style='font-weight: bold'">${value.slice(start, start+key.length)}</font>`);
+      } else {
+        return value;
       }
     }
   },
