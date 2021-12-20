@@ -639,21 +639,29 @@ export default {
       this.showCollect = true;
     },
     download() {
-      // TODO: 下载PDF文件
       if (this.articleDetails.pdfs.length === 0) {
         this.$message.error("未找到该文献原文PDF！");
         return;
       }
-      // window.open(this.articleDetails.pdfs.at(0));
-
-      var a = document.createElement('a');
-      //需要下载的数据内容,我这里放的就是BLOB，如果你有下载链接就不需要了
-      var url = window.URL.createObjectURL(content);
-      var filename = this.articleDetails.pdfs.at(0);
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      this.$message.success("正在下载原文PDF，请耐心等待！");
+      // TIP: 下载跨域文件出问题，让后端下载到服务器再同域下载
+      this.$axios({
+        method: 'post',
+        url: '/es/get/pdf',
+        data: qs.stringify({
+          pdf_url: this.articleDetails.pdfs[0]
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$downloadSameArea(this.GLOBAL.backUrl + res.data.data, this.articleDetails.paper_title + ".pdf");
+          this.$message.success("下载成功！");
+        }
+      })
+      .catch(err => {
+        this.$message.error("下载失败！");
+        console.log(err);
+      })
     },
 
     getRelatedPapers() {

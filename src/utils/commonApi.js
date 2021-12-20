@@ -25,5 +25,14 @@ export default {
         Vue.prototype.$isArray = function (object){
             return Object.prototype.toString.call(object) === '[object Array]';
         }
+        Vue.prototype.$downloadSameArea = function (url, filename){
+            // TIP: 这种方式无法下载跨域文件
+            var a = document.createElement('a');
+            // 需要下载的数据内容,我这里放的就是BLOB，如果你有下载链接就不需要了
+            a.href = url;
+            a.download = filename;
+            a.click();
+            a.remove();
+        }
     }
 }

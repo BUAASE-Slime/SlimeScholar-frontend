@@ -1,0 +1,2 @@
+vue.config.js merge=ours
+public/global.json merge=ours

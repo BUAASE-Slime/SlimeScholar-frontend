@@ -14,8 +14,7 @@
     "element-ui": "^2.15.6",
     "vue": "^2.6.11",
     "vue-schart": "^2.0.0",
-    "vue-scroll-loader": "^2.2.0",
-    "wangeditor": "^4.7.9"
+    "vue-scroll-loader": "^2.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -1264,6 +1264,7 @@ export default {
       })
     },
     showRelChart(){
+      let self = this
       let nodeList=[]
       let linkList=[]
       let node = {
@@ -1491,7 +1492,11 @@ export default {
         }
       });
       function toThisOne(id){
-        //这里跳转
+        let routeUrl = self.$router.resolve({
+          path: '/schPortal',
+          query: { v: id }
+        });
+        window.open(routeUrl .href, "_blank");
       }
     },
   }
