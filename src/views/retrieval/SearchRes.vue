@@ -346,7 +346,7 @@ import highlightApi from "../../utils/highlightApi";
           data: qs.stringify({
             [this.header_select]: this.input,
             page: pageIdx,
-            is_precise: true,
+            is_precise: (this.header_select!=='title'),
             size: 10,
           })
         })

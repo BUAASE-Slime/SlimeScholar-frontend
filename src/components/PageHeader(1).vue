@@ -79,6 +79,7 @@ export default {
         document.documentElement.style.setProperty('--border-bottom', '2px solid transparent');
         document.documentElement.style.setProperty('--hover-color', '#575757');
         document.documentElement.style.setProperty('--name-color', 'black');
+
         break;
     }
   },
