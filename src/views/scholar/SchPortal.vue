@@ -828,46 +828,39 @@ export default {
         affiliation_name: "Slime",
         author_id: "999",
         author_name: "AAAAAAAAAA",
-        headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
         friends: [
           {
             affiliation_name: "Independent Researcher",
             author_id: "1",
             author_name: "Slime Scholar",
-            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[
               {
                 affiliation_name: "BUAA",
                 author_id: "12",
                 author_name: "A.A.A",
-                headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
                 friends:[]
               },
               {
                 affiliation_name: "TES",
                 author_id: "18",
                 author_name: "A.A.B",
-                headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
                 friends:[
                   {
                     affiliation_name: "TES",
                     author_id: "66",
                     author_name: "A.A.B.A",
-                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
                     friends:[]
                   },
                   {
                     affiliation_name: "TES",
                     author_id: "456",
                     author_name: "A.A.B.B",
-                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
                     friends:[]
                   },
                   {
                     affiliation_name: "TES",
                     author_id: "789",
                     author_name: "A.A.B.C",
-                    headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
                     friends:[]
                   }
                 ]
@@ -878,25 +871,21 @@ export default {
             affiliation_name: "BUAA",
             author_id: "12",
             author_name: "A.B",
-            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[]
           },{
             affiliation_name: "Independent Researcher",
             author_id: "8",
             author_name: "A.C",
-            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[]
           },{
             affiliation_name: "BUAA",
             author_id: "7",
             author_name: "A.D",
-            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[]
           },{
             affiliation_name: "Independent Researcher",
             author_id: "5",
             author_name: "A.E",
-            headImgUrl: "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg",
             friends:[]
           },
         ]
@@ -931,15 +920,9 @@ export default {
     // 请求被引用量随年份的变化信息
     this.getCitationCount(this.author_id);
     // 请求学者的学者关系信息
-
+    this.getRelaAuthors(this.author_id,1);
     // 获取学者头像
     this.getAvatars(this.author_id, this.avatarUrls);
-  },
-  mounted(){
-    //页面加载完成后,才执行
-    setTimeout(() => {
-      this.showRelChart();
-    }, 1000);
   },
   filters: {
     ellipsis: function(value) {
@@ -1192,6 +1175,28 @@ export default {
         author_ids.push(this.info.coauthors[i].author_id);
       this.getAvatars(author_ids, this.coauthor_avatars);
     },
+    getRelaAuthors(author_id, level) {
+      this.$axios({
+        method: 'post',
+        url: '/scholar/graph',
+        data: qs.stringify({
+          author_id: author_id,
+          level: level,
+        })
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.infoForChart = res.data.detail;
+          setTimeout(() => {
+            this.showRelChart();
+          }, 300);
+        }
+        else this.$message.error("学者关系网络获取失败！");
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
 
     gotoHomePage(home_page) {
       window.open(home_page);
@@ -1202,13 +1207,6 @@ export default {
         query: { v: paper_id }
       });
       window.open(routeUrl .href, "_blank");
-    },
-    AddArtNum(){
-      let x = parseInt(this.artNumInit);
-      x+=20;
-      if(x>this.info.papers.length) x=this.info.papers.length;
-      this.artNumInit=x;
-      this.flag = (this.info.papers.length<=this.artNumInit);
     },
     toHim(author_id){
       let routeUrl = this.$router.resolve({
@@ -1272,7 +1270,6 @@ export default {
         id:this.infoForChart.author_id,
         name:this.infoForChart.author_name,
         affiliation_name:this.infoForChart.affiliation_name,
-        headImgUrl:this.infoForChart.headImgUrl,
         symbol:"circle",
         layer:0
       }
@@ -1285,7 +1282,6 @@ export default {
           name: fItem.author_name,
           affiliation_name: fItem.affiliation_name,
           symbol: "circle",
-          headImgUrl:fItem.headImgUrl,
           layer:1,
         }
         //检查是否已生成该f
@@ -1314,7 +1310,6 @@ export default {
             name: ffItem.author_name,
             affiliation_name: ffItem.affiliation_name,
             symbol: "circle",
-            headImgUrl:ffItem.headImgUrl,
             layer: 2
           }
 
@@ -1345,7 +1340,6 @@ export default {
               name: fffItem.author_name,
               affiliation_name: fffItem.affiliation_name,
               symbol: "circle",
-              headImgUrl:fffItem.headImgUrl,
               layer:3
             }
 
@@ -1389,10 +1383,6 @@ export default {
           formatter:function(params){
             if(params.dataType==='node'){
               let ans = "<el-row>";
-              //头像
-              // ans+="<el-col>" +
-              //     "<img style='width:55px;height:55px;border-radius: 50%;margin-right:5px' src='"+params.data.headImgUrl+"'/>" +
-              //     "</el-col><br>";
               //简介
               ans+="<el-col>" +
                   "<span style='margin-right: 3px'>"+params.name+"，</span>" +
@@ -1502,7 +1492,6 @@ export default {
       });
       function toThisOne(id){
         //这里跳转
-        this.$message(id);
       }
     },
   }
