@@ -1,5 +1,3 @@
-import el from "element-ui/src/locale/lang/el";
-
 export default {
     methods: {
         highlight(data) {

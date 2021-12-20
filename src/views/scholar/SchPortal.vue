@@ -2,14 +2,17 @@
   <div class="schPortal">
     <el-row class="info-div">
           <el-col :span="4">
-            <el-image v-if="info.people.headImgUrl&&info.people.headImgUrl!==''"
-                      class="headImg"
-                      :src="info.people.headImgUrl">
-            </el-image>
-            <el-image v-else
-                      class="headImg"
-                      src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
-            </el-image>
+            <el-upload
+                v-if="isSelf"
+                :action="uploadAvatarUrl"
+                :http-request="upLoadAvatar"
+                :before-upload="beforeUpload"
+                :show-file-list="false">
+              <el-image class="headImg" v-if="avatarUrls.length>0" :src="avatarUrls[0]"></el-image>
+            </el-upload>
+            <div v-else>
+              <el-image v-if="avatarUrls.length>0" :src="avatarUrls[0]" class="headImg"></el-image>
+            </div>
           </el-col>
           <el-col class="people-text" :span="17">
             <el-row style="color: black ;font-weight: bold;font-size:28px">
@@ -235,9 +238,11 @@
 <script>
 import user from "../../store/user";
 import qs from "qs";
+import avatarApi from "../../utils/avatarApi";
 
 export default {
   name: "schPortal.vue",
+  mixins: [ avatarApi ],
   watch: {
     result(val) {
       this.loadMoreDisable = val.length >= this.resultTotalHits;
@@ -255,6 +260,8 @@ export default {
       isSelf: false,
       tableTitle:"文献",
       tableTitleEdit:"已有文献",
+
+      // 个人信息
       info: {
         is_user: false,
         people: {
@@ -797,11 +804,11 @@ export default {
           }
         ],
       },
-
       ciaChart:{
         years:["2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"],
         cia:["198","268","98","200","1","6","198","268","398","200"]
       },
+
       flag: false,
       activeNameOut: "article",
       activeNameChart:"citations",
@@ -882,7 +889,12 @@ export default {
             friends:[]
           },
         ]
-      }
+      },
+
+      // 头像
+      avatarUrls: ["https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg"],
+      avatarUrl: '',
+      uploadAvatarUrl: this.GLOBAL.backUrl + '/user/export/avatar',
     }
   },
   created() {
@@ -897,11 +909,7 @@ export default {
       const userInfo = user.getters.getUser(user.state());
       // 未登录则先登录
       if (!userInfo) {
-        this.$message.warning("请先登录！");
-        setTimeout(() => {
-          this.$router.push('/login');
-        }, 1000);
-        return;
+        this.$userNotLogin(true);
       }
       this.author_id = userInfo.user.authorId;
       // 调用接口返回学者信息
@@ -911,6 +919,9 @@ export default {
     // 请求被引用量随年份的变化信息
     this.getCitationCount(this.author_id);
     // 请求学者的学者关系信息
+
+    // 获取学者头像
+    this.getAvatars(this.author_id, this.avatarUrls);
   },
   mounted(){
     //页面加载完成后,才执行
@@ -928,6 +939,47 @@ export default {
     },
   },
   methods: {
+    // 头像上传
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isJPG && !isPNG) {
+        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+      }
+      if (!isLt5M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return (isJPG || isPNG) && isLt5M;
+    },
+    upLoadAvatar(file) {
+      // 未登录则先登录
+      const userInfo = user.getters.getUser(user.state());
+      if (!userInfo) {
+        this.$userNotLogin(true);
+      }
+
+      const formData = new FormData();
+      formData.append('avatar', file.file);
+      formData.append('user_id', userInfo.user.userId);
+      this.$axios({
+        method: 'post',
+        url: this.uploadAvatarUrl,
+        data: formData,
+      })
+      .then(res => {
+        if (res.data.success) {
+          this.$message.success('上传头像成功！');
+          this.avatarUrls = [this.getAvatarFullPath(res.data.data)];
+        } else {
+          this.$message.error("发生错误！");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
     save(){
       this.isEdit = false;
       this.$message.success("保存成功");
