@@ -40,6 +40,7 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.affiliations"
                                    :key="o"
                                    style="margin-bottom: 15px; text-align: left"
+                                   @change="getAuthorRes"
                                    v-model="checkAffiliationList">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
@@ -80,7 +81,10 @@
               </el-row>
             </div>
 
-            <AuthorBlocks :authors="authors"></AuthorBlocks>
+            <AuthorBlocks
+                :authors="authors"
+                :author_avatars="author_avatars"
+            ></AuthorBlocks>
 
             <div>
               <el-row>
@@ -119,9 +123,11 @@
 import AuthorBlocks from "../../components/AuthorBlocks";
 import PageHeader from "../../components/PageHeader";
 import qs from "qs";
+import avatarApi from "../../utils/avatarApi";
 export default {
   name: "authorRes",
   components: {PageHeader, AuthorBlocks},
+  mixins: [avatarApi],
   data() {
     return {
       total_hits_str: '0',
@@ -197,6 +203,7 @@ export default {
           avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
         },
       ],
+      author_avatars: [],
 
       aggregation: {
         areas: [
@@ -315,6 +322,8 @@ export default {
             this.aggregation = res.data.aggregation;
             if (res.data.total_hits === 10000)
               this.total_hits_str = "10000+";
+            // 获取学者头像
+            this.getAuthorAvatars();
             break;
           case 404:
             this.total_hits = 0;
@@ -331,6 +340,15 @@ export default {
       .catch(err => {
         console.log(err);
       })
+    },
+    getAuthorAvatars() {
+      let author_ids = [];
+      for (let i = 0; i < this.authors.length; i++)
+        author_ids.push(this.authors[i].author_id);
+      this.getAvatars(author_ids, this.author_avatars);
+      setTimeout(() => {
+        console.log(this.author_avatars);
+      }, 1000);
     }
   },
 

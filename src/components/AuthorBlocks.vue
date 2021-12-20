@@ -4,7 +4,7 @@
       <div class="author-item" v-for="(item,index) in authors" :key="index">
         <el-row style="width: 100%; font-size: 14px">
           <el-col :span="3">
-            <el-image v-if="item.avatar&&item.avatar!==''" :src="item.avatar"></el-image>
+            <el-image v-if="author_avatars[index]&&author_avatars[index]!==''" :src="author_avatars[index]"></el-image>
             <el-image v-else
                       src="https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg">
             </el-image>
@@ -35,7 +35,7 @@
 <script>
 export default {
   name: "AuthorBlocks",
-  props: ['authors'],
+  props: ['authors', 'author_avatars'],
   methods: {
     gotoSch(author_id) {
       let routeUrl = this.$router.resolve({

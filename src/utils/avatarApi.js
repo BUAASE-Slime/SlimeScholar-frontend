@@ -5,8 +5,10 @@ export default {
         getAvatars(author_ids, avatars) {
             let ids = '';
             if (this.$isArray(author_ids)) {
-                for (let i = 0; i < author_ids.length; i++)
+                let i;
+                for (let i = 0; i < author_ids.length-1; i++)
                     ids += author_ids[i] + ',';
+                ids += author_ids[i];
             } else {
                 ids = author_ids;
             }
