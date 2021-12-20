@@ -172,36 +172,16 @@ export default {
       sortValue: 1,
 
       authors: [
-        {
-          affiliation_name: "Beihang University",
-          author_id: "2736235158",
-          name: "Z Huang",
-          main_areas: "Computer Vision, Computer Graphics",
-          fields: ["Computer Vision", "Computer Graphics"],
-          citation_count: 1234,
-          paper_count: 132,
-          avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
-        },
-        {
-          affiliation_name: "Beihang University",
-          author_id: "2736235158",
-          name: "Z Huang",
-          main_areas: "Computer Vision, Computer Graphics",
-          fields: ["Computer Vision", "Computer Graphics"],
-          citation_count: 1234,
-          paper_count: 132,
-          avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
-        },
-        {
-          affiliation_name: "Beihang University",
-          author_id: "2736235158",
-          name: "Z Huang",
-          main_areas: "Computer Vision, Computer Graphics",
-          fields: ["Computer Vision", "Computer Graphics"],
-          citation_count: 1234,
-          paper_count: 132,
-          avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
-        },
+        // {
+        //   affiliation_name: "Beihang University",
+        //   author_id: "2736235158",
+        //   name: "Z Huang",
+        //   main_areas: "Computer Vision, Computer Graphics",
+        //   fields: ["Computer Vision", "Computer Graphics"],
+        //   citation_count: 1234,
+        //   paper_count: 132,
+        //   avatar: "https://i.loli.net/2021/11/13/39PJtQWi7nrHMXu.jpg"
+        // },
       ],
       author_avatars: [],
 
@@ -348,7 +328,7 @@ export default {
       this.getAvatars(author_ids, this.author_avatars);
       setTimeout(() => {
         console.log(this.author_avatars);
-      }, 1000);
+      }, 3000);
     }
   },
 

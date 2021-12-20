@@ -21,6 +21,7 @@ export default {
                 })
             })
             .then(res => {
+                avatars.length = 0;
                 if (res.data.success) {
                     for (let i = 0; i < res.data.data.length; i++) {
                         if (res.data.data[i] === "https://img-1304418829.cos.ap-beijing.myqcloud.com/avatar-grey-bg.jpg")
