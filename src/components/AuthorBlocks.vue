@@ -14,7 +14,7 @@
             <div>{{ item.affiliation_name }}</div>
             <div style="margin-top: 3px; margin-bottom: 3px">
               <span v-for="(area, index) in item.fields" v-bind:key="index">
-                <el-link style="color: #2d94d4;">{{ area }}</el-link>
+                <el-link style="color: #2d94d4;" @click="toArea(area)">{{ area }}</el-link>
                 <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4;" v-if="index!==item.fields.length-1">/</span>
               </span>
             </div>
@@ -41,6 +41,13 @@ export default {
       let routeUrl = this.$router.resolve({
         path: '/schPortal',
         query: { v: author_id }
+      });
+      window.open(routeUrl .href, "_blank");
+    },
+    toArea(area) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: area }
       });
       window.open(routeUrl .href, "_blank");
     }

@@ -30,7 +30,7 @@
             <el-row style="margin-top: 10px">
               <i class="el-icon-edit-outline" style="margin-right: 10px"></i>
               <span v-for="(area, index) in info.people.fields" v-bind:key="index" style="color:#00b1fd;">
-                <el-link style="color: #2d94d4; font-size: medium;">{{ area }}</el-link>
+                <el-link style="color: #2d94d4; font-size: medium;" @click="toArea(area)">{{ area }}</el-link>
                 <span style="margin-left: 4px; margin-right: 4px; color:#2d94d4; font-size: medium;" v-if="index!==info.people.fields.length-1">/</span>
               </span>
             </el-row>
@@ -934,6 +934,13 @@ export default {
     },
   },
   methods: {
+    toArea(area) {
+      let routeUrl = this.$router.resolve({
+        path: '/searchRes',
+        query: { field: area }
+      });
+      window.open(routeUrl .href, "_blank");
+    },
     // 头像上传
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg';

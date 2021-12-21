@@ -644,16 +644,18 @@ export default {
         return;
       }
       this.$message.success("正在下载原文PDF，请耐心等待！");
+      console.log(this.articleDetails.pdfs[0]);
       // TIP: 下载跨域文件出问题，让后端下载到服务器再同域下载
       this.$axios({
         method: 'post',
-        url: '/es/get/pdf',
+        url: '/upload/get/pdf',
         data: qs.stringify({
           pdf_url: this.articleDetails.pdfs[0]
         })
       })
       .then(res => {
         if (res.data.success) {
+          console.log(this.GLOBAL.backUrl + res.data.data);
           this.$downloadSameArea(this.GLOBAL.backUrl + res.data.data, this.articleDetails.paper_title + ".pdf");
           this.$message.success("下载成功！");
         }
