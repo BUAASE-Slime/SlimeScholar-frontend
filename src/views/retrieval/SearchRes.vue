@@ -66,105 +66,105 @@ import highlightApi from "../../utils/highlightApi";
         total_hits:0,
         total_hits_str: '',
         aggregation: {
-          max_year: 2022,
-          min_year: 2009,
-          conference: [
-            {
-              citation_count: 384,
-              conference_id: "3083037350",
-              count: 8,
-              end: "2021-05-29",
-              id: "3083037350",
-              location: "Madrid, Spain",
-              name: "ICSE 2021",
-              offical_url: "https://conf.researchr.org/home/icse-2021",
-              paper_count: 471,
-              start: "2021-05-23"
-            },
-            {
-              citation_count: 3246,
-              conference_id: "71090686",
-              count: 8,
-              end: "2014-06-01",
-              id: "71090686",
-              location: "Hyderabad, India",
-              name: "MSR 2014",
-              offical_url: "http://2014.msrconf.org/",
-              paper_count: 63,
-              start: "2014-05-31"
-            },],
-          doctype: [
-            {
-              "Conference": 286
-            },
-            {
-              "Journal": 170
-            },
-            {
-              "Repository": 144
-            },
-            {
-              "Thesis": 26
-            },
-            {
-              "Patent": 12
-            }
-          ],
-          journal: [
-            {
-              citation_count: "19256",
-              count: 78,
-              issn: "",
-              id: "2595428313",
-              journal_id: "2595428313",
-              name: "arXiv: Software Engineering",
-              paper_count: "7794",
-              publisher: "",
-              rank: "10353",
-              webpage: ""
-            },
-            {
-              citation_count: "34541",
-              count: 17,
-              issn: "",
-              id: "2595428313",
-              journal_id: "2595804992",
-              name: "arXiv: Social and Information Networks",
-              paper_count: "7232",
-              publisher: "",
-              rank: "10327",
-              webpage: ""
-            },
-          ],
-          publisher: [
-            {
-              "IEEE": 13
-            },
-            {
-              "Apress, Berkeley, CA": 8
-            },
-            {
-              "IOP Publishing": 7
-            },
-            {
-              "ACM": 5
-            },
-            {
-              "The Open Journal": 4
-            },
-            {
-              "Elsevier BV": 3
-            },
-            {
-              "Github": 3
-            },
-            {
-              "Packt Publishing": 3
-            },
-            {
-              "Apress": 2
-            }
-          ]
+          // max_year: 2022,
+          // min_year: 2009,
+          // conference: [
+          //   {
+          //     citation_count: 384,
+          //     conference_id: "3083037350",
+          //     count: 8,
+          //     end: "2021-05-29",
+          //     id: "3083037350",
+          //     location: "Madrid, Spain",
+          //     name: "ICSE 2021",
+          //     offical_url: "https://conf.researchr.org/home/icse-2021",
+          //     paper_count: 471,
+          //     start: "2021-05-23"
+          //   },
+          //   {
+          //     citation_count: 3246,
+          //     conference_id: "71090686",
+          //     count: 8,
+          //     end: "2014-06-01",
+          //     id: "71090686",
+          //     location: "Hyderabad, India",
+          //     name: "MSR 2014",
+          //     offical_url: "http://2014.msrconf.org/",
+          //     paper_count: 63,
+          //     start: "2014-05-31"
+          //   },],
+          // doctype: [
+          //   {
+          //     "Conference": 286
+          //   },
+          //   {
+          //     "Journal": 170
+          //   },
+          //   {
+          //     "Repository": 144
+          //   },
+          //   {
+          //     "Thesis": 26
+          //   },
+          //   {
+          //     "Patent": 12
+          //   }
+          // ],
+          // journal: [
+          //   {
+          //     citation_count: "19256",
+          //     count: 78,
+          //     issn: "",
+          //     id: "2595428313",
+          //     journal_id: "2595428313",
+          //     name: "arXiv: Software Engineering",
+          //     paper_count: "7794",
+          //     publisher: "",
+          //     rank: "10353",
+          //     webpage: ""
+          //   },
+          //   {
+          //     citation_count: "34541",
+          //     count: 17,
+          //     issn: "",
+          //     id: "2595428313",
+          //     journal_id: "2595804992",
+          //     name: "arXiv: Social and Information Networks",
+          //     paper_count: "7232",
+          //     publisher: "",
+          //     rank: "10327",
+          //     webpage: ""
+          //   },
+          // ],
+          // publisher: [
+          //   {
+          //     "IEEE": 13
+          //   },
+          //   {
+          //     "Apress, Berkeley, CA": 8
+          //   },
+          //   {
+          //     "IOP Publishing": 7
+          //   },
+          //   {
+          //     "ACM": 5
+          //   },
+          //   {
+          //     "The Open Journal": 4
+          //   },
+          //   {
+          //     "Elsevier BV": 3
+          //   },
+          //   {
+          //     "Github": 3
+          //   },
+          //   {
+          //     "Packt Publishing": 3
+          //   },
+          //   {
+          //     "Apress": 2
+          //   }
+          // ]
         },
         //articles表示当前页面显示的文章块数组
         articles:[
