@@ -26,9 +26,9 @@
                     <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
                   </span>
                 </div>
-                <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider v-model="year" range :min=minYear :max=maxYear @change="changeYear" @input="yearHandler"></el-slider>
-                </div>
+<!--                <div style="margin-top: 20px; margin-bottom: 30px">-->
+<!--                  <el-slider v-model="year" range :min=minYear :max=maxYear @change="changeYear" @input="yearHandler"></el-slider>-->
+<!--                </div>-->
               </div>
 
               <el-divider v-if="mode!=='advance'"></el-divider>
@@ -300,6 +300,7 @@ export default {
               total_hits: res.data.total_hits,
               total_hits_str: res.data.total_hits.toLocaleString()
             }
+            this.updateTime(res.data.aggregation);
             if (res.data.total_hits === 10000)
               this.total_hits_str = "10000+";
             this.$emit('high', data);
@@ -319,13 +320,22 @@ export default {
       .catch(err => {
         console.log(err);
       })
+    },
+    updateTime(aggregation) {
+      this.minYear = aggregation.min_year;
+      this.maxYear = aggregation.max_year;
+      this.year[0] = this.minYear;
+      this.year[1] = this.maxYear;
     }
   },
-  created() {
-    this.minYear = this.aggregation.min_year;
-    this.maxYear = this.aggregation.max_year;
-    this.year[0] = this.minYear;
-    this.year[1] = this.maxYear;
+
+  watch: {
+    aggregation: {
+      deep: true,
+      handler: function (val) {
+        this.updateTime(val);
+      }
+    }
   },
 
   filters: {
