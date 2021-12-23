@@ -247,7 +247,7 @@ export default {
     },
     // 查看领域下的文献
     searchField(field_name, field_id) {
-      let _field_name = field_name.replace("<font color='#f00'>", "");
+      let _field_name = field_name.replace("<font color='#ea4335'>", "");
       _field_name = _field_name.replace("</font>", "");
       let routeUrl = this.$router.resolve({
         path: '/searchRes',
