@@ -240,6 +240,12 @@ export default {
     yearHandler() {
     },
     changeYear() {
+      if (this.year[0] < 0 || this.year[1] < 0 ||
+          this.year[0] > this.year[1] ||
+          this.year[0] > 2022 || this.year[1] > 2022) {
+        this.$message.error("请输入合理的年份范围！");
+        return;
+      }
       this.selectSearch();
     },
     getContactData() {
