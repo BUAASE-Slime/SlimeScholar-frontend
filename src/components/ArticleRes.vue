@@ -139,7 +139,8 @@
                 <el-col :span="5">
                   <el-select v-model="sorter"
                              placeholder="请选择"
-                             style="float:right; height:30px; margin-bottom:5px">
+                             style="float:right; height:30px; margin-bottom:5px"
+                             @change="selectSearch">
                     <el-option
                         v-for="item in queue"
                         :key="item"
@@ -328,14 +329,17 @@ export default {
         _loadingIns.close();
         switch (res.data.status) {
           case 200:
+            if (res.data.total_hits === 10000)
+              this.total_hits_str = "10000+";
+            else
+              this.total_hits_str = res.data.total_hits.toLocaleString();
             let data = {
               articles: res.data.details,
               total_hits: res.data.total_hits,
-              total_hits_str: res.data.total_hits.toLocaleString()
+              total_hits_str: this.total_hits_str
             }
             this.updateTime(res.data.aggregation);
-            if (res.data.total_hits === 10000)
-              this.total_hits_str = "10000+";
+
             this.$emit('high', data);
             break;
           case 404:
