@@ -1496,6 +1496,9 @@ export default {
       myChart.on('click',function (params){
         if (params.dataType === 'node') {
           toThisOne(params.data.id)
+        } else if (params.dataType === 'edge') {
+          console.log(params);
+          expandAut(params.data.target)
         }
       });
       function toThisOne(id){
@@ -1504,6 +1507,9 @@ export default {
           query: { v: id }
         });
         window.open(routeUrl .href, "_blank");
+      }
+      function expandAut(id) {
+        // self.getRelaAuthors(id,1);
       }
     },
   }

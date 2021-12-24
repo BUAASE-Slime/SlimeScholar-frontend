@@ -87,7 +87,7 @@
                 <span>共 {{ articleDetails.reference_count }} 条</span>
               </div>
               <div class="reference-info" v-if="articleDetails.reference_count>0">
-                <span>由于版权限制，此处只展示部分相关论文</span>
+                <span>由于版权限制，此处可能仅展示部分相关论文</span>
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in articleDetails.reference_msg" :key="index">
@@ -116,7 +116,7 @@
                 <span>共 {{ articleDetails.citation_count }} 条</span>
               </div>
               <div class="reference-info" v-if="articleDetails.citation_count>0">
-                <span>由于版权限制，此处只展示部分相关论文</span>
+                <span>由于版权限制，此处可能仅展示部分相关论文</span>
               </div>
               <div class="reference-article">
                 <div class="reference-article-block" v-for="(article, index) in citation_msg" :key="index">
