@@ -14,7 +14,7 @@
           <el-row>
           <el-col :span="1" style="margin-top:50px;">
             <div id="chooseBar" >
-              <div :class="searchBarFixed === true ? 'isFixed' :''">
+              <div :class="searchBarFixed == true ? 'isFixed' :''">
                 <div style="height:48px"></div>
                 <div @click="makeSure()" style="padding:1px; font-size:14px; border-radius:4px; background-color:#409EFF; border:1px solid #2d94d4; cursor: pointer">
                   <span style="color:white;">确</span><br><span style="color:white;">定</span>
@@ -27,8 +27,7 @@
           </el-col>
           <el-col :span="7" style="width:90%" >
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
-            <el-card class="box-card">
-
+            <el-card class="box-card" id="sideBars" ref="ele">
               <div class="publish-year sub-block" v-if="mode!=='advance'">
                 <div class="check-box-title">
                   <span style="color: #303133">发表年份</span>
