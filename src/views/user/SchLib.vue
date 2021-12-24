@@ -56,9 +56,6 @@
                     <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
                   </span>
                 </div>
-                <div style="margin-top: 20px; margin-bottom: 30px">
-                  <el-slider v-model="year" range :min=minYear :max=maxYear @change="getCollectByYear"></el-slider>
-                </div>
               </div>
 
             </el-card>
@@ -329,6 +326,7 @@ export default {
         switch (allArticles.data.status) {
           case 200:
             self.articles = allArticles.data.data;
+            self.updateTime();
             break;
           case 400:
             this.$userNotFound();
@@ -367,7 +365,24 @@ export default {
     },
 
     changeYear() {
-
+      if (this.year[0] < 0 || this.year[1] < 0 ||
+          this.year[0] > this.year[1] ||
+          this.year[0] > 2022 || this.year[1] > 2022) {
+        this.$message.error("请输入合理的年份范围！");
+        return;
+      }
+      this.getCollectByYear();
+    },
+    updateTime() {
+      let _min_year = 2022, _max_year = 0;
+      for (let i = 0; i < this.articles.length; i++) {
+        if (this.articles[i].year < _min_year)
+          _min_year = this.articles[i].year;
+        if (this.articles[i].year > _max_year)
+          _max_year = this.articles[i].year;
+      }
+      this.year[0] = _min_year;
+      this.year[1] = _max_year;
     },
     getCollectByYear() {
       const userInfo = user.getters.getUser(user.state());
@@ -385,6 +400,7 @@ export default {
         switch (res.data.status) {
           case 200:
             this.articles = res.data.data;
+            this.updateTime();
             break;
           case 400:
             this.$userNotFound();

@@ -10,7 +10,22 @@
       </el-row>
       <div class="content-select-result">
         <el-row :gutter="0" v-if="total_hits!==0">
-          <el-col :span="7"><div class="grid-content bg-purple" style="margin-right:50px">
+          <el-col :span="8"><div class="grid-content bg-purple" style="margin-right:50px">
+          <el-row>
+          <el-col :span="1" style="margin-top:50px;">
+            <div id="chooseBar" >
+              <div :class="searchBarFixed === true ? 'isFixed' :''">
+                <div style="height:48px"></div>
+                <div @click="makeSure()" style="padding:1px; font-size:14px; border-radius:4px; background-color:#409EFF; border:1px solid #2d94d4; cursor: pointer">
+                  <span style="color:white;">确</span><br><span style="color:white;">定</span>
+                </div>
+                <div @click="cancel()" style="padding:1px; font-size:14px; border-radius:4px; background-color:white; border:1px solid #2d94d4; color: #606266; cursor: pointer">
+                  <span>取</span><br><span>消</span>
+                </div>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="7" style="width:90%" >
             <span style="display:flex; margin-bottom:24px; margin-top:10px; font-size:16px; color: #A0A0A0">筛选</span>
             <el-card class="box-card">
 
@@ -21,9 +36,9 @@
                 <div style="text-align: left; font-size: 13px">
                   <span>范围：</span>
                   <span style="color: #0274B3; margin-top:2px" class="year-input">
-                    <el-input size="mini" v-model="year[0]" @change="changeYear"></el-input>
+                    <el-input size="mini" v-model="year[0]"></el-input>
                     &nbsp;~&nbsp;
-                    <el-input size="mini" v-model="year[1]" @change="changeYear"></el-input>
+                    <el-input size="mini" v-model="year[1]"></el-input>
                   </span>
                 </div>
 <!--                <div style="margin-top: 20px; margin-bottom: 30px">-->
@@ -40,8 +55,7 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.doctype"
                                    :key="index"
                                    style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkDoctypeList"
-                                   @change="selectSearch">
+                                   v-model="checkDoctypeList">
                   <div v-for="(val, key) in o" :key="key">
                     <el-checkbox :label=key>
                       <span>{{ key|ellipsis_25 }}&nbsp;({{ val }})</span>
@@ -59,8 +73,7 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.journal"
                                    :key="index"
                                    style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkJournalList"
-                                   @change="selectSearch">
+                                   v-model="checkJournalList">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
                       <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
@@ -78,8 +91,7 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.conference"
                                    :key="index"
                                    style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkConferenceList"
-                                   @change="selectSearch">
+                                   v-model="checkConferenceList">
                   <el-checkbox :label=o.name>
                     <el-tooltip class="item" effect="dark" :content="o.name" placement="right">
                       <span>{{ o.name|ellipsis_25 }}&nbsp;({{ o.count }})</span>
@@ -97,8 +109,7 @@
                 <el-checkbox-group v-for="(o,index) in aggregation.publisher"
                                    :key="index"
                                    style="margin-bottom: 15px; text-align: left"
-                                   v-model="checkPublisherList"
-                                   @change="selectSearch">
+                                   v-model="checkPublisherList">
                   <div v-for="(val, key) in o" :key="key">
                     <el-checkbox :label=key>
                       <el-tooltip class="item" effect="dark" :content="key" placement="right">
@@ -109,6 +120,8 @@
                 </el-checkbox-group>
               </div>
             </el-card>
+          </el-col>
+          </el-row>
           </div>
           </el-col>
 
@@ -126,8 +139,7 @@
                 <el-col :span="5">
                   <el-select v-model="sorter"
                              placeholder="请选择"
-                             style="float:right; height:30px; margin-bottom:5px"
-                             @change="selectSearch">
+                             style="float:right; height:30px; margin-bottom:5px">
                     <el-option
                         v-for="item in queue"
                         :key="item"
@@ -190,7 +202,7 @@ export default {
     return {
       pageIdx: 1,
       size: 10,
-
+      searchBarFixed:false,
       select: '1',
       queue: [
         {
@@ -226,6 +238,23 @@ export default {
     }
   },
   methods: {
+    handleScroll () {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      var offsetTop = 2*(document.querySelector('#chooseBar').offsetTop)
+      this.searchBarFixed = scrollTop > offsetTop;
+
+      var offsetdown=document.querySelector('.content-select-result #sideBars').offsetTop+document.getElementById('sideBars').offsetHeight
+      if(scrollTop>offsetdown) this.searchBarFixed=false
+    },
+    makeSure(){
+      this.selectSearch();
+    },
+    cancel(){
+      this.checkDoctypeList = [];
+      this.checkJournalList = [];
+      this.checkConferenceList = [];
+      this.checkPublisherList = [];
+    },
     handleSizeChange(val) {
       this.size = val;
       this.selectSearch();
@@ -237,15 +266,7 @@ export default {
     changeCollect(data) {
       this.$emit('changeCollect', data);
     },
-    yearHandler() {
-    },
     changeYear() {
-      if (this.year[0] < 0 || this.year[1] < 0 ||
-          this.year[0] > this.year[1] ||
-          this.year[0] > 2022 || this.year[1] > 2022) {
-        this.$message.error("请输入合理的年份范围！");
-        return;
-      }
       this.selectSearch();
     },
     getContactData() {
@@ -290,6 +311,12 @@ export default {
         return '/es/select/paper/advanced';
     },
     selectSearch() {
+      if (this.year[0] < 0 || this.year[1] < 0 ||
+          this.year[0] > this.year[1] ||
+          this.year[0] > 2022 || this.year[1] > 2022) {
+        this.$message.error("请输入合理的年份范围！");
+        return;
+      }
       let _loadingIns = this.$loading({fullscreen: true, text: '拼命加载中'});
 
       this.$axios({
@@ -334,16 +361,13 @@ export default {
       this.year[1] = this.maxYear;
     }
   },
-
-  watch: {
-    aggregation: {
-      deep: true,
-      handler: function (val) {
-        this.updateTime(val);
-      }
-    }
+  mounted() {
+    // handleScroll为页面滚动的监听回调
+    window.addEventListener('scroll', this.handleScroll);
   },
-
+  destroyed(){
+    window.removeEventListener('scroll', this.handleScroll);
+  },
   filters: {
     //超过20位显示 ...
     ellipsis: function(value) {
@@ -359,6 +383,14 @@ export default {
         return value.slice(0,25) + "...";
       }
       return value;
+    }
+  },
+  watch: {
+    aggregation: {
+      deep: true,
+      handler: function (val) {
+        this.updateTime(val);
+      }
     }
   },
 }
@@ -427,5 +459,9 @@ export default {
   font-size: 17px;
   margin-bottom: 20px;
 }
-
+.article-result #chooseBar .isFixed{
+    position:fixed;
+    top:0;
+    z-index:999;
+}
 </style>
